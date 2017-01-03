@@ -1,4 +1,5 @@
-from flask import Flask
+from flask import Flask, render_template
+
 from flask_mongoengine import MongoEngine
 from flask_mongorest import MongoRest
 from flask_mongorest.views import ResourceView
@@ -30,10 +31,15 @@ class MetaboliteResource(Resource):
     filters = {
         "name" : [ops.Exact]
     }
+
 @api.register(name="metabolites", url="/metabolites/")
 class MetaboliteView(ResourceView):
     resource = MetaboliteResource
     methods = [methods.Fetch, methods.List]
+
+@app.route("/")
+def homepage():
+    return render_template("main.html", n=len(Metabolite.objects))
 
 if __name__ == "__main__":
     app.run()
