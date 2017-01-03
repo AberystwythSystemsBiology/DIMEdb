@@ -46,9 +46,18 @@ class MetaboliteView(ResourceView):
     resource = MetaboliteResource
     methods = [methods.Fetch, methods.List]
 
+@api.register(name="masses", url="/masses/")
+class MassesView(ResourceView):
+    pass
+
+@api.register(name="ioinisation", url="/ionisation/")
+class IonisationView(ResourceView):
+    pass
+
+
+
 @app.route("/")
 def homepage():
-
     return render_template("main.html", n=Metabolite.objects.count(),
                            url = request.url)
 
