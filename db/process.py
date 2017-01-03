@@ -124,12 +124,12 @@ def process_entity(entity):
         final_d = {
             "name": entity["Name"],
             "synonyms": entity["Synonyms"],
-            "accurate mass": accurate_mass,
-            "isotopic weight": isotopic_weight,
-            "molecular formula": formula,
+            "accurate_mass": accurate_mass,
+            "isotopic_weight": isotopic_weight,
+            "molecular_formula": formula,
             "smiles": entity["SMILES"],
-            "num of atoms": num_of_atoms,
-            "atomic charge": atomic_charge,
+            "num_of_atoms": num_of_atoms,
+            "atomic_charge": atomic_charge,
             "adducts": ad,
             "origins" : entity["Origins"]
         }

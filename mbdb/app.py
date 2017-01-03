@@ -25,11 +25,17 @@ class Metabolite(db.DynamicDocument):
     }
 
     name = db.StringField()
+    smiles = db.StringField()
+    origins = db.StringField()
+    molecular_formula = db.StringField()
 
 class MetaboliteResource(Resource):
     document = Metabolite
     filters = {
-        "name" : [ops.Exact]
+        "id" : [ops.Exact],
+        "name" : [ops.Exact, ops.Startswith],
+        "origins" : [ops.Contains],
+        "molecular_formula" : [ops.Exact]
     }
 
 @api.register(name="metabolites", url="/metabolites/")
