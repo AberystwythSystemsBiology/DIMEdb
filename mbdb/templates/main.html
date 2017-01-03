@@ -2,26 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MB-DB: Metabolite Database</title>
+    <title>MetaBolomic DataBase: For those that are lazy</title>
 </head>
-<body>
-    <h1>Welcome to MB-DB Alpha</h1>
+<body style="margin: 0 auto 0; max-width: 800px; width: 80%; padding-top: 1em;">
+    <header style="text-align: center;">
+    <h1 style="margin: 0; padding:0;">The MetaBolomic DataBase (MB-DB)</h1>
 
-    <p>We currently store {{ n }} metabolites!</p>
+    <h5 style="margin: 0; padding:0;">Version: 0.0.1A</h5>
+
+    <p>
+        We currently store {{ "{:,d}".format(n) }} metabolites!
+    </p>
+
+    </header>
+
+    <main>
 
     <h2>Example Commands</h2>
-    Here are some simple commands.
+
+    Here are some example commands.
+
     <h3>Metabolites</h3>
-    <h4>Get all metabolites containing "Ganglioside"</h4>
+    <p>Get all metabolites containing "Ganglioside"</p>
 
     <pre>{{ url }}metabolites/?name__contains=Ganglioside</pre>
 
-    <h4>Get all metabolites of which are found in Food</h4>
+    <p>Get all metabolites of which are found in Food</p>
     <pre>{{ url }}metabolites/?origins__contains=Food</pre>
 
-    <h4>Get all metabolites that contain "Gangli" and are found in Food</h4>
+    <p>Get all metabolites that contain "Gangli" and are found in Food</p>
     <pre>{{ url }}metabolites/?origins__contains=Food&name__contains=Gangli</pre>
 
-    <h3>Ionisation</h3>
+    <h3>Accurate Mass</h3>
+
+    <h3>Putative Ionisation</h3>
+    </main>
+    <footer style="text-align: center; font-size: 0.8em;">
+        <p>These pages are my responsibility, keo7@aber.ac.uk, and any opinions expressed are mine, not necessarily those of the university.</p>
+    </footer>
 </body>
 </html>
