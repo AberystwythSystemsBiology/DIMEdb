@@ -1,16 +1,108 @@
-import os, urllib, json
+import os, urllib2, json, collections, re, numpy as np, operator, itertools
 
-def get_periodic_table(fp="./dl-files/periodic_table.json"):
-    if os.path.isfile(fp) == False:
-        print "Cannot find the periodic file in %s, downloading it now." % fp
-        pt = urllib.URLopener()
-        pt.retrieve("https://gist.githubusercontent.com/KeironO/a2ce6d7fb7e7e10f616a51f511cb27b4/raw/71b0ad0abf92ef101a4833dd9ee0837609939f9d/gistfile1.txt", fp)
-        print "File downloaded..."
-        get_periodic_table()
+
+from rdkit import Chem
+from rdkit.Chem import rdMolDescriptors
+
+url="https://gist.githubusercontent.com/KeironO/a2ce6d7fb7e7e10f616a51f511cb27b4/raw/71b0ad0abf92ef101a4833dd9ee0837609939f9d/gistfile1.txt"
+periodic_table = json.loads(urllib2.urlopen(url).read())
+
+def load_output(hmdb_fp="./output/hmdb.json"):
+    output = collections.defaultdict(dict)
+    ds = [hmdb_fp]
+    for s in ds:
+        if os.path.isfile(s) != True:
+            print "File doesn't exist:", s
+            # TODO: Interface with modules to create file in this instance.
+        else:
+            with open(s, "r") as file:
+                output.update(json.load(file))
+    return output
+
+def formula_splitter(chem_form):
+    atom_dict = collections.defaultdict()
+    t_atoms = [re.findall('[0-9]+', x) for x in re.findall('[A-Z][a-z]*[0-9]*', chem_form)]
+    if int(sum(t_atoms, [])[0]) < 5:
+        return False, False
     else:
-        with open(fp, "r") as pt_fp:
-            pt = json.load(pt_fp)
-        return pt
+        for element in re.findall('[A-Z][a-z]*[0-9]*', chem_form):
+            atom = re.findall('[A-Z][a-z]*', element)[0]
+            atom_count = re.findall('[0-9]+', element)
+            if len(atom_count) < 1:
+                atom_count = 1
+            else:
+                atom_count = int(atom_count[0])
+            atom_weight = float(
+                np.matrix(periodic_table[atom]["isotopic_weight"]) * np.transpose(np.matrix(periodic_table[atom]["isotopic_ratio"])))
+            atom_dict[atom] = {
+                "Atom Count": atom_count,
+                "Atomic Charge": periodic_table[atom]["atomic_charge"],
+                "Element Weight": atom_weight,
+                "Total Weight": atom_count * atom_weight,
+                "Isotopic Ratios": periodic_table[atom]["isotopic_ratio"],
+                "Isotopic Weights": periodic_table[atom]["isotopic_weight"]
+            }
+        return atom_dict
+
+def cartesian(ratios, weights, f_ratios, f_weights, count=1, threshold=0.25):
+    n_ratios = []
+    n_weights = []
+    normalised_ratio = [n / max(f_ratios) for n in f_ratios]
+
+    for i in enumerate(ratios[count]):
+        r = ratios[count][i[0]]
+        w = weights[count][i[0]]
+        for j in enumerate(normalised_ratio):
+            current_n_ratio = normalised_ratio[j[0]]*100
+            current_s_weight = f_weights[j[0]]
+            t_w = current_n_ratio * r
+            if t_w > threshold:
+                n_ratios+=[current_n_ratio* r]
+                n_weights+=[current_s_weight+w]
+    count = count + 1
+    if count < len(ratios) and len(n_ratios) < 1000:
+        n_ratios, n_weights = cartesian(ratios, weights, n_ratios, n_weights, count)
+    return n_ratios, n_weights
+
+def isotopes(atoms):
+    ratios = []
+    weights = []
+    for x in atoms:
+        for i in range(atoms[x]["Atom Count"]):
+            ratios.append(atoms[x]["Isotopic Ratios"])
+            weights.append(atoms[x]["Isotopic Weights"])
+    return cartesian(ratios, weights, ratios[0], weights[0])
+
+# nom nom nom
+def calculate_nom_distribution(weights, ratios):
+    paired_w_r = [(weights[index], r) for index, r in enumerate(ratios) if r > 1e-6]
+    signals = dict((key, tuple(v for (k, v) in pairs))
+                   for (key, pairs) in itertools.groupby(sorted(paired_w_r), operator.itemgetter(0)))
+    n_d = {}
+    lv = float(max(signals.values())[0])
+    for mz, rel_int in signals.items():
+        n_d[mz] = float(sum(rel_int)) * 100 / lv
+    return sorted(n_d.items(), key=lambda x: x[0])
+
+def adduct(mol, nominal_distribution):
+    exit(0)
+
+def process_entity(entity):
+    mol= Chem.MolFromSmiles(entity["SMILES"])
+    formula = rdMolDescriptors.CalcMolFormula(mol)
+    atom_dict = formula_splitter(formula)
+    num_of_atoms = sum([atom_dict[x]["Atom Count"] for x in atom_dict.keys()])
+    accurate_mass = sum([atom_dict[x]["Total Weight"] for x in atom_dict.keys()])
+    ratios, weights = isotopes(atom_dict)
+    nominal_distribution = calculate_nom_distribution(weights, ratios)
+    isotopic_weight = nominal_distribution[0][0]
+    adduct(mol, nominal_distribution)
+    exit(0)
+
+def generate_db_file(output):
+    for id in output:
+        process_entity(output[id])
 
 if __name__ == "__main__":
-    pt = get_periodic_table()
+    output = load_output(hmdb_fp="./output/hmdb_small.json")
+    generate_db_file(output)

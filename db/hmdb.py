@@ -16,7 +16,6 @@ def download(fp="./dl-files/hmdb/"):
     if os.path.isfile(hmdb_zipfile) == True:
         print "File already found, skipping download"
     else:
-        print "File not found, downloading it to", fp
         download = urllib2.urlopen("http://www.hmdb.ca/system/downloads/current/hmdb_metabolites.zip")
         save_file = open(hmdb_zipfile, "wb")
         save_file.write(download.read())
@@ -60,5 +59,5 @@ def save_hmdb_xml(d, fp="./output/hmdb.json"):
 
 if __name__ == "__main__":
     download()
-    d = parse_hmdb_xml(fd="/home/keo7/Desktop/hmdb/")
+    d = parse_hmdb_xml()
     save_hmdb_xml(d)
