@@ -2,7 +2,7 @@ import os, urllib2, json, collections, re, numpy as np, operator, itertools
 
 
 from rdkit import Chem
-from rdkit.Chem import rdMolDescriptors
+from rdkit.Chem import rdMolDescriptors, Fragments
 
 url="https://gist.githubusercontent.com/KeironO/a2ce6d7fb7e7e10f616a51f511cb27b4/raw/71b0ad0abf92ef101a4833dd9ee0837609939f9d/gistfile1.txt"
 periodic_table = json.loads(urllib2.urlopen(url).read())
@@ -84,25 +84,64 @@ def calculate_nom_distribution(weights, ratios):
         n_d[mz] = float(sum(rel_int)) * 100 / lv
     return sorted(n_d.items(), key=lambda x: x[0])
 
+def get_anion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution):
+    anion = {}
+    if ndon > 0 and nch == 0:
+        anion["[M-H]1-"] = [(x[0] - 1, x[1]) for x in nominal_distribution]
+    return anion
+
+def get_canion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution):
+    canion = {}
+    return canion
+
 def adduct(mol, nominal_distribution):
-    exit(0)
+    nacc = rdMolDescriptors.CalcNumHBA(mol)
+    ndon = rdMolDescriptors.CalcNumHBD(mol)
+    noh = sum([Fragments.fr_Al_OH(mol), Fragments.fr_Ar_OH(mol)])
+    nnhh = Fragments.fr_NH2(mol)
+    ncooh = Fragments.fr_COO(mol)
+    nch = sum([atom.GetFormalCharge() for atom in mol.GetAtoms()])
+    adduct_dict = {}
+    adduct_dict["Nominal"] = nominal_distribution
+    adduct_dict["Anion"] = get_anion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution)
+    adduct_dict["Canion"] = get_canion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution)
+    return adduct_dict
 
 def process_entity(entity):
     mol= Chem.MolFromSmiles(entity["SMILES"])
     formula = rdMolDescriptors.CalcMolFormula(mol)
     atom_dict = formula_splitter(formula)
+    atomic_charge = sum([atom_dict[x]["Atomic Charge"] for x in atom_dict.keys()])
     num_of_atoms = sum([atom_dict[x]["Atom Count"] for x in atom_dict.keys()])
     accurate_mass = sum([atom_dict[x]["Total Weight"] for x in atom_dict.keys()])
     ratios, weights = isotopes(atom_dict)
     nominal_distribution = calculate_nom_distribution(weights, ratios)
     isotopic_weight = nominal_distribution[0][0]
-    adduct(mol, nominal_distribution)
-    exit(0)
+    ad = adduct(mol, nominal_distribution)
+    final_d = {
+        "name" : entity["Name"],
+        "synonyms" : entity["Synonyms"],
+        "accurate mass" : accurate_mass,
+        "isotopic weight" : isotopic_weight,
+        "molecular formula" : formula,
+        "smiles" : entity["SMILES"],
+        "num of atoms" : num_of_atoms,
+        "atomic charge" : atomic_charge,
+        "adducts" : ad
+    }
+    return final_d
 
 def generate_db_file(output):
+    db = {}
     for id in output:
-        process_entity(output[id])
+        db[id] = process_entity(output[id])
+    return db
+
+def save_db_file(db, fp="./output/mb-db.json"):
+    with open(fp, "w") as outfile:
+        json.dump(db, outfile, indent=4)
 
 if __name__ == "__main__":
     output = load_output(hmdb_fp="./output/hmdb_small.json")
-    generate_db_file(output)
+    db = generate_db_file(output)
+    save_db_file(db)
