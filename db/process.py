@@ -1,4 +1,4 @@
-import os, urllib2, json, collections, re, numpy as np, operator, itertools
+import os, urllib2, json, collections, re, numpy as np, operator, itertools, tqdm
 
 from bson.json_util import dumps
 
@@ -109,33 +109,41 @@ def adduct(mol, nominal_distribution):
     return adduct_dict
 
 def process_entity(entity):
-    mol= Chem.MolFromSmiles(entity["SMILES"])
-    formula = rdMolDescriptors.CalcMolFormula(mol)
-    atom_dict = formula_splitter(formula)
-    atomic_charge = sum([atom_dict[x]["Atomic Charge"] for x in atom_dict.keys()])
-    num_of_atoms = sum([atom_dict[x]["Atom Count"] for x in atom_dict.keys()])
-    accurate_mass = sum([atom_dict[x]["Total Weight"] for x in atom_dict.keys()])
-    ratios, weights = isotopes(atom_dict)
-    nominal_distribution = calculate_nom_distribution(weights, ratios)
-    isotopic_weight = nominal_distribution[0][0]
-    ad = adduct(mol, nominal_distribution)
-    final_d = {
-        "name" : entity["Name"],
-        "synonyms" : entity["Synonyms"],
-        "accurate mass" : accurate_mass,
-        "isotopic weight" : isotopic_weight,
-        "molecular formula" : formula,
-        "smiles" : entity["SMILES"],
-        "num of atoms" : num_of_atoms,
-        "atomic charge" : atomic_charge,
-        "adducts" : ad
-    }
-    return final_d
+    # TODO: See where these exceptions are...
+    try:
+        mol = Chem.MolFromSmiles(entity["SMILES"])
+        formula = rdMolDescriptors.CalcMolFormula(mol)
+        atom_dict = formula_splitter(formula)
+        atomic_charge = sum([atom_dict[x]["Atomic Charge"] for x in atom_dict.keys()])
+        num_of_atoms = sum([atom_dict[x]["Atom Count"] for x in atom_dict.keys()])
+        accurate_mass = sum([atom_dict[x]["Total Weight"] for x in atom_dict.keys()])
+        ratios, weights = isotopes(atom_dict)
+        nominal_distribution = calculate_nom_distribution(weights, ratios)
+        isotopic_weight = nominal_distribution[0][0]
+        ad = adduct(mol, nominal_distribution)
+        final_d = {
+            "name": entity["Name"],
+            "synonyms": entity["Synonyms"],
+            "accurate mass": accurate_mass,
+            "isotopic weight": isotopic_weight,
+            "molecular formula": formula,
+            "smiles": entity["SMILES"],
+            "num of atoms": num_of_atoms,
+            "atomic charge": atomic_charge,
+            "adducts": ad,
+            "origins" : entity["Origins"]
+        }
+        return final_d
+    except Exception, err:
+        return None
+
 
 def generate_db_file(output):
     db = []
-    for id in output:
-        db.append(process_entity(output[id]))
+    for id in tqdm.tqdm(output):
+        pe = process_entity(output[id])
+        if pe != None:
+            db.append(pe)
     return db
 
 def save_db_file(db, fp="./output/mb-db.json"):
