@@ -1,5 +1,7 @@
 import os, urllib2, json, collections, re, numpy as np, operator, itertools, tqdm
 
+from joblib import Parallel, delayed
+
 from bson.json_util import dumps
 
 from rdkit import Chem
@@ -139,11 +141,8 @@ def process_entity(entity):
 
 
 def generate_db_file(output):
-    db = []
-    for id in tqdm.tqdm(output):
-        pe = process_entity(output[id])
-        if pe != None:
-            db.append(pe)
+    db = Parallel(n_jobs=4)(delayed(process_entity)(output[id]) for id in output)
+    db = [x for x in db if x != None]
     return db
 
 def save_db_file(db, fp="./output/mb-db.json"):
@@ -152,6 +151,6 @@ def save_db_file(db, fp="./output/mb-db.json"):
         json.dump(mongodb_file, output)
 
 if __name__ == "__main__":
-    output = load_output(hmdb_fp="./output/hmdb_small.json")
+    output = load_output()
     db = generate_db_file(output)
     save_db_file(db)

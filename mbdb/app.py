@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, abort, request
 
 from flask_mongoengine import MongoEngine
 from flask_mongorest import MongoRest
@@ -28,14 +28,16 @@ class Metabolite(db.DynamicDocument):
     smiles = db.StringField()
     origins = db.StringField()
     molecular_formula = db.StringField()
+    accurate_mass = db.FloatField()
 
 class MetaboliteResource(Resource):
     document = Metabolite
     filters = {
         "id" : [ops.Exact],
-        "name" : [ops.Exact, ops.Startswith],
+        "name" : [ops.Exact, ops.Startswith, ops.Contains],
         "origins" : [ops.Contains],
-        "molecular_formula" : [ops.Exact]
+        "molecular_formula" : [ops.Exact],
+        "accurate_mass" : [ops.Exact]
     }
 
 @api.register(name="metabolites", url="/metabolites/")
@@ -45,7 +47,16 @@ class MetaboliteView(ResourceView):
 
 @app.route("/")
 def homepage():
-    return render_template("main.html", n=len(Metabolite.objects))
+
+    return render_template("main.html", n=Metabolite.objects.count(),
+                           url = request.url)
+
+# TEST
+@app.route("/between/")
+def between():
+    am =  Metabolite.objects(accurate_mass__mod=[300.00, 255.12])
+    print len([x["name"] for x in am])
+    abort(501)
 
 if __name__ == "__main__":
     app.run()
