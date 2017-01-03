@@ -25,6 +25,7 @@ class Metabolite(db.DynamicDocument):
     }
 
     name = db.StringField()
+    synonyms = db.StringField()
     smiles = db.StringField()
     origins = db.StringField()
     molecular_formula = db.StringField()
@@ -36,8 +37,8 @@ class MetaboliteResource(Resource):
         "id" : [ops.Exact],
         "name" : [ops.Exact, ops.Startswith, ops.Contains],
         "origins" : [ops.Contains],
-        "molecular_formula" : [ops.Exact],
-        "accurate_mass" : [ops.Exact]
+        "molecular_formula" : [ops.Contains, ops.Exact],
+        "synonyms" : [ops.Contains, ops.Exact]
     }
 
 @api.register(name="metabolites", url="/metabolites/")
