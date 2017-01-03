@@ -1,5 +1,6 @@
 import os, urllib2, json, collections, re, numpy as np, operator, itertools
 
+from bson.json_util import dumps
 
 from rdkit import Chem
 from rdkit.Chem import rdMolDescriptors, Fragments
@@ -132,14 +133,15 @@ def process_entity(entity):
     return final_d
 
 def generate_db_file(output):
-    db = {}
+    db = []
     for id in output:
-        db[id] = process_entity(output[id])
+        db.append(process_entity(output[id]))
     return db
 
 def save_db_file(db, fp="./output/mb-db.json"):
-    with open(fp, "w") as outfile:
-        json.dump(db, outfile, indent=4)
+    mongodb_file = json.loads(dumps(db))
+    with open(fp, "w") as output:
+        json.dump(mongodb_file, output)
 
 if __name__ == "__main__":
     output = load_output(hmdb_fp="./output/hmdb_small.json")
