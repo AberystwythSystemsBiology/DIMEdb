@@ -10,6 +10,8 @@ from rdkit.Chem import rdMolDescriptors, Fragments
 url="https://gist.githubusercontent.com/KeironO/a2ce6d7fb7e7e10f616a51f511cb27b4/raw/71b0ad0abf92ef101a4833dd9ee0837609939f9d/gistfile1.txt"
 periodic_table = json.loads(urllib2.urlopen(url).read())
 
+count = 0
+
 def load_output(hmdb_fp="./output/hmdb.json"):
     output = collections.defaultdict(dict)
     ds = [hmdb_fp]
@@ -114,7 +116,7 @@ def adduct(mol, nominal_distribution):
     adduct_dict["Canion"] = get_canion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution)
     return adduct_dict
 
-def process_entity(entity):
+def process_entity(entity, c):
     # TODO: See where these exceptions are...
     try:
         mol = Chem.MolFromSmiles(entity["SMILES"])
@@ -127,10 +129,7 @@ def process_entity(entity):
         nominal_distribution = calculate_nom_distribution(weights, ratios)
         isotopic_weight = nominal_distribution[0][0]
         ad = adduct(mol, nominal_distribution)
-        if type(entity["Origins"]) != list or "null":
-            entity["Origins"] = [entity["Origins"]]
-        if type(entity["Synonyms"]) != list or "null":
-            entity["Synonyms"] = [entity["Synonyms"]]
+
         final_d = {
             "name": entity["Name"],
             "synonyms": entity["Synonyms"],
@@ -149,7 +148,7 @@ def process_entity(entity):
 
 
 def generate_db_file(output):
-    db = Parallel(n_jobs=4)(delayed(process_entity)(output[id]) for id in output)
+    db = Parallel(n_jobs=4)(delayed(process_entity)(output[id], count) for id in output)
     db = [x for x in db if x != None]
     return db
 

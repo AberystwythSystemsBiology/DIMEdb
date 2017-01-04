@@ -36,7 +36,7 @@ class MetaboliteResource(Resource):
     filters = {
         "id" : [ops.Exact],
         "name" : [ops.Exact, ops.Startswith, ops.Contains],
-        "origins" : [ops.Contains],
+        "origins" : [ops.In],
         "molecular_formula" : [ops.Contains, ops.Exact],
         "synonyms" : [ops.Contains, ops.Exact]
     }
@@ -65,7 +65,6 @@ class IonisationResource(Resource):
 @api.register(name="ion", url="/ion/")
 class IonisationView(ResourceView):
     resource = IonisationResource
-    print resource
     methods = [methods.Fetch, methods.List]
 
 
@@ -86,12 +85,13 @@ def api():
 # TEST
 @app.route("/between/")
 def between():
-    am =  Metabolite.objects(accurate_mass__mod=[300.00, 255.12])
-    print len([x["name"] for x in am])
-    abort(501)
+    am =  Metabolite.objects(accurate_mass__mod=[300.00, 288.12])
+    return str(all_objects)
 
 @app.route("/a/")
 def anion():
+    am = Ionisation.objects(adducts_Anion_length__gt=0)
+    print am
     '''
     replace [M-H]1- with keys.
     db.metabolites.find({"adducts.Anion.[M-H]1-.0.0" : {$mod : [555, 400]}})

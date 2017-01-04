@@ -1,3 +1,25 @@
 $(document).ready(function() {
-    $('#example').DataTable();
+    $('#metabolites').DataTable( {
+        "ajax" : "http://127.0.0.1:5000/met/?_fields=id,name,molecular_formula,accurate_mass",
+        "columns": [
+            { "data" : "name",
+            "render" : function (data, type, row) {
+                return data
+
+            }},
+            { "data" : "molecular_formula",
+                "render" : function(data, type, row) {
+                    return data
+                }
+            },
+            { "data" : "accurate_mass",
+                "render" : function (data, type, row) {
+                    return data.toFixed(4);
+                }
+            }
+        ],
+        "searching" : false,
+        "lengthChange" : false,
+        "pageLength" : 50
+    });
 } );

@@ -5,10 +5,10 @@ Home
 {% endblock %}
 
 {% block body %}
-    <h1>The MetaBolomic DataBase (MB-DB)</h1>
+    <h1>The MetaBolomic DataBase (MB-DB)
+    <label class="pull-right btn-sm btn-primary">Metabolite count: {{ "{:,d}".format(n) }}</label></h1>
 
-    <h5>Version: 0.0.1A</h5>
 
-    <p>We currently store {{ "{:,d}".format(n) }} metabolites!</p>
-
+    <p>This is a freely-accessible service that uses information available elsewhere. However, we request our visitors to use the service with parsimony. Heavy trafficking or downloading could result in access from a particular IP address or domain being denied. We cannot guarantee that the service is error/bug free and we welcome your feedback.
+        We are not held responsible for any misuse of the information provided.</p>
 {% endblock %}
