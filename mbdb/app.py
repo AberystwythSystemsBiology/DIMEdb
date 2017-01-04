@@ -46,13 +46,26 @@ class MetaboliteView(ResourceView):
     resource = MetaboliteResource
     methods = [methods.Fetch, methods.List]
 
-@api.register(name="masses", url="/masses/")
-class MassesView(ResourceView):
-    pass
+class Ionisation(db.DynamicDocument):
+    meta = { "collection" : "metabolites" }
 
-@api.register(name="ioinisation", url="/ionisation/")
+    name = db.StringField()
+    origins = db.StringField()
+    molecular_formula = db.StringField()
+    adducts = db.StringField()
+
+
+class IonisationResource(Resource):
+    document = Ionisation
+    filters = {
+        "name" : [ops.Exact],
+        "origins" : [ops.Contains]
+    }
+
+@api.register(name="ion", url="/ion/")
 class IonisationView(ResourceView):
-    pass
+    resource = IonisationResource
+    methods = [methods.Fetch, methods.List]
 
 
 
