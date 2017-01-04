@@ -1,0 +1,29 @@
+{% extends "template.html" %}
+
+{% block head %}
+API
+{% endblock %}
+
+{% block body %}
+    <h1>HM-DB API</h1>
+
+    <p>This is is a brief specification outline for the REST-style HM-DB API.</p>
+
+    <h3>Metabolites</h3>
+    <p>Get all metabolites containing "Ganglioside"</p>
+
+    <pre>{{ url }}metabolites/?name__contains=Ganglioside</pre>
+
+    <p>Get all metabolites of which are found in Food</p>
+    <pre>{{ url }}metabolites/?origins__contains=Food</pre>
+
+    <p>Get all metabolites that contain "Gangli" and are found in Food</p>
+    <pre>{{ url }}metabolites/?origins__contains=Food&name__contains=Gangli</pre>
+
+    <h3>Accurate Mass</h3>
+
+    <h3>Putative Ionisation</h3>
+
+    <h2>Python stuff</h2>
+
+{% endblock %}

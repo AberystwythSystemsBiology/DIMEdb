@@ -41,7 +41,7 @@ class MetaboliteResource(Resource):
         "synonyms" : [ops.Contains, ops.Exact]
     }
 
-@api.register(name="metabolites", url="/metabolites/")
+@api.register(name="met", url="/met/")
 class MetaboliteView(ResourceView):
     resource = MetaboliteResource
     methods = [methods.Fetch, methods.List]
@@ -60,6 +60,14 @@ class IonisationView(ResourceView):
 def homepage():
     return render_template("main.html", n=Metabolite.objects.count(),
                            url = request.url)
+
+@app.route("/metabolites/")
+def metabolites():
+    return render_template("metabolites.html")
+
+@app.route("/api/")
+def api():
+    return render_template("api.html")
 
 # TEST
 @app.route("/between/")
