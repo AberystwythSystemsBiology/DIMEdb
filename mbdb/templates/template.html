@@ -12,7 +12,8 @@
 
     <link href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.min.css') }}"
           rel="stylesheet">
-
+    <link href="{{ url_for('static', filename='bower_components/datatables/media/css/jquery.dataTables.min.css') }}"
+          rel="stylesheet">
     <link href="{{ url_for('static', filename='css/custom.css') }}"
           rel="stylesheet">
 
@@ -56,5 +57,14 @@
     </div>
 </footer>
 </body>
+
+<!-- Javascript Imports -->
+<script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.js') }}"></script>
 <script src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bower_components/datatables/media/js/jquery.dataTables.js') }}"></script>
+<script src="{{ url_for('static', filename='bower_components/datatables/media/js/dataTables.bootstrap.js') }}"></script>
+
+{% block javascript %}
+{% endblock %}
+
 </html>
