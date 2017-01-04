@@ -48,11 +48,11 @@ class MetaboliteView(ResourceView):
 
 class Ionisation(db.DynamicDocument):
     meta = { "collection" : "metabolites" }
-
     name = db.StringField()
     origins = db.StringField()
     molecular_formula = db.StringField()
     adducts = db.StringField()
+
 
 
 class IonisationResource(Resource):
@@ -65,6 +65,7 @@ class IonisationResource(Resource):
 @api.register(name="ion", url="/ion/")
 class IonisationView(ResourceView):
     resource = IonisationResource
+    print resource
     methods = [methods.Fetch, methods.List]
 
 
@@ -87,6 +88,15 @@ def api():
 def between():
     am =  Metabolite.objects(accurate_mass__mod=[300.00, 255.12])
     print len([x["name"] for x in am])
+    abort(501)
+
+@app.route("/a/")
+def anion():
+    '''
+    replace [M-H]1- with keys.
+    db.metabolites.find({"adducts.Anion.[M-H]1-.0.0" : {$mod : [555, 400]}})
+    :return:
+    '''
     abort(501)
 
 if __name__ == "__main__":

@@ -87,14 +87,18 @@ def calculate_nom_distribution(weights, ratios):
         n_d[mz] = float(sum(rel_int)) * 100 / lv
     return sorted(n_d.items(), key=lambda x: x[0])
 
+
+# TODO: Implement this.
 def get_anion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution):
     anion = {}
     if ndon > 0 and nch == 0:
         anion["[M-H]1-"] = [(x[0] - 1, x[1]) for x in nominal_distribution]
+    anion["length"] = len(anion.keys())
     return anion
 
 def get_canion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution):
     canion = {}
+    canion["length"] = len(canion.keys())
     return canion
 
 def adduct(mol, nominal_distribution):
@@ -123,6 +127,10 @@ def process_entity(entity):
         nominal_distribution = calculate_nom_distribution(weights, ratios)
         isotopic_weight = nominal_distribution[0][0]
         ad = adduct(mol, nominal_distribution)
+        if type(entity["Origins"]) != list or "null":
+            entity["Origins"] = [entity["Origins"]]
+        if type(entity["Synonyms"]) != list or "null":
+            entity["Synonyms"] = [entity["Synonyms"]]
         final_d = {
             "name": entity["Name"],
             "synonyms": entity["Synonyms"],
