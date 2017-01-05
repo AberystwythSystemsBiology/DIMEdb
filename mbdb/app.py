@@ -1,11 +1,8 @@
-from flask import Flask, render_template, abort, request
+from flask import Flask, render_template, abort, request, jsonify
 
 from flask_mongoengine import MongoEngine
-from flask_mongorest import MongoRest
-from flask_mongorest.views import ResourceView
-from flask_mongorest.resources import Resource
-from flask_mongorest import operators as ops
-from flask_mongorest import methods
+from flask_pymongo import PyMongo
+from flask_restful import Api, Resource
 
 app = Flask(__name__)
 
@@ -17,87 +14,36 @@ app.config.update(
 )
 
 db = MongoEngine(app)
-api = MongoRest(app)
+mongo = PyMongo(app, config_prefix='MONGO')
 
-class Metabolite(db.DynamicDocument):
-    meta = {
-        "collection" : "metabolites"
-    }
+class Metabolite(Resource):
+    def get(self, name=None, origins=None):
+        data = []
+        if name:
+            metabolite_info = mongo.db.metabolites.find({"name" : name})
+            if metabolite_info:
+                return jsonify({"status": "ok", "data": metabolite_info})
 
-    name = db.StringField()
-    synonyms = db.StringField()
-    smiles = db.StringField()
-    origins = db.StringField()
-    molecular_formula = db.StringField()
-    accurate_mass = db.FloatField()
 
-class MetaboliteResource(Resource):
-    document = Metabolite
-    filters = {
-        "id" : [ops.Exact],
-        "name" : [ops.Exact, ops.Startswith, ops.Contains],
-        "origins" : [ops.In],
-        "molecular_formula" : [ops.Contains, ops.Exact],
-        "synonyms" : [ops.Contains, ops.Exact]
-    }
-
-@api.register(name="met", url="/met/")
-class MetaboliteView(ResourceView):
-    resource = MetaboliteResource
-    methods = [methods.Fetch, methods.List]
-
-class Ionisation(db.DynamicDocument):
-    meta = { "collection" : "metabolites" }
-    name = db.StringField()
-    origins = db.StringField()
-    molecular_formula = db.StringField()
-    adducts = db.StringField()
+# API Blueprints
+api = Api(app)
+api.add_resource(Metabolite, "/met", endpoint="met")
 
 
 
-class IonisationResource(Resource):
-    document = Ionisation
-    filters = {
-        "name" : [ops.Exact],
-        "origins" : [ops.Contains]
-    }
-
-@api.register(name="ion", url="/ion/")
-class IonisationView(ResourceView):
-    resource = IonisationResource
-    methods = [methods.Fetch, methods.List]
-
-
+# Annoying webpage stuff.
 
 @app.route("/")
 def homepage():
-    return render_template("main.html", n=Metabolite.objects.count(),
-                           url = request.url)
+    return render_template("main.html")
 
 @app.route("/metabolites/")
 def metabolites():
-    return render_template("metabolites.html")
+    return render_template("metabolites.html", n=0)
 
 @app.route("/api/")
 def api():
-    return render_template("api.html")
-
-# TEST
-@app.route("/between/")
-def between():
-    am =  Metabolite.objects(accurate_mass__mod=[300.00, 288.12])
-    return str(all_objects)
-
-@app.route("/a/")
-def anion():
-    am = Ionisation.objects(adducts_Anion_length__gt=0)
-    print am
-    '''
-    replace [M-H]1- with keys.
-    db.metabolites.find({"adducts.Anion.[M-H]1-.0.0" : {$mod : [555, 400]}})
-    :return:
-    '''
-    abort(501)
+    return render_template("api.html", url = request.url)
 
 if __name__ == "__main__":
     app.run()

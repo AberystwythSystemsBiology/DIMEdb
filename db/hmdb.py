@@ -32,25 +32,20 @@ def parse_hmdb_xml(fd="./dl-files/hmdb/xml_files/"):
     hmdb_dict = collections.defaultdict(dict)
     for file in tqdm(os.listdir(fd)):
         with open(fd+file, "r") as hmdb_xml_f:
-            d = xmltodict.parse(hmdb_xml_f.read())["metabolite"]
-            name = d["name"]
-            smiles = d["smiles"]
             try:
-                origins = d["ontology"]["origins"]["origin"]
-            except TypeError:
-                origins = None
-            try:
-                synonyms = d["synonyms"]["synonym"]
-            except TypeError:
-                synonyms = None
-            entity = {
-                "Name" : name,
-                "Synonyms" : synonyms,
-                "SMILES" : smiles,
-                "Origins" : origins
+                d = xmltodict.parse(hmdb_xml_f.read())["metabolite"]
+                try:
+                    origins = d["ontology"]["origins"]["origin"]
+                except TypeError:
+                    origins = None
+                entity = {
+                    "name" : d["name"],
+                    "smiles" : d["smiles"],
+                    "origins" : origins,
                 }
-            hmdb_dict[d["accession"]] = entity
-
+                hmdb_dict[d["accession"]] = entity
+            except Exception, err:
+                continue
     return hmdb_dict
 
 def save_hmdb_xml(d, fp="./output/hmdb.json"):

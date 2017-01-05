@@ -9,7 +9,7 @@ $(document).ready(function() {
             }},
             { "data" : "molecular_formula",
                 "render" : function(data, type, row) {
-                    return data
+                    return data.replace(/([0-9]+)/g, '<sub>$1</sub>');
                 }
             },
             { "data" : "accurate_mass",
