@@ -77,7 +77,7 @@ def isotopes(atoms):
     return cartesian(ratios, weights, ratios[0], weights[0])
 
 # nom nom nom
-def calculate_nom_distribution(weights, ratios):
+def calculate_nom_distribution(ratios, weights):
     paired_w_r = [(weights[index], r) for index, r in enumerate(ratios) if r > 1e-6]
     signals = dict((key, tuple(v for (k, v) in pairs))
                    for (key, pairs) in itertools.groupby(sorted(paired_w_r), operator.itemgetter(0)))
@@ -91,14 +91,19 @@ def calculate_nom_distribution(weights, ratios):
 # TODO: Implement this.
 def get_anion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution):
     anion = {}
+    peaks = []
     if ndon > 0 and nch == 0:
-        anion["[M-H]1-"] = [(x[0] - 1, x[1]) for x in nominal_distribution]
-    anion["length"] = len(anion.keys())
+        peaks.append(["[M-H]1-", nominal_distribution[0][0] - 1])
+    anion["peaks"] = peaks
+    anion["count"] = len(anion)
     return anion
 
 def get_canion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution):
     canion = {}
-    canion["length"] = len(canion.keys())
+    peaks = []
+
+    canion["peaks"] = peaks
+    canion["count"] = len(peaks)
     return canion
 
 def adduct(mol, nominal_distribution):
@@ -109,9 +114,9 @@ def adduct(mol, nominal_distribution):
     ncooh = Fragments.fr_COO(mol)
     nch = sum([atom.GetFormalCharge() for atom in mol.GetAtoms()])
     adduct_dict = {}
-    adduct_dict["Nominal"] = nominal_distribution
-    adduct_dict["Anion"] = get_anion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution)
-    adduct_dict["Canion"] = get_canion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution)
+    adduct_dict["neutral"] = nominal_distribution[0][0]
+    adduct_dict["negative"] = get_anion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution)
+    adduct_dict["positive"] = get_canion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution)
     return adduct_dict
 
 def process_entity(entity):
@@ -120,47 +125,38 @@ def process_entity(entity):
         mol = Chem.MolFromSmiles(entity["smiles"])
         formula = rdMolDescriptors.CalcMolFormula(mol)
         atom_dict = formula_splitter(formula)
-        atomic_charge = sum([atom_dict[x]["Atomic Charge"] for x in atom_dict.keys()])
-        num_of_atoms = sum([atom_dict[x]["Atom Count"] for x in atom_dict.keys()])
         accurate_mass = sum([atom_dict[x]["Total Weight"] for x in atom_dict.keys()])
-        ratios, weights = isotopes(atom_dict)
-        nominal_distribution = calculate_nom_distribution(weights, ratios)
-        # this is quite hacky, as it's taken from IDIOT.
-        isotopic_weight = nominal_distribution[0][0]
-        nominal_distribution = [[x[0]-isotopic_weight, x[1]] for x in nominal_distribution]
 
+        ratios, weights = isotopes(atom_dict)
+        nominal_distribution = calculate_nom_distribution(ratios, weights)
         ad = adduct(mol, nominal_distribution)
 
+        isotopic_distributions = [[x[0]-ad["neutral"], x[1]] for x in nominal_distribution]
+
         final_d = {
-            "name": entity["Name"],
-            "synonyms": entity["Synonyms"],
-            "accurate_mass": accurate_mass,
-            "isotopic_weight": isotopic_weight,
-            "molecular_formula": formula,
-            "smiles": entity["SMILES"],
-            "num_of_atoms": num_of_atoms,
-            "atomic_charge": atomic_charge,
-            "adducts": ad,
-            "origins" : entity["Origins"]
+            "name" : entity["name"],
+            "molecular_formula" : formula,
+            "smiles" : entity["smiles"],
+            "origins" : entity["origins"],
+            "accurate_mass" : accurate_mass,
+            "adduct_weights" : ad,
+            "isotopic_distributions" : isotopic_distributions
         }
+
         return final_d
     except Exception, err:
         return None
 
 
 def generate_db_file(output):
-    #db = Parallel(n_jobs=4)(delayed(process_entity)(output[id], count) for id in output)
-    #db = [x for x in db if x != None]
-
-    for id in output:
-        process_entity(output[id])
-    db = None
+    db = Parallel(n_jobs=4)(delayed(process_entity)(output[id]) for id in output)
+    db = [x for x in db if x != None]
     return db
 
 def save_db_file(db, fp="./output/mb-db.json"):
     mongodb_file = json.loads(dumps(db))
     with open(fp, "w") as output:
-        json.dump(mongodb_file, output)
+        json.dump(mongodb_file, output, indent=4)
 
 if __name__ == "__main__":
     output = load_output()

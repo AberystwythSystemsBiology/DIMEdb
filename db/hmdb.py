@@ -36,8 +36,10 @@ def parse_hmdb_xml(fd="./dl-files/hmdb/xml_files/"):
                 d = xmltodict.parse(hmdb_xml_f.read())["metabolite"]
                 try:
                     origins = d["ontology"]["origins"]["origin"]
+                    if type(origins) != list:
+                        origins = [origins]
                 except TypeError:
-                    origins = None
+                    origins = []
                 entity = {
                     "name" : d["name"],
                     "smiles" : d["smiles"],
