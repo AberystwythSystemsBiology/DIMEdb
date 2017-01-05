@@ -10,8 +10,6 @@ from rdkit.Chem import rdMolDescriptors, Fragments
 url="https://gist.githubusercontent.com/KeironO/a2ce6d7fb7e7e10f616a51f511cb27b4/raw/71b0ad0abf92ef101a4833dd9ee0837609939f9d/gistfile1.txt"
 periodic_table = json.loads(urllib2.urlopen(url).read())
 
-count = 0
-
 def load_output(hmdb_fp="./output/hmdb.json"):
     output = collections.defaultdict(dict)
     ds = [hmdb_fp]
@@ -116,10 +114,10 @@ def adduct(mol, nominal_distribution):
     adduct_dict["Canion"] = get_canion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution)
     return adduct_dict
 
-def process_entity(entity, c):
+def process_entity(entity):
     # TODO: See where these exceptions are...
     try:
-        mol = Chem.MolFromSmiles(entity["SMILES"])
+        mol = Chem.MolFromSmiles(entity["smiles"])
         formula = rdMolDescriptors.CalcMolFormula(mol)
         atom_dict = formula_splitter(formula)
         atomic_charge = sum([atom_dict[x]["Atomic Charge"] for x in atom_dict.keys()])
@@ -127,7 +125,10 @@ def process_entity(entity, c):
         accurate_mass = sum([atom_dict[x]["Total Weight"] for x in atom_dict.keys()])
         ratios, weights = isotopes(atom_dict)
         nominal_distribution = calculate_nom_distribution(weights, ratios)
+        # this is quite hacky, as it's taken from IDIOT.
         isotopic_weight = nominal_distribution[0][0]
+        nominal_distribution = [[x[0]-isotopic_weight, x[1]] for x in nominal_distribution]
+
         ad = adduct(mol, nominal_distribution)
 
         final_d = {
@@ -148,8 +149,12 @@ def process_entity(entity, c):
 
 
 def generate_db_file(output):
-    db = Parallel(n_jobs=4)(delayed(process_entity)(output[id], count) for id in output)
-    db = [x for x in db if x != None]
+    #db = Parallel(n_jobs=4)(delayed(process_entity)(output[id], count) for id in output)
+    #db = [x for x in db if x != None]
+
+    for id in output:
+        process_entity(output[id])
+    db = None
     return db
 
 def save_db_file(db, fp="./output/mb-db.json"):
