@@ -32,11 +32,12 @@ $(document).ready(function () {
                     {
                         "data" : "id",
                         "render" : function (data, type, row) {
-                            return "<button class='btn btn-sm btn-primary'>View</button>"
+                            return "<button class='btn btn-sm btn-primary disabled'>View</button>"
                         }
                     }
                 ],
                 "searching": false,
+                "bSort" : false,
                 "lengthChange": false,
                 "pageLength": 10,
                 "bRetrieve" : true
