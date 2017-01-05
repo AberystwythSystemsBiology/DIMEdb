@@ -1,8 +1,6 @@
 {% extends "template.html" %}
 
-{% block head %}
-Home
-{% endblock %}
+{% block head %}Home{% endblock %}
 
 {% block body %}
 
@@ -14,15 +12,31 @@ Home
     or domain being denied. We cannot guarantee that the service is error/bug free and we welcome your feedback.
     We are not held responsible for any misuse of the information provided.</p>
         <div class="input-group col-md-12">
-            <input type="text" class="  search-query form-control" placeholder="Search"/>
+            <input type="text" class="search-query form-control" placeholder="Search by name" id="search_text"/>
             <span class="input-group-btn">
-                <button class="btn btn-danger" type="button">
+                <button class="btn btn-danger" type="button" id="search_button">
                     <span class=" glyphicon glyphicon-search"></span>
                 </button>
             </span>
         </div>
+
+    <table id="search_results" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th width="40%">Name</th>
+                <th width="10">Molecular Formula</th>
+                <th width="10%">Accurate Mass</th>
+                <th width="10%"></th>
+            </tr>
+        </thead>
+    </table>
+
     </div>
+
 </div>
 
+{% endblock %}
 
+{% block javascript %}
+<script src="{{ url_for('static', filename='js/home_search.js') }}"></script>
 {% endblock %}

@@ -88,14 +88,14 @@ def calculate_nom_distribution(ratios, weights):
     return sorted(n_d.items(), key=lambda x: x[0])
 
 
-# TODO: Implement this.
+# TODO: Implement rules.
 def get_anion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution):
     anion = {}
     peaks = []
     if ndon > 0 and nch == 0:
         peaks.append(["[M-H]1-", nominal_distribution[0][0] - 1])
     anion["peaks"] = peaks
-    anion["count"] = len(anion)
+    anion["count"] = len(peaks)
     return anion
 
 def get_canion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution):
