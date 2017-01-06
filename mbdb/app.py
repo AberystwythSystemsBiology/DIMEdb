@@ -63,11 +63,13 @@ class MetaboliteBasicView(ResourceView):
 class MetaboliteAdduct(db.DynamicDocument):
     meta = {"collection": "metabolites"}
     name = db.StringField()
-    adduct_weights = db.StringField()
+    origins = db.ListField(db.StringField())
+    adduct_weights = db.DictField()
 
 class MetaboliteAdductResource(Resource):
     document = MetaboliteAdduct
     filters = {
+        "name" : [ops.Contains, ops.Startswith, ops.Exact],
         "adduct_weights" : [ops.Contains]
     }
 
