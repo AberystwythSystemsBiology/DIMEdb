@@ -4,7 +4,7 @@ $(document).ready(function () {
     $("#search_button").click(function (e) {
         query = $("#search_text").val();
         if (query != "") {
-            var url = current_url + "metabolites/?name__contains="+String(query);
+            var url = current_url + "api/metabolites/?name__contains="+String(query);
             $("#search_results").show();
 
             $('#search_results').DataTable({

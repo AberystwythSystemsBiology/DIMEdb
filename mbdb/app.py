@@ -55,16 +55,33 @@ class MetaboliteBasicResource(Resource):
     }
 
 
-@api.register(name="metabolitesapi", url="/metabolites/")
+@api.register(name="metabolitesapi", url="/api/metabolites/")
 class MetaboliteBasicView(ResourceView):
     resource = MetaboliteBasicResource
     methods = [methods.List, methods.Fetch]
 
-class MetaboliteAdduct(db.DynamicDocument):
+class NegativeAdduct(db.EmbeddedDocument):
+    count = db.IntField()
+    peaks = db.ListField(db.ListField(db.DynamicField()))
+
+class PositiveAdduct(db.EmbeddedDocument):
+    count = db.IntField()
+    peaks = db.ListField(db.ListField(db.DynamicField()))
+
+class AdductWeights(db.EmbeddedDocument):
+    neutral = db.FloatField()
+    negative = db.EmbeddedDocumentField(NegativeAdduct)
+    positive = db.EmbeddedDocumentField(PositiveAdduct)
+
+class MetaboliteAdduct(db.Document):
     meta = {"collection": "metabolites"}
     name = db.StringField()
+    accurate_mass = db.FloatField()
+    smiles = db.StringField()
+    isotopic_distributions = db.StringField()
+    molecular_formula = db.StringField()
     origins = db.ListField(db.StringField())
-    adduct_weights = db.DictField()
+    adduct_weights = db.EmbeddedDocumentField(AdductWeights)
 
 class MetaboliteAdductResource(Resource):
     document = MetaboliteAdduct
@@ -73,10 +90,10 @@ class MetaboliteAdductResource(Resource):
         "adduct_weights" : [ops.Contains]
     }
 
-@api.register(name="adductsapi", url="/adducts/")
+@api.register(name="adductsapi", url="/api/adducts/")
 class MetaboliteAdductView(ResourceView):
     resource =  MetaboliteAdductResource
-    methods = [methods.List]
+    methods = [methods.List, methods.Fetch]
 
 # Annoying webpage stuff.
 
