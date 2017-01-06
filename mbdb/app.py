@@ -28,10 +28,15 @@ class MetaboliteBasic(db.DynamicDocument):
     accurate_mass = db.FloatField()
 
 
-class Ppm(Operator):
-    op = "ppm_search"
+class AccurateMassSearch(Operator):
+    op = "ppm"
     def prepare_queryset_kwargs(self, field, value, negate=False):
-        mz, ppm_threshold = [float(x) for x in value.split(',')]
+        if value == None:
+            value = [0,0]
+        else:
+            value = [float(x) for x in value.split(',')]
+
+        mz, ppm_threshold = value
 
         difference = abs(mz * (ppm_threshold * 0.0001))  # PPM to diff.
         return {
@@ -46,7 +51,7 @@ class MetaboliteBasicResource(Resource):
         "name" : [ops.Exact, ops.Startswith, ops.Contains],
         "origins" : [ops.Exact],
         "molecular_formula" : [ops.Exact, ops.Contains, ops.IContains],
-        "accurate_mass" : [ops.Exact,Ppm]
+        "accurate_mass" : [ops.Exact, AccurateMassSearch, ops.Gte, ops.Gt]
     }
 
 
