@@ -7,7 +7,7 @@ from flask_mongorest import methods
 
 app = Flask(__name__)
 
-import resources as r
+import resources as r, documents as d
 
 app.config.update(
     MONGODB_HOST = "localhost",
@@ -24,6 +24,11 @@ class MetaboliteBasicView(ResourceView):
     resource = r.MetaboliteBasicResource
     methods = [methods.List, methods.Fetch]
 
+@api.register(name="adducts", url="/api/adducts/")
+class AdductsBasicView(ResourceView):
+    resource = r.AdductWeightsResource
+    methods = [methods.List, methods.Fetch]
+
 # Annoying webpage stuff.
 
 @app.route("/")
@@ -33,6 +38,14 @@ def homepage():
 @app.route("/api/")
 def api():
     return render_template("api.html", url = request.url)
+
+@app.route("/view/<string:_id>/")
+def view(_id):
+    try:
+        metabolite = d.MetaboliteBasic.objects.filter(id = _id)[0]
+        return render_template("view.html", metabolite=metabolite)
+    except Exception, err:
+        abort(404)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

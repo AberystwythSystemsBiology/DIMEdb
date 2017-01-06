@@ -1,0 +1,32 @@
+{% extends "template.html" %}
+
+{% block head %}{{ metabolite.name }}{% endblock %}
+
+{% block body %}
+
+<h1>{{ metabolite.name }}</h1>
+
+<table class="table table-striped">
+    <tbody>
+      <tr>
+        <th>Name</th>
+        <td>{{ metabolite.name }}</td>
+      </tr>
+      <tr>
+        <th>Molecular Formula</th>
+        <td>{{ metabolite.molecular_formula }}</td>
+      </tr>
+    <tr>
+        <th>Accurate Mass</th>
+        <td>{{ metabolite.accurate_mass}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
+
+
+{% block javascript %}
+<script src="{{ url_for('static', filename='js/view.js') }}"></script>
+{% endblock %}

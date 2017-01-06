@@ -2,7 +2,7 @@ $(document).ready(function () {
     var current_url = window.location.href;
     $("#search_results").hide();
     $("#search_button").click(function (e) {
-        query = $("#search_text").val();
+        var query = $("#search_text").val();
         if (query != "") {
             var url = current_url + "api/metabolites/?name__contains="+String(query);
             $("#search_results").show();
@@ -32,7 +32,9 @@ $(document).ready(function () {
                     {
                         "data" : "id",
                         "render" : function (data, type, row) {
-                            return "<button class='btn btn-sm btn-primary disabled'>View</button>"
+                            var view_url = "/view/"+data;
+                            console.log(view_url)
+                            return "<button class='btn btn-sm btn-primary' disabled>View</button></a>"
                         }
                     }
                 ],

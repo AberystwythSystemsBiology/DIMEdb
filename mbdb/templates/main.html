@@ -7,12 +7,13 @@
 <div class="row">
     <div id="home-page-search">
         <img src="{{ url_for('static', filename='imgs/logo.svg')}}">
-        <p>This is a freely-accessible service that uses information available elsewhere. However, we request our
-            visitors to
-            use the service with parsimony. Heavy trafficking or downloading could result in access from a particular IP
-            address
-            or domain being denied. We cannot guarantee that the service is error/bug free and we welcome your feedback.
-            We are not held responsible for any misuse of the information provided.</p>
+
+
+                <div class="alert alert-danger"><strong><span class="glyphicon glyphicon-warning-sign"></span>
+                    Warning!</strong> This service is currently in early alpha stages, and thus we cannot guarentee
+                    that it is completely error/bug free. Please report
+                    any errors/bugs you may encounter to <a href="mailto:keo7@aber.ac.uk">keo7@aber.ac.uk</a>.</div>
+
         <div class="input-group">
             <input type="text" class="search-query form-control" id="search_text"/>
             <span class="input-group-btn">
@@ -21,6 +22,8 @@
                 </button>
         </span>
         </div>
+
+
     </div>
 
     <table id="search_results" class="table table-striped table-responsive display" cellspacing="0" width="100%">
