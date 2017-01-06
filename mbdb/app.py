@@ -73,7 +73,10 @@ class AdductWeights(db.EmbeddedDocument):
     negative = db.EmbeddedDocumentField(NegativeAdduct)
     positive = db.EmbeddedDocumentField(PositiveAdduct)
 
-class MetaboliteAdduct(db.Document):
+class AdductWeightsResource(Resource):
+    document = AdductWeights
+
+class MetaboliteAdduct(db.DynamicDocument):
     meta = {"collection": "metabolites"}
     name = db.StringField()
     accurate_mass = db.FloatField()
@@ -87,7 +90,10 @@ class MetaboliteAdductResource(Resource):
     document = MetaboliteAdduct
     filters = {
         "name" : [ops.Contains, ops.Startswith, ops.Exact],
-        "adduct_weights" : [ops.Contains]
+    }
+
+    related_resources = {
+        "adduct_weights" : AdductWeightsResource
     }
 
 @api.register(name="adductsapi", url="/api/adducts/")

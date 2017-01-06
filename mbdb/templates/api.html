@@ -34,4 +34,24 @@ API
 
     <h3>Integration with Python</h3>
 
+    An example Python script to obtain all metabolites containing "Gangli" in their name, and appending the results to a list.
+    <pre>
+import urllib2, json
+
+example_list = []
+
+base_url = "{{ url }}metabolites/?name__contains=Gangli"
+
+count = 1000
+return_limit = 10
+
+for skip in range(0, count, return_limit):
+    data_url = base_url + "&_limit="+str(return_limit)+"&_skip="+str(skip)
+    data = json.loads(urllib2.urlopen(data_url).read())
+    for metabolite in data["data"]:
+        example_list.append([metabolite["name"], metabolite["accurate_mass"]])
+    if data["has_more"] == False:
+        break
+    </pre>
+
 {% endblock %}
