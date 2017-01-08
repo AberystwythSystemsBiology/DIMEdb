@@ -33,11 +33,17 @@ class IonisationPpm(Operator):
         else:
             value = [x for x in value.split(",")]
 
-        ionisation, mz, ppm_threshold = value
+        ionisation = value[0]
+        mz, ppm_threshold = [float(x) for x in value[1:]]
         difference = abs(mz * (ppm_threshold * 0.0001))  # PPM to diff.
 
+        print {
+            field + "__" + ionisation + "__count__gt": 0,
+            field + "__" + ionisation + "__peaks__1__gt": mz - difference,
+            field + "__" + ionisation + "__peaks__1__lt": mz + difference
+        }
         return {
-            field + "__" + value[0] + "__count__gt": 0,
-            field + "__" + value[0] + "__peaks__gt": mz - difference,
-            field + "__" + value[0] + "__peaks__lt": mz + difference
+            field + "__" + ionisation + "__count__gt": 0,
+            field + "__" + ionisation + "__peaks__1__gt": mz - difference,
+            field + "__" + ionisation + "__peaks__1__lt": mz + difference
         }

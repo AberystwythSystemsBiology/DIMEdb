@@ -9,6 +9,7 @@ function render_view(base_url, id) {
         $(document).prop('title', metabolite["name"] + " : Metabolite DataBase");
         $("#name").html(metabolite["name"]);
         $("#molecular_formula").html(metabolite["molecular_formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
+        $("#molecular_formula_search").attr("href", base_url+"api/metabolites/?molecular_formula__exact="+metabolite["molecular_formula"])
         $("#accurate_mass").html(metabolite["accurate_mass"]);
         $("#neutral_mass").html(metabolite["adduct_weights"]["neutral"]);
         // $("#origins").html(metabolite["origins"]);

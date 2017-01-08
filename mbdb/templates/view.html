@@ -1,6 +1,6 @@
 {% extends "template.html" %}
 
-{% block head %}{% endblock %}
+{% block head %}Loading{% endblock %}
 
 {% block body %}
 
@@ -12,12 +12,16 @@
         <table class="table table-striped">
             <tbody>
             <tr>
-                <th width="15%">Molecular Formula</th>
-                <td id="molecular_formula"></td>
+                <th width="25%">Molecular Formula</th>
+                <td>
+                    <span id="molecular_formula"></span>
+                    <a id="molecular_formula_search"href=""><button class="btn btn-primary btn-sm pull-right">Query API</button></a>
+                </td>
             </tr>
             <tr>
                 <th>Accurate Mass (m/z)</th>
-                <td id="accurate_mass"></td>
+                <td id="accurate_mass">
+                </td>
             </tr>
             <tr>
                 <th>Neutral Mass (m/z)</th>
