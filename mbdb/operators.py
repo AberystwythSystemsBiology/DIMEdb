@@ -24,3 +24,20 @@ class AccurateMassSearch(Operator):
             field + '__gt': mz-difference,
             field + '__lt': mz+difference
         }
+
+class IonisationPpm(Operator):
+    op = "ppm"
+    def prepare_queryset_kwargs(self, field, value, negate=False):
+        if value == None:
+            value = ["negative", 100, 10]
+        else:
+            value = [x for x in value.split(",")]
+
+        ionisation, mz, ppm_threshold = value
+        difference = abs(mz * (ppm_threshold * 0.0001))  # PPM to diff.
+
+        return {
+            field + "__" + value[0] + "__count__gt": 0,
+            field + "__" + value[0] + "__peaks__gt": mz - difference,
+            field + "__" + value[0] + "__peaks__lt": mz + difference
+        }
