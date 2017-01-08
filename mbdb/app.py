@@ -25,8 +25,8 @@ class MetaboliteBasicView(ResourceView):
     methods = [methods.List, methods.Fetch]
 
 @api.register(name="adducts", url="/api/adducts/")
-class AdductsBasicView(ResourceView):
-    resource = r.AdductWeightsResource
+class MetaboliteAdductView(ResourceView):
+    resource = r.MetaboliteAdductResource
     methods = [methods.List, methods.Fetch]
 
 # Annoying webpage stuff.
@@ -46,6 +46,10 @@ def view(_id):
         return render_template("view.html", metabolite=metabolite)
     except Exception, err:
         abort(404)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("./misc/404.html"), 404
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
