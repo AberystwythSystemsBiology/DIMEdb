@@ -11,7 +11,7 @@ class MetaboliteFullResource(Resource):
 class MetaboliteBasicResource(Resource):
     document = d.MetaboliteBasic
     filters = {
-        "name" : [ops.Exact, ops.Startswith, ops.Contains],
+        "name" : [ops.Exact, ops.Startswith, ops.Contains, ops.IContains],
         "origins" : [ops.Exact, ops.In(allow_negation=True)],
         "molecular_formula" : [ops.Exact, ops.Contains, ops.IContains],
         "accurate_mass" : [ops.Exact, o.AccurateMassSearch, ops.Gte, ops.Gt]
@@ -34,8 +34,10 @@ class AdductWeightsResource(Resource):
 class MetaboliteAdductResource(Resource):
     document = d.MetaboliteAdduct
     filters = {
-        'adduct_weights__positive__count': [ops.Gt],
-        'adduct_weights__negative__count': [ops.Gt]
+        "adduct_weights__positive__count": [ops.Gt],
+        "adduct_weights__negative__count": [ops.Gt],
+        "adduct_weights__negative__peaks" : [ops.Contains],
+        "adduct_weights__neutral": [o.AccurateMassSearch]
     }
 
     related_resources = {

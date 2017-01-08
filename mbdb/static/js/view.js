@@ -1,8 +1,5 @@
-// Need to write a API handler to retrieve all data.
-
 function render_view(base_url, id) {
     var url = base_url + "api/metabolite/?id__exact=" + id;
-
     var x_plot = [];
     var y_plot = [];
 
@@ -64,7 +61,6 @@ function render_view(base_url, id) {
         };
 
         Plotly.newPlot("distribution_chart", isotopic_data, layout)
+        $("#container").show()
     });
-
-
 }

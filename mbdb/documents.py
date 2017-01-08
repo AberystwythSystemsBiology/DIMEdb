@@ -23,6 +23,7 @@ class PositiveAdduct(EmbeddedDocument):
         peaks = ListField(ListField(StringField()))
     except TypeError:
         peaks = StringField()
+
 class NegativeAdduct(EmbeddedDocument):
     count = IntField()
     try:

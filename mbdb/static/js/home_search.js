@@ -4,7 +4,7 @@ $(document).ready(function () {
     $("#search_button").click(function (e) {
         var query = $("#search_text").val();
         if (query != "") {
-            var url = current_url + "api/metabolites/?name__contains="+String(query);
+            var url = current_url + "api/metabolites/?name__icontains="+String(query);
             $('#search_results').DataTable({
                 "destroy" : true,
                 "ajax": url,
@@ -37,7 +37,7 @@ $(document).ready(function () {
                     }
                 ],
                 "searching": false,
-                "bSort" : false,
+                //"bSort" : false,
                 "lengthChange": false,
                 "pageLength": 10
             });
