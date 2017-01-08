@@ -39,7 +39,7 @@ API
     <h3>Integration with Python</h3>
 
     An example Python script to obtain all metabolites containing "Gangli" in their name, and appending the results to a list.
-    <pre>
+    <pre class="prettyprint">
 import urllib2, json
 
 example_list = []
@@ -58,4 +58,8 @@ for skip in range(0, count, return_limit):
         break
     </pre>
 
+{% endblock %}
+
+{% block javascript %}
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 {% endblock %}
