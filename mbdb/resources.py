@@ -12,12 +12,16 @@ class MetaboliteBasicResource(Resource):
         "accurate_mass" : [ops.Exact, o.AccurateMassSearch, ops.Gte, ops.Gt]
     }
 
+
 class AdductWeightsResource(Resource):
     document = d.AdductWeights
 
 class MetaboliteAdductResource(Resource):
     document = d.MetaboliteAdduct
+    filters = {
+        "name" : [ops.Exact]
+    }
 
     related_resources = {
-        "content" : AdductWeightsResource
+        "adduct_weights" : AdductWeightsResource
     }
