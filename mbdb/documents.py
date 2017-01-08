@@ -7,11 +7,8 @@ class MetaboliteBasic(DynamicDocument):
     molecular_formula = StringField()
     accurate_mass = FloatField()
 
-
 class AdductWeights(EmbeddedDocument):
-    positive = StringField()
-    negative = StringField()
-    neutral = StringField()
+    neutral = FloatField()
 
 class MetaboliteAdduct(Document):
     meta = {" collection" : "metabolites"}

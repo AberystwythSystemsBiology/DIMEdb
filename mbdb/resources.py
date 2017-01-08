@@ -5,6 +5,7 @@ from flask_mongorest.resources import Resource
 class MetaboliteBasicResource(Resource):
     document = d.MetaboliteBasic
     filters = {
+        "id" : [ops.Exact],
         "name" : [ops.Exact, ops.Startswith, ops.Contains],
         "origins" : [ops.Exact],
         "molecular_formula" : [ops.Exact, ops.Contains, ops.IContains],

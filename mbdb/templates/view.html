@@ -4,12 +4,17 @@
 
 {% block body %}
 
-<h1>{{ metabolite.name }}</h1>
+<h1>{{ metabolite.name }}
+<a href="{{ base_url }}api/metabolites/?id__exact={{ metabolite.id }}">
+    <button class="btn btn-success btn-sm pull-right">
+        <i class="glyphicon glyphicon-download"></i> JSON
+    </button>
+</a></h1>
 
 <table class="table table-striped">
     <tbody>
       <tr>
-        <th>Name</th>
+        <th width="20%">Name</th>
         <td>{{ metabolite.name }}</td>
       </tr>
       <tr>
@@ -19,14 +24,37 @@
     <tr>
         <th>Accurate Mass</th>
         <td>{{ metabolite.accurate_mass}}</td>
-      </tr>
+    </tr>
+    <tr>
+        <th>Origins</th>
+        <td>
+            {% for x in metabolite.origins %}
+                {{ x }}
+            {% endfor %}
+        </td>
+    </tr>
+    <tr>
+        <th>SMILES</th>
+        <td> {{ metabolite.smiles}}</td>
+    </tr>
     </tbody>
   </table>
+
+<div class="row">
+    <div class="col-md-6">
+      <h2>Isotopic Distributions</h2>
+    </div>
+    <div class="col-md-6">
+      <h2>Adducts</h2>
+
+
+
+    </div>
 </div>
 
 {% endblock %}
 
 
 {% block javascript %}
-<script src="{{ url_for('static', filename='js/view.js') }}"></script>
+
 {% endblock %}
