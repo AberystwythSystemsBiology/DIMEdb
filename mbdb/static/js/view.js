@@ -14,8 +14,12 @@ function render_view(base_url, id) {
         $("#molecular_formula").html(metabolite["molecular_formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
         $("#accurate_mass").html(metabolite["accurate_mass"]);
         $("#neutral_mass").html(metabolite["adduct_weights"]["neutral"]);
-        $("#origins").html(metabolite["origins"]);
+        // $("#origins").html(metabolite["origins"]);
         $("#smiles").html(metabolite["smiles"]);
+
+        for (o in metabolite["origins"]) {
+            $("#origins ul").append("<li>"+metabolite["origins"][o]+"</li>")
+        }
 
         for (result in metabolite["adduct_weights"]["negative"]["peaks"]) {
             var peak = metabolite["adduct_weights"]["negative"]["peaks"][0]
@@ -38,15 +42,13 @@ function render_view(base_url, id) {
         var isotopic_data = [{
             x: x_plot,
             y: y_plot,
-            type: 'bar',
-            width : 0.5,
+            mode: 'markers'
         }];
 
         var layout = {
             xaxis: {
                 title: 'mass-to-ion (mz)',
-                showgrid: false,
-                zeroline: false
+                showgrid: false
             },
             yaxis: {
                 title: 'relative abundance (%)',
