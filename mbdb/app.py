@@ -19,6 +19,11 @@ app.config.update(
 db = MongoEngine(app)
 api = MongoRest(app)
 
+@api.register(name="metabolites_f", url="/api/metabolite/")
+class MetaboliteFullView(ResourceView):
+    resource = r.MetaboliteFullResource
+    methods = [methods.List]
+
 @api.register(name="metabolites", url="/api/metabolites/")
 class MetaboliteBasicView(ResourceView):
     resource = r.MetaboliteBasicResource
@@ -55,6 +60,21 @@ def view(_id):
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("./misc/404.html"), 404
+
+# Temporary until I find a better solution.
+@app.route("/gen_structure/<string:id>/")
+def smiles_to_2d(id):
+    from rdkit import Chem
+    from rdkit.Chem import Draw
+    import StringIO
+    try:
+        smiles = d.MetaboliteBasic.objects.filter(id=id)[0].smiles
+        smiles_image = StringIO.StringIO()
+        mol = Chem.MolFromSmiles(smiles)
+        Draw.MolToMPL(mol).savefig(smiles_image, dpi=400)
+        return smiles_image.getvalue().encode("base64")
+    except Exception, err:
+        abort(404)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

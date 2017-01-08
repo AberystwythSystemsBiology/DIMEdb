@@ -2,10 +2,15 @@ import documents as d, operators as o
 from flask_mongorest import operators as ops
 from flask_mongorest.resources import Resource
 
+class MetaboliteFullResource(Resource):
+    document = d.MetaboliteFull
+    filters = {
+        "id" : [ops.Exact]
+    }
+
 class MetaboliteBasicResource(Resource):
     document = d.MetaboliteBasic
     filters = {
-        "id" : [ops.Exact],
         "name" : [ops.Exact, ops.Startswith, ops.Contains],
         "origins" : [ops.Exact, ops.In(allow_negation=True)],
         "molecular_formula" : [ops.Exact, ops.Contains, ops.IContains],
@@ -29,7 +34,8 @@ class AdductWeightsResource(Resource):
 class MetaboliteAdductResource(Resource):
     document = d.MetaboliteAdduct
     filters = {
-        "name" : [ops.Exact]
+        'adduct_weights__positive__count': [ops.Gt],
+        'adduct_weights__negative__count': [ops.Gt]
     }
 
     related_resources = {

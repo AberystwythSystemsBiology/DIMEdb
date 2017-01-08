@@ -6,44 +6,53 @@
 
 <h1 id="name"></h1>
 
-
+<div class="row">
+    <div class="col-md-9">
 <table class="table table-striped">
     <tbody>
       <tr>
         <th width="15%">Molecular Formula</th>
-        <td id="mf"></td>
+        <td id="molecular_formula"></td>
       </tr>
     <tr>
-        <th>Accurate Mass</th>
-        <td id="am"></td>
+        <th>Accurate Mass (m/z)</th>
+        <td id="accurate_mass"></td>
+    </tr>
+    <tr>
+        <th>Neutral Mass (m/z)</th>
+        <td id="neutral_mass"></td>
     </tr>
     <tr>
         <th>Origins</th>
-        <td id="o">
+        <td id="origins">
         </td>
     </tr>
     <tr>
         <th>SMILES</th>
-        <td id="s"></td>
+        <td id="smiles"></td>
     </tr>
     </tbody>
   </table>
-
+    </div>
+    <div class="col-md-3">
+        <img id="structure" src="" width="80%">
+    </div>
+</div>
 
 <div class="row">
     <div class="col-md-6">
-      <h2>Isotopic Distributions</h2>
+      <h2>Isotopic Distribution</h2>
+        <div id="distribution_chart" style="width:90%;height:400px;"></div>
     </div>
     <div class="col-md-6">
       <h2>Adducts</h2>
-
     </div>
 </div>
 
 {% endblock %}
 
-
 {% block javascript %}
+<script src="{{ url_for('static', filename='bower_components/plotly/plotly.js') }}"></script>
 <script src="{{ url_for('static', filename='js/view.js') }}"></script>
 <script>
     render_view("{{ base_url }}","{{ id }}");
