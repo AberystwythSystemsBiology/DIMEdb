@@ -1,13 +1,12 @@
 $(document).ready(function () {
     var current_url = window.location.href;
-    $("#search_results").hide();
+    $('#search_results').hide()
     $("#search_button").click(function (e) {
         var query = $("#search_text").val();
         if (query != "") {
             var url = current_url + "api/metabolites/?name__contains="+String(query);
-            $("#search_results").show();
-
             $('#search_results').DataTable({
+                "destroy" : true,
                 "ajax": url,
                 "columns": [
                     {
@@ -40,14 +39,17 @@ $(document).ready(function () {
                 "searching": false,
                 "bSort" : false,
                 "lengthChange": false,
-                "pageLength": 10,
-                "bRetrieve" : true
+                "pageLength": 10
             });
-
-
+            $('#search_results').show()
         }
         else {
-            alert("No query entered?")
+        }
+    });
+
+    $('#search_text').keypress(function(e){
+        if(e.which == 13){//Enter key pressed
+            $('#search_button').click();//Trigger search button click event
         }
     });
 });
