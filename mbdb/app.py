@@ -71,7 +71,7 @@ def smiles_to_2d(id):
         smiles = d.MetaboliteBasic.objects.filter(id=id)[0].smiles
         smiles_image = StringIO.StringIO()
         mol = Chem.MolFromSmiles(smiles)
-        Draw.MolToMPL(mol).savefig(smiles_image, dpi=400)
+        Draw.MolToMPL(mol).savefig(smiles_image, dpi=200)
         return smiles_image.getvalue().encode("base64")
     except Exception, err:
         abort(404)

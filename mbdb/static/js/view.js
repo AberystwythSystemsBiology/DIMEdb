@@ -8,10 +8,6 @@ function render_view(base_url, id) {
 
     $.getJSON(url, function (data) {
         var metabolite = data["data"][0];
-        console.log(metabolite);
-
-
-
         // Change the document title.
         $(document).prop('title', metabolite["name"] + " : Metabolite DataBase");
         $("#name").html(metabolite["name"]);
@@ -20,10 +16,15 @@ function render_view(base_url, id) {
         $("#neutral_mass").html(metabolite["adduct_weights"]["neutral"]);
         $("#origins").html(metabolite["origins"]);
         $("#smiles").html(metabolite["smiles"]);
+
+        for (result in metabolite["adduct_weights"]["negative"]["peaks"]) {
+            var peak = metabolite["adduct_weights"]["negative"]["peaks"][0]
+            $("#negative_adduct").append("<li class='list-group-item'><b>"+peak[0]+":</b> "+peak[1].toFixed(4)+"</li>")
+        }
+
         $.ajax({
             url: base_url+"gen_structure/"+metabolite["id"],
             success: function (result) {
-                console.log(result);
                 $("#structure").attr("src", "data:image/png;base64,"+result);
             }
         });
