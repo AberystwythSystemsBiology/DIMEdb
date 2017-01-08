@@ -35,7 +35,7 @@ class MetaboliteAdductResource(Resource):
     document = d.MetaboliteAdduct
     filters = {
         "adduct_weights__positive__count": [ops.Gt],
-        "adduct_weights__negative__count": [ops.Gt],
+        "adduct_weights": [o.Ionisation],
         "adduct_weights__negative__peaks" : [ops.Contains],
         "adduct_weights__neutral": [o.AccurateMassSearch]
     }
