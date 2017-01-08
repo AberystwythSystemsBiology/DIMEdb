@@ -32,9 +32,8 @@ $(document).ready(function () {
                     {
                         "data" : "id",
                         "render" : function (data, type, row) {
-                            var view_url = "/view/"+data;
-                            console.log(view_url)
-                            return "<button class='btn btn-sm btn-primary' disabled>View</button></a>"
+                            var view_url = current_url+"view/"+data;
+                            return "<a href='"+view_url+"' target='_blank'><button class='btn btn-sm btn-primary'>View</button></a>"
                         }
                     }
                 ],
