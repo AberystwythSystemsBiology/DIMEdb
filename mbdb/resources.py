@@ -7,20 +7,16 @@ class MetaboliteBasicResource(Resource):
     filters = {
         "id" : [ops.Exact],
         "name" : [ops.Exact, ops.Startswith, ops.Contains],
-        "origins" : [ops.Exact],
+        "origins" : [ops.Exact, ops.In(allow_negation=True)],
         "molecular_formula" : [ops.Exact, ops.Contains, ops.IContains],
         "accurate_mass" : [ops.Exact, o.AccurateMassSearch, ops.Gte, ops.Gt]
     }
 
 class NegativeAdductResource(Resource):
     document = d.NegativeAdduct
-    filters = {
-        "count" : [ops.Gt]
-    }
 
 class PositiveAdductResource(Resource):
     document = d.PositiveAdduct
-
 
 class AdductWeightsResource(Resource):
     document = d.AdductWeights

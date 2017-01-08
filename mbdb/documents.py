@@ -9,11 +9,16 @@ class MetaboliteBasic(DynamicDocument):
 
 class PositiveAdduct(EmbeddedDocument):
     count = IntField()
-    peaks = StringField()
-
+    try:
+        peaks = ListField(ListField(StringField()))
+    except TypeError:
+        peaks = StringField()
 class NegativeAdduct(EmbeddedDocument):
     count = IntField()
-    peaks = StringField()
+    try:
+        peaks = ListField(ListField(StringField()))
+    except TypeError:
+        peaks = StringField()
 
 class AdductWeights(EmbeddedDocument):
     neutral = FloatField()
