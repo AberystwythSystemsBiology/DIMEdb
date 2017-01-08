@@ -1,44 +1,34 @@
 {% extends "template.html" %}
 
-{% block head %}{{ metabolite.name }}{% endblock %}
+{% block head %}{% endblock %}
 
 {% block body %}
 
-<h1>{{ metabolite.name }}
-<a href="{{ base_url }}api/metabolites/?id__exact={{ metabolite.id }}">
-    <button class="btn btn-success btn-sm pull-right">
-        <i class="glyphicon glyphicon-download"></i> JSON
-    </button>
-</a></h1>
+<h1 id="name"></h1>
+
 
 <table class="table table-striped">
     <tbody>
       <tr>
-        <th width="20%">Name</th>
-        <td>{{ metabolite.name }}</td>
-      </tr>
-      <tr>
-        <th>Molecular Formula</th>
-        <td>{{ metabolite.molecular_formula }}</td>
+        <th width="15%">Molecular Formula</th>
+        <td id="mf"></td>
       </tr>
     <tr>
         <th>Accurate Mass</th>
-        <td>{{ metabolite.accurate_mass}}</td>
+        <td id="am"></td>
     </tr>
     <tr>
         <th>Origins</th>
-        <td>
-            {% for x in metabolite.origins %}
-                {{ x }}
-            {% endfor %}
+        <td id="o">
         </td>
     </tr>
     <tr>
         <th>SMILES</th>
-        <td> {{ metabolite.smiles}}</td>
+        <td id="s"></td>
     </tr>
     </tbody>
   </table>
+
 
 <div class="row">
     <div class="col-md-6">
@@ -47,8 +37,6 @@
     <div class="col-md-6">
       <h2>Adducts</h2>
 
-
-
     </div>
 </div>
 
@@ -56,5 +44,8 @@
 
 
 {% block javascript %}
-
+<script src="{{ url_for('static', filename='js/view.js') }}"></script>
+<script>
+    render_view("{{ base_url }}","{{ id }}");
+</script>
 {% endblock %}

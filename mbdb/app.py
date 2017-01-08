@@ -42,9 +42,13 @@ def api():
 @app.route("/view/<string:_id>/")
 def view(_id):
     try:
+        '''
         url = request.url_root
         metabolite = d.MetaboliteBasic.objects.filter(id = _id)[0]
         return render_template("view.html", metabolite=metabolite, base_url=url)
+        '''
+        url = request.url_root
+        return render_template("view.html" , id=_id, base_url=url)
     except Exception, err:
         abort(403)
 
