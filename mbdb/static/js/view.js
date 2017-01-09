@@ -6,7 +6,7 @@ function render_view(base_url, id) {
     $.getJSON(url, function (data) {
         var metabolite = data["data"][0];
         // Change the document title.
-        $(document).prop('title', metabolite["name"] + " : Metabolite DataBase");
+        $(document).prop('title', metabolite["name"] + " : MetaBolomics DataBase");
         $("#met_name").html(metabolite["name"]);
         $("#get_json").attr("href", base_url+"api/metabolite/?id__exact="+metabolite["id"]);
         $("#molecular_formula").html(metabolite["molecular_formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
