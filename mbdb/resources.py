@@ -10,6 +10,8 @@ class MetaboliteFullResource(Resource):
 
 class MetaboliteBasicResource(Resource):
     document = d.MetaboliteBasic
+    max_limit, default_limit = [1000, 1000]
+
     filters = {
         "name" : [ops.Exact, ops.Startswith, ops.Contains, ops.IContains],
         "origins" : [ops.Exact, ops.In(allow_negation=True)],
