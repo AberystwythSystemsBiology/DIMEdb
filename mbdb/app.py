@@ -66,12 +66,13 @@ def page_not_found(e):
 def smiles_to_2d(id):
     from rdkit import Chem
     from rdkit.Chem import Draw
+    import matplotlib.pyplot as plt
     import StringIO
     try:
         smiles = d.MetaboliteBasic.objects.filter(id=id)[0].smiles
         smiles_image = StringIO.StringIO()
         mol = Chem.MolFromSmiles(smiles)
-        Draw.MolToMPL(mol).savefig(smiles_image, dpi=200)
+        Draw.MolToFile(mol, fileName=smiles_image, imageType="png", size=(300, 300))
         return smiles_image.getvalue().encode("base64")
     except Exception, err:
         abort(404)

@@ -7,7 +7,8 @@ function render_view(base_url, id) {
         var metabolite = data["data"][0];
         // Change the document title.
         $(document).prop('title', metabolite["name"] + " : Metabolite DataBase");
-        $("#name").html(metabolite["name"]);
+        $("#met_name").html(metabolite["name"]);
+        $("#get_json").attr("href", base_url+"api/metabolite/?id__exact="+metabolite["id"]);
         $("#molecular_formula").html(metabolite["molecular_formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
         $("#molecular_formula_search").attr("href", base_url+"api/metabolites/?molecular_formula__exact="+metabolite["molecular_formula"])
         $("#accurate_mass").html(metabolite["accurate_mass"]);
@@ -16,7 +17,7 @@ function render_view(base_url, id) {
         $("#smiles").html(metabolite["smiles"]);
 
         for (o in metabolite["origins"]) {
-            $("#origins ul").append("<li>"+metabolite["origins"][o]+"</li>")
+            $("#origins").append("<p>"+metabolite["origins"][o]+"</p>")
         }
 
         for (result in metabolite["adduct_weights"]["negative"]["peaks"]) {

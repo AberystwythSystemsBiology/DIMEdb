@@ -5,7 +5,9 @@
 {% block body %}
 
 <div id="metabolite_view">
-<h1 id="name"></h1>
+<h1><span id="met_name"></span>
+    <a id="get_json" href=""><label class="btn btn-primary btn-sm pull-right"><i class='glyphicon glyphicon-download'></i> Download JSON</label></a>
+</h1>
 
 <div class="row">
     <div class="col-md-9">
@@ -15,7 +17,7 @@
                 <th width="25%">Molecular Formula</th>
                 <td>
                     <span id="molecular_formula"></span>
-                    <a id="molecular_formula_search"href=""><button class="btn btn-primary btn-sm pull-right">Query API</button></a>
+                    <a id="molecular_formula_search" href="" target="_blank"><button class="btn btn-success btn-sm pull-right">Query API</button></a>
                 </td>
             </tr>
             <tr>
@@ -30,9 +32,6 @@
             <tr>
                 <th>Origins</th>
                 <td id="origins">
-                    <ul>
-
-                    </ul>
                 </td>
             </tr>
             <tr>
@@ -42,14 +41,21 @@
             </tbody>
         </table>
     </div>
-    <div class="col-md-3">
-        <img id="structure" src="" width="80%">
+    <div id class="col-md-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                2D Structure
+            </div>
+            <div class="panel-body">
+        <img id="structure" src="" style="display:block; margin:0 auto 0; max-width:300px; width:80%;">
+                </div>
+            </div>
     </div>
 </div>
 
 <div class="row">
     <div class="col-md-9">
-        <h2>Isotopic Distribution</h2>
+        <h2>Neutral Isotopic Distribution</h2>
         <div id="distribution_chart" style="width:90%;height:400px;"></div>
     </div>
     <div class="col-md-3">
