@@ -90,10 +90,10 @@ ENV/
 
 # Other files
 *.zip
-*.json
 *.xml
 *.css
-
+output
+dl-files
 
 # Created by https://www.gitignore.io/api/pycharm
 
@@ -149,12 +149,6 @@ fabric.properties
 # .idea/misc.xml
 # *.ipr
 
-# End of https://www.gitignore.io/api/pycharm
-
-# Other web stuff
-
-# Created by https://www.gitignore.io/api/node,bower
-
 ### Node ###
 # Logs
 logs
@@ -204,12 +198,8 @@ jspm_packages
 # Yarn Integrity file
 .yarn-integrity
 
-
-
 ### Bower ###
 bower_components
 .bower-cache
 .bower-registry
 .bower-tmp
-
-# End of https://www.gitignore.io/api/node,bower

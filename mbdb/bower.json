@@ -1,0 +1,23 @@
+{
+  "name": "mbdb",
+  "homepage": "https://github.com/KeironO/MB-DB",
+  "authors": [
+    "KeironO <keiron.oshea@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "datatables": "^1.10",
+    "plotly" : "^1.16.2"
+  },
+  "directory": "./static/bower_components"
+}
