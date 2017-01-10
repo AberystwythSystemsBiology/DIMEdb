@@ -33,8 +33,10 @@ function render_view(base_url, id) {
         });
         for (i in metabolite["isotopic_distributions"]) {
             var spectra = metabolite["isotopic_distributions"][i];
-            x_plot.push(spectra[0] + metabolite["adduct_weights"]["neutral"]);
+            var mz_spectra = (spectra[0] + metabolite["adduct_weights"]["neutral"]);
+            x_plot.push(mz_spectra);
             y_plot.push(spectra[1]);
+            $("#distribution_table tbody").append("<tr><td>"+mz_spectra.toFixed(4)+"</td><td>"+spectra[1].toFixed(2)+"</td></tr>")
         }
 
 

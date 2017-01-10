@@ -36,10 +36,6 @@
                 <td id="origins">
                 </td>
             </tr>
-            <tr>
-                <th>SMILES</th>
-                <td id="smiles"></td>
-            </tr>
             </tbody>
         </table>
     </div>
@@ -49,9 +45,15 @@
                 2D Structure
             </div>
             <div class="panel-body">
-        <img id="structure" src="" style="display:block; margin:0 auto 0; max-width:300px; width:80%;">
-                </div>
+                <img id="structure" src="" style="display:block; margin:0 auto 0; max-width:300px; width:80%;">
             </div>
+            <div class="panel-footer">
+                <button class="btn btn-sm pull-right" data-toggle="modal" data-target="#smiles_view">
+                    View SMILES
+                </button>
+                <div class="clearfix"></div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -59,6 +61,9 @@
     <div class="col-md-9">
         <h2>Neutral Isotopic Distribution</h2>
         <div id="distribution_chart" style="width:90%;height:400px;"></div>
+        <button class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#distribution_modal">
+            <i class="glyphicon glyphicon glyphicon-stats"></i> Distribution Table
+        </button>
     </div>
     <div class="col-md-3">
         <h2>Adducts</h2>
@@ -72,19 +77,21 @@
 
                 </div>
             </div>
-
             <div class="panel panel-danger">
                 <div class="panel-heading">
                     Negative
                 </div>
                 <div class="list-group" id="negative_adduct">
-
                 </div>
             </div>
         </div>
     </div>
 </div>
 </div>
+
+
+{% include "modals/view.html" %}
+
 {% endblock %}
 
 {% block javascript %}
