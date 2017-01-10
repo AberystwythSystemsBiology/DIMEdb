@@ -41,16 +41,20 @@ function render_view(base_url, id) {
         var isotopic_data = [{
             x: x_plot,
             y: y_plot,
-            mode: 'markers'
+            type: 'bar'
         }];
+
+        console.log();
+        console.log(y_plot);
 
         var layout = {
             xaxis: {
-                title: 'mass-to-ion (mz)',
-                showgrid: false
+                title: 'Mass (mz)',
+                showgrid: false,
+                range: [Math.min.apply(Math, x_plot)-10, Math.max.apply(Math, x_plot)+10]
             },
             yaxis: {
-                title: 'relative abundance (%)',
+                title: 'Intensity (%)',
                 showline: false
             },
             margin: {

@@ -4,6 +4,7 @@ from flask_mongorest.resources import Resource
 
 class MetaboliteFullResource(Resource):
     document = d.MetaboliteFull
+    max_limit, default_limit = [1, 1]
     filters = {
         "id" : [ops.Exact]
     }
