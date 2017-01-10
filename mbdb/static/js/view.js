@@ -13,16 +13,15 @@ function render_view(base_url, id) {
         $("#molecular_formula_search").attr("href", base_url+"api/metabolites/?molecular_formula__exact="+metabolite["molecular_formula"])
         $("#accurate_mass").html(metabolite["accurate_mass"]);
         $("#neutral_mass").html(metabolite["adduct_weights"]["neutral"]);
-        // $("#origins").html(metabolite["origins"]);
         $("#smiles").html(metabolite["smiles"]);
 
         for (o in metabolite["origins"]) {
-            $("#origins").append("<p>"+metabolite["origins"][o]+"</p>")
+            $("#origins").append("<p>"+metabolite["origins"][o]+"</p>");
         }
 
         for (result in metabolite["adduct_weights"]["negative"]["peaks"]) {
-            var peak = metabolite["adduct_weights"]["negative"]["peaks"][0]
-            $("#negative_adduct").append("<li class='list-group-item'><b>"+peak[0]+":</b> "+peak[1].toFixed(4)+"</li>")
+            var peak = metabolite["adduct_weights"]["negative"]["peaks"][0];
+            $("#negative_adduct").append("<li class='list-group-item'><b>"+peak[0]+":</b> "+peak[1].toFixed(4)+"</li>");
         }
 
         $.ajax({
