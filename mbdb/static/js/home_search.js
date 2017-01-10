@@ -41,7 +41,7 @@ $(document).ready(function () {
                 "lengthChange": false,
                 "pageLength": 10
             });
-            $('#search_results').show()
+            $("#search_results").fadeIn("slow");
         }
         else {
         }

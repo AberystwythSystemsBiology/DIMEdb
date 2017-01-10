@@ -64,6 +64,11 @@ body {
     display:none;
 }
 
+table#search_results {
+    display:none;
+    width:100%;
+}
+
 #home-page-search {
         max-width: 800px;
         margin:0 auto 0;
