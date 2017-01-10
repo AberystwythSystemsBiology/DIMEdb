@@ -91,7 +91,6 @@ ENV/
 # Other files
 *.zip
 *.xml
-*.css
 output
 dl-files
 
