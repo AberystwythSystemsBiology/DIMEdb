@@ -15,12 +15,14 @@ function render_view(base_url, id) {
         $("#neutral_mass").html(metabolite["adduct_weights"]["neutral"]);
         $("#smiles").html(metabolite["smiles"]);
 
+        console.log(metabolite);
+
         for (o in metabolite["origins"]) {
             $("#origins").append("<p>"+metabolite["origins"][o]+"</p>");
         }
 
-        for (result in metabolite["adduct_weights"]["negative"]["peaks"]) {
-            var peak = metabolite["adduct_weights"]["negative"]["peaks"][0];
+        for (result in metabolite["adduct_weights"]["negative"]["count"]) {
+            var peak = metabolite["adduct_weights"]["negative"]["peaks"];
             $("#negative_adduct").append("<li class='list-group-item'><b>"+peak[0]+":</b> "+peak[1].toFixed(4)+"</li>");
         }
 
@@ -30,6 +32,7 @@ function render_view(base_url, id) {
                 $("#structure").attr("src", "data:image/png;base64,"+result);
             }
         });
+
         for (i in metabolite["isotopic_distributions"]) {
             var spectra = metabolite["isotopic_distributions"][i];
             var mz_spectra = (spectra[0] + metabolite["adduct_weights"]["neutral"]);
@@ -44,9 +47,6 @@ function render_view(base_url, id) {
             y: y_plot,
             type: 'bar'
         }];
-
-        console.log();
-        console.log(y_plot);
 
         var layout = {
             xaxis: {

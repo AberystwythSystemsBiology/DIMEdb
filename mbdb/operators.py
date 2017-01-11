@@ -44,6 +44,6 @@ class IonisationPpm(Operator):
         }
         return {
             field + "__" + ionisation + "__count__gt": 0,
-            field + "__" + ionisation + "__peaks__1__gt": mz - difference,
-            field + "__" + ionisation + "__peaks__1__lt": mz + difference
+            field + "__" + ionisation + "__peaks__0__1__gt": mz - difference,
+            field + "__" + ionisation + "__peaks__0__1__lt": mz + difference
         }

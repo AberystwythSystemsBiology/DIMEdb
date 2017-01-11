@@ -88,23 +88,29 @@ def calculate_nom_distribution(ratios, weights):
     return sorted(n_d.items(), key=lambda x: x[0])
 
 
+'''
+
+    adduct_info : {
+        negative : {
+            adducts [
+                { type : M-H1, peak : int},
+                ... obv
+            ]
+            }
+
+'''
+
 # TODO: Implement rules.
 def get_anion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution):
-    anion = {}
-    peaks = []
+    adducts = []
     if ndon > 0 and nch == 0:
-        peaks.append(["[M-H]1-", nominal_distribution[0][0] - 1])
-    anion["peaks"] = peaks
-    anion["count"] = len(peaks)
-    return anion
+        # Write a rule based calculator.
+        adducts.append({"type" : "[M-H]1-", "peak" : nominal_distribution[0][0] - 1})
+    return adducts
 
 def get_canion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution):
-    canion = {}
-    peaks = []
-
-    canion["peaks"] = peaks
-    canion["count"] = len(peaks)
-    return canion
+    adducts = []
+    return adducts
 
 def adduct(mol, nominal_distribution):
     nacc = rdMolDescriptors.CalcNumHBA(mol)
@@ -115,8 +121,10 @@ def adduct(mol, nominal_distribution):
     nch = sum([atom.GetFormalCharge() for atom in mol.GetAtoms()])
     adduct_dict = {}
     adduct_dict["neutral"] = nominal_distribution[0][0]
-    adduct_dict["negative"] = get_anion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution)
-    adduct_dict["positive"] = get_canion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution)
+    anions = get_anion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution)
+    adduct_dict["negative"] = {"count" : len(anions), "peaks" : anions}
+    canions = get_canion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution)
+    adduct_dict["positive"] = {"count" : len(canions) , "peaks" : canions}
     return adduct_dict
 
 def process_entity(entity):
@@ -126,7 +134,6 @@ def process_entity(entity):
         formula = rdMolDescriptors.CalcMolFormula(mol)
         atom_dict = formula_splitter(formula)
         accurate_mass = sum([atom_dict[x]["Total Weight"] for x in atom_dict.keys()])
-
         ratios, weights = isotopes(atom_dict)
         nominal_distribution = calculate_nom_distribution(ratios, weights)
         ad = adduct(mol, nominal_distribution)
