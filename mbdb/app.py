@@ -32,7 +32,7 @@ class MetaboliteBasicView(ResourceView):
 @api.register(name="adducts", url="/api/adducts/")
 class Adducts(ResourceView):
     resource = r.MetaboliteAdductsResource
-    methods = [methods.List]
+    methods = [methods.List, methods.Fetch]
 
 # Annoying webpage stuff.
 
@@ -66,7 +66,6 @@ def page_not_found(e):
 def smiles_to_2d(id):
     from rdkit import Chem
     from rdkit.Chem import Draw
-    import matplotlib.pyplot as plt
     import StringIO
     try:
         smiles = d.MetaboliteBasic.objects.filter(id=id)[0].smiles

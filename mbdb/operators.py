@@ -1,33 +1,13 @@
 from flask_mongorest.operators import Operator
 
-class Ionisation(Operator):
-    op = "ion"
+class PiPpm(Operator):
+    op = "pi_ppm"
     def prepare_queryset_kwargs(self, field, value, negate):
-        if value == None:
-            value = "positive"
-        print {field+"__"+value+"__count__gt" : 0}
+        ionisation, mz, ppm = value.split(",")
+        mz = float(mz)
+        ppm = float(ppm)
+        difference = abs(mz * (ppm * 0.0001))
         return {
-            field+"__"+value+"__count__gt" : 0
+            "adducts__"+ionisation+"__peaks__accurate_mass__lt" : mz+difference,
+            "adducts__" + ionisation + "__peaks__accurate_mass__gt": mz-difference
         }
-
-class AccurateMassSearch(Operator):
-    op = "ppm"
-    def prepare_queryset_kwargs(self, field, value, negate=False):
-        print field
-        if value == None:
-            value = [0,0]
-        else:
-            value = [float(x) for x in value.split(',')]
-
-        mz, ppm_threshold = value
-        difference = abs(mz * (ppm_threshold * 0.0001))  # PPM to diff.
-        if "adduct_weights__positive" or "adduct_weights__negative" in field:
-            return {
-                field + "__peaks__peak__gt" : mz - difference,
-                field + "__peaks__peak__lt" : mz + difference
-            }
-        else:
-            return {
-                field + '__gt': mz-difference,
-                field + '__lt': mz+difference
-            }
