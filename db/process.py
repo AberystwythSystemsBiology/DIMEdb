@@ -110,6 +110,8 @@ def rules(structure_dict, mol):
     adducts["negative"] = []
     adducts["positive"] = []
 
+    # These are all in the same fucking variable you STUPID FUCKING CUNT. NO WONDER IT DOENS'T WORK YOU COMPLETE AND UTTER FUCKING TIT
+    # FIRST CLASS DEGREE? MORE LIKE FIRST CLASS FUCKING MORON.
     # Negative
     if ndon > 1 and nacc == 0:
         structure_dict["H"] = structure_dict["H"] - 1

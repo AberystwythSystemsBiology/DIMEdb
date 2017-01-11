@@ -16,18 +16,13 @@ function render_view(base_url, id) {
         $("#molecular_formula").html(metabolite["molecular_formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
         $("#molecular_formula_search").attr("href", base_url+"api/metabolites/?molecular_formula__exact="+metabolite["molecular_formula"])
         $("#accurate_mass").html(metabolite["accurate_mass"]);
-        $("#neutral_mass").html(metabolite["adduct_weights"]["neutral"]);
+        $("#neutral_mass").html(metabolite["adducts"]["neutral"]["peaks"][0]["accurate_mass"]);
         $("#smiles").html(metabolite["smiles"]);
 
         for (o in metabolite["origins"]) {
             $("#origins").append("<p>"+metabolite["origins"][o]+"</p>");
         }
 
-        // Negative
-        for (result in metabolite["adduct_weights"]["negative"]["peaks"]) {
-            var peak = metabolite["adduct_weights"]["negative"]["peaks"][result];
-            $("#negative_adduct").append("<li class='list-group-item'><b>"+peak["type"]+":</b> "+peak["peak"].toFixed(4)+"</li>");
-        }
 
         $.ajax({
             url: base_url+"gen_structure/"+metabolite["id"],
@@ -36,9 +31,22 @@ function render_view(base_url, id) {
             }
         });
 
-        for (i in metabolite["isotopic_distributions"]) {
-            var spectra = metabolite["isotopic_distributions"][i];
-            var mz_spectra = (spectra[0] + metabolite["adduct_weights"]["neutral"]);
+        // Negative
+        for (result in metabolite["adducts"]["negative"]["peaks"]) {
+            var peak = metabolite["adducts"]["negative"]["peaks"][result];
+            $("#negative_adduct").append("<li class='list-group-item'><b>"+peak["type"]+":</b> "+peak["accurate_mass"].toFixed(4)+"</li>");
+        }
+
+        for (result in metabolite["adducts"]["positive"]["peaks"]) {
+            var peak = metabolite["adducts"]["positive"]["peaks"][result];
+            $("#positive_adduct").append("<li class='list-group-item'><b>"+peak["type"]+":</b> "+peak["accurate_mass"].toFixed(4)+"</li>");
+        }
+
+
+
+        for (i in metabolite["adducts"]["neutral"]["peaks"][0]["isotopic_distribution"]) {
+            var spectra = metabolite["adducts"]["neutral"]["peaks"][0]["isotopic_distribution"][i];
+            var mz_spectra = (spectra[0]);
             x_plot.push(mz_spectra);
             y_plot.push(spectra[1]);
             $("#distribution_table tbody").append("<tr><td>"+mz_spectra.toFixed(4)+"</td><td>"+spectra[1].toFixed(2)+"</td></tr>")
