@@ -17,19 +17,21 @@ class MetaboliteBasic(DynamicDocument):
     molecular_formula = StringField()
     accurate_mass = FloatField()
 
+class PositivePeaks(EmbeddedDocument):
+    type = StringField()
+    peak = FloatField()
+
 class PositiveAdduct(EmbeddedDocument):
     count = IntField()
-    try:
-        peaks = ListField(ListField(StringField()))
-    except TypeError:
-        peaks = StringField()
+    peaks = ListField(EmbeddedDocumentField(PositivePeaks))
+
+class NegativePeaks(EmbeddedDocument):
+    type = StringField()
+    peak = FloatField()
 
 class NegativeAdduct(EmbeddedDocument):
     count = IntField()
-    try:
-        peaks = ListField(ListField(StringField()))
-    except TypeError:
-        peaks = StringField()
+    peaks = EmbeddedDocumentListField(NegativePeaks)
 
 class AdductWeights(EmbeddedDocument):
     neutral = FloatField()

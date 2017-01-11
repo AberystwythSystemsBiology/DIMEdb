@@ -20,11 +20,23 @@ class MetaboliteBasicResource(Resource):
         "accurate_mass" : [ops.Exact, o.AccurateMassSearch, ops.Gte, ops.Gt]
     }
 
+class NegativePeaksResource(Resource):
+    document = d.NegativePeaks
+
+class PositivePeaksResource(Resource):
+    document = d.PositivePeaks
+
 class NegativeAdductResource(Resource):
     document = d.NegativeAdduct
+    related_resources = {
+        "peaks" : NegativePeaksResource
+    }
 
 class PositiveAdductResource(Resource):
     document = d.PositiveAdduct
+    related_resources = {
+        "peaks" : PositivePeaksResource
+    }
 
 class AdductWeightsResource(Resource):
     document = d.AdductWeights

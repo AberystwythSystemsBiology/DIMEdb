@@ -5,8 +5,9 @@ class Ionisation(Operator):
     def prepare_queryset_kwargs(self, field, value, negate):
         if value == None:
             value = "positive"
+        print {field+"__"+value+"__count__gt" : 0}
         return {
-            field + "__"+value+"__count__gt" : 0
+            field+"__"+value+"__count__gt" : 0
         }
 
 class AccurateMassSearch(Operator):
@@ -39,11 +40,10 @@ class IonisationPpm(Operator):
         # db.metabolites.find({"adduct_weights.negative.peaks.peak" : { $lt : 100 }})
         print {
             field + "__" + ionisation + "__count__gt": 0,
-            field + "__" + ionisation + "__peaks__1__gt": mz - difference,
-            field + "__" + ionisation + "__peaks__1__lt": mz + difference
+            field + "__" + ionisation + "__peaks_peak__gt": mz - difference,
+            field + "__" + ionisation + "__peaks__peak__lt": mz + difference
         }
         return {
-            field + "__" + ionisation + "__count__gt": 0,
-            field + "__" + ionisation + "__peaks__0__1__gt": mz - difference,
-            field + "__" + ionisation + "__peaks__0__1__lt": mz + difference
+            field + "__" + ionisation + "__peaks__peak__gt": mz - difference,
+            field + "__" + ionisation + "__peaks__peak__lt": mz + difference
         }
