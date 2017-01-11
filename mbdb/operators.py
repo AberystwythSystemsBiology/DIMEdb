@@ -36,7 +36,7 @@ class IonisationPpm(Operator):
         ionisation = value[0]
         mz, ppm_threshold = [float(x) for x in value[1:]]
         difference = abs(mz * (ppm_threshold * 0.0001))  # PPM to diff.
-
+        # db.metabolites.find({"adduct_weights.negative.peaks.peak" : { $lt : 100 }})
         print {
             field + "__" + ionisation + "__count__gt": 0,
             field + "__" + ionisation + "__peaks__1__gt": mz - difference,
