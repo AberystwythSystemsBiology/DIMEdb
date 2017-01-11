@@ -6,6 +6,8 @@ These instructions are written for Ubuntu 16.04. If you require any platform-spe
 
 ### MongoDB
 
+#### Installing MongoDB
+
 MongoDB is already included in the standard Ubuntu package repository, but the recommended installation source is from the official MongoDB repository.
 
 To do this, firstly you are required to import the key for the official MongoDB repository to your sources list.
@@ -24,6 +26,8 @@ Once completed, you can now install the MongoDB package.
 ```
 sudo apt-get install -y mongodb-org
 ```
+
+#### Configurating MongoDB
 
 We're not quite finished(!) We now need to tell ```systemd``` how to manage the resource.
 
@@ -53,6 +57,12 @@ Now set up the service to run by default.
 
 ```
 sudo systemctl start mongodb && sudo systemctl enable mongodb
+```
+
+#### Setting up the collection
+
+```
+mongoimport --db mbdb --collection metabolites --type json --file mb-db.json --jsonArray 
 ```
 
 ### python-pip
