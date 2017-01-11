@@ -22,31 +22,6 @@ def load_output(hmdb_fp="./output/hmdb.json"):
                 output.update(json.load(file))
     return output
 
-def formula_splitter(chem_form):
-    atom_dict = collections.defaultdict()
-    t_atoms = [re.findall('[0-9]+', x) for x in re.findall('[A-Z][a-z]*[0-9]*', chem_form)]
-    if int(sum(t_atoms, [])[0]) < 5:
-        return False, False
-    else:
-        for element in re.findall('[A-Z][a-z]*[0-9]*', chem_form):
-            atom = re.findall('[A-Z][a-z]*', element)[0]
-            atom_count = re.findall('[0-9]+', element)
-            if len(atom_count) < 1:
-                atom_count = 1
-            else:
-                atom_count = int(atom_count[0])
-            atom_weight = float(
-                np.matrix(periodic_table[atom]["isotopic_weight"]) * np.transpose(np.matrix(periodic_table[atom]["isotopic_ratio"])))
-            atom_dict[atom] = {
-                "Atom Count": atom_count,
-                "Atomic Charge": periodic_table[atom]["atomic_charge"],
-                "Element Weight": atom_weight,
-                "Total Weight": atom_count * atom_weight,
-                "Isotopic Ratios": periodic_table[atom]["isotopic_ratio"],
-                "Isotopic Weights": periodic_table[atom]["isotopic_weight"]
-            }
-        return atom_dict
-
 def cartesian(ratios, weights, f_ratios, f_weights, count=1, threshold=0.25):
     n_ratios = []
     n_weights = []
@@ -67,16 +42,15 @@ def cartesian(ratios, weights, f_ratios, f_weights, count=1, threshold=0.25):
         n_ratios, n_weights = cartesian(ratios, weights, n_ratios, n_weights, count)
     return n_ratios, n_weights
 
-def isotopes(atoms):
+def isotopes(elements):
     ratios = []
     weights = []
-    for x in atoms:
-        for i in range(atoms[x]["Atom Count"]):
-            ratios.append(atoms[x]["Isotopic Ratios"])
-            weights.append(atoms[x]["Isotopic Weights"])
+    for x in elements.keys():
+        for i in range(elements[x]["element_count"]):
+            ratios.append(elements[x]["isotopic_ratios"])
+            weights.append(elements[x]["isotopic_weights"])
     return cartesian(ratios, weights, ratios[0], weights[0])
 
-# nom nom nom
 def calculate_nom_distribution(ratios, weights):
     paired_w_r = [(weights[index], r) for index, r in enumerate(ratios) if r > 1e-6]
     signals = dict((key, tuple(v for (k, v) in pairs))
@@ -87,48 +61,100 @@ def calculate_nom_distribution(ratios, weights):
         n_d[mz] = float(sum(rel_int)) * 100 / lv
     return sorted(n_d.items(), key=lambda x: x[0])
 
+def function_name(element):
+    raitos, weights = isotopes(element)
+    nd = calculate_nom_distribution(raitos, weights)
+    accurate_mass = nd[0][0]
+    return nd, accurate_mass
 
-# TODO: Implement rules.
-def get_anion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution):
-    adducts = []
-    if ndon > 0 and nch == 0:
-        # Write a rule based calculator.
-        adducts.append({"type" : "[M-H]1-", "peak" : nominal_distribution[0][0] - 1})
-    if ndon > 1 and nacc > 0 and nch == 0:
-        adducts.append({"type" : "[M+Na-2H]1-", "peak" : nominal_distribution[0][0] - 21})
-    return adducts
+def calculate_element_weight(element):
+    iso_weight = periodic_table[element]["isotopic_weight"]
+    ratio = periodic_table[element]["isotopic_ratio"]
+    return float(np.matrix(ratio) * np.transpose(np.matrix(iso_weight)))
 
-def get_canion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution):
-    adducts = []
-    return adducts
+def element_calculator(structure_dict):
+    elements = {}
+    for e in structure_dict.keys():
+        element_weight = calculate_element_weight(e)
+        elements[e] = {
+            "element_count" : structure_dict[e],
+            "atomic_charge" : periodic_table[e]["atomic_charge"],
+            "molecular_weight" : int(structure_dict[e]) * element_weight,
+            "isotopic_ratios" : periodic_table[e]["isotopic_ratio"],
+            "isotopic_weights" :  periodic_table[e]["isotopic_weight"]
+        }
+    return elements
 
-def adduct(mol, nominal_distribution):
+def gen_rule_dict(t, am, d):
+    return {
+            "type" : t,
+            "accurate_mass" : am,
+            "isotopic_distribution" : d
+    }
+
+def rules(structure_dict, mol):
     nacc = rdMolDescriptors.CalcNumHBA(mol)
     ndon = rdMolDescriptors.CalcNumHBD(mol)
     noh = sum([Fragments.fr_Al_OH(mol), Fragments.fr_Ar_OH(mol)])
     nnhh = Fragments.fr_NH2(mol)
     ncooh = Fragments.fr_COO(mol)
     nch = sum([atom.GetFormalCharge() for atom in mol.GetAtoms()])
-    adduct_dict = {}
-    adduct_dict["neutral"] = nominal_distribution[0][0]
-    anions = get_anion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution)
-    adduct_dict["negative"] = {"count" : len(anions), "peaks" : anions}
-    canions = get_canion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution)
-    adduct_dict["positive"] = {"count" : len(canions) , "peaks" : canions}
-    return adduct_dict
+
+    adducts = collections.defaultdict(list)
+    # M (Neutral)
+    nominal_element = element_calculator(structure_dict)
+    accurate_mass = sum([x["molecular_weight"] for x in nominal_element.values()])
+    d, am = function_name(nominal_element)
+    adducts["neutral"].append(gen_rule_dict("M", am, d))
+
+    # Negative
+    if ndon > 1 and nacc == 0:
+        structure_dict["H"] = structure_dict["H"] - 1
+        element = element_calculator(structure_dict)
+        d, am = function_name(element)
+        adducts["negative"].append(gen_rule_dict("M-H", am, d))
+    if nacc > 0 and nch == 0:
+        try:
+            structure_dict["Na"] = structure_dict["Na"] + 1
+        except KeyError:
+            structure_dict["Na"] = 1
+        element = element_calculator(structure_dict)
+        d, am = function_name(element)
+        adducts["negative"].append(gen_rule_dict("M+Na", am, d))
+    # Positive
+    if nacc > 0 and nch == 0:
+        structure_dict["H"] = structure_dict["H"] + 1
+        element = element_calculator(structure_dict)
+        d, am = function_name(element)
+        adducts["positive"].append(gen_rule_dict("M+H", am, d))
+
+    final_adducts = {}
+    for ion in adducts.keys():
+        data = {
+            "count" : len(adducts[ion]),
+            "peaks" : [x for x in adducts[ion]]
+        }
+        final_adducts[ion] = data
+    return accurate_mass, final_adducts
+
+def split(formula):
+    structure_dict = {}
+    elem = re.findall('[A-Z][a-z]*', formula)
+    elem_c = [re.findall('[0-9]+', x) for x in re.findall('[A-Z][a-z]*[0-9]*', formula)]
+    for idx, e in enumerate(elem):
+        if elem_c[idx] == 0:
+            elem_c[idx] = 0
+        structure_dict[e] = int(elem_c[idx][0])
+    return structure_dict
 
 def process_entity(entity):
     # TODO: See where these exceptions are...
     try:
+        final_d = {}
         mol = Chem.MolFromSmiles(entity["smiles"])
         formula = rdMolDescriptors.CalcMolFormula(mol)
-        atom_dict = formula_splitter(formula)
-        accurate_mass = sum([atom_dict[x]["Total Weight"] for x in atom_dict.keys()])
-        ratios, weights = isotopes(atom_dict)
-        nominal_distribution = calculate_nom_distribution(ratios, weights)
-        ad = adduct(mol, nominal_distribution)
-
-        isotopic_distributions = [[x[0]-ad["neutral"], x[1]] for x in nominal_distribution]
+        structure_dict = split(formula)
+        accurate_mass, adducts = rules(structure_dict, mol)
 
         final_d = {
             "name" : entity["name"],
@@ -136,10 +162,8 @@ def process_entity(entity):
             "smiles" : entity["smiles"],
             "origins" : entity["origins"],
             "accurate_mass" : accurate_mass,
-            "adduct_weights" : ad,
-            "isotopic_distributions" : isotopic_distributions
+            "adducts" : adducts,
         }
-
         return final_d
     except Exception, err:
         return None

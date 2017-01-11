@@ -70,7 +70,7 @@ function render_view(base_url, id) {
             }
         };
 
-        Plotly.newPlot("distribution_chart", isotopic_data, layout)
+        Plotly.newPlot("distribution_chart", isotopic_data, layout, {displayModeBar : false})
         $("#container").show()
     });
 }
