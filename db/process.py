@@ -107,6 +107,9 @@ def rules(structure_dict, mol):
     d, am = function_name(nominal_element)
     adducts["neutral"].append(gen_rule_dict("M", am, d))
 
+    adducts["negative"] = []
+    adducts["positive"] = []
+
     # Negative
     if ndon > 1 and nacc == 0:
         structure_dict["H"] = structure_dict["H"] - 1

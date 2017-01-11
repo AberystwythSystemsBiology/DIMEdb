@@ -19,43 +19,48 @@ class MetaboliteBasicResource(Resource):
         "molecular_formula" : [ops.Exact, ops.Contains, ops.IContains],
         "accurate_mass" : [ops.Exact, o.AccurateMassSearch, ops.Gte, ops.Gt]
     }
-
 class NegativePeaksResource(Resource):
     document = d.NegativePeaks
 
-class PositivePeaksResource(Resource):
-    document = d.PositivePeaks
-
 class NegativeAdductResource(Resource):
-    document = d.NegativeAdduct
+    document = d.NegativeAdducts
+
     related_resources = {
         "peaks" : NegativePeaksResource
     }
 
+class NeutralPeaksResource(Resource):
+    document = d.NeutralPeaks
+
+class NeutralAdductResource(Resource):
+    document = d.NeutralAdducts
+
+    related_resources = {
+        "peaks" : NeutralPeaksResource
+    }
+
+class PositivePeaksResource(Resource):
+    document = d.PositivePeaks
+
 class PositiveAdductResource(Resource):
-    document = d.PositiveAdduct
+    document = d.PositiveAdducts
+
     related_resources = {
         "peaks" : PositivePeaksResource
     }
 
-class AdductWeightsResource(Resource):
-    document = d.AdductWeights
+class AdductsResource(Resource):
+    document = d.Adducts
 
     related_resources = {
         "positive" : PositiveAdductResource,
-        "negative" : NegativeAdductResource
+        "negative" : NegativeAdductResource,
+        "neutral" : NeutralAdductResource
     }
 
-class MetaboliteAdductResource(Resource):
-    document = d.MetaboliteAdduct
-    filters = {
-        "adduct_weights__positive__count": [ops.Gt],
-        "adduct_weights": [o.Ionisation],
-        "adduct_weights__positive": [o.AccurateMassSearch],
-        "adduct_weights__negative" : [o.AccurateMassSearch],
-        "adduct_weights__neutral": [o.AccurateMassSearch]
-    }
+class MetaboliteAdductsResource(Resource):
+    document = d.MetaboliteAdducts
 
     related_resources = {
-        "adduct_weights" : AdductWeightsResource
+        "adducts" : AdductsResource
     }

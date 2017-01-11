@@ -30,9 +30,9 @@ class MetaboliteBasicView(ResourceView):
     methods = [methods.List, methods.Fetch]
 
 @api.register(name="adducts", url="/api/adducts/")
-class MetaboliteAdductView(ResourceView):
-    resource = r.MetaboliteAdductResource
-    methods = [methods.List, methods.Fetch]
+class Adducts(ResourceView):
+    resource = r.MetaboliteAdductsResource
+    methods = [methods.List]
 
 # Annoying webpage stuff.
 
