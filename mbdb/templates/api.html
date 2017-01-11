@@ -28,14 +28,20 @@ API
     <pre>{{ url }}metabolites/?accurate_mass__ppm=420.69,20</pre>
 
 
-    <h3>Putative Ionisations</h3>
+    <h3>Putative Ionisation Search</h3>
 
     <p>Return all metabolites that can be negatively charged</p>
 
     <pre>{{ url }}adducts/?adduct_weights__ion=negative</pre>
 
     <p>Return all neutrally charged metabolites that fall within a 10ppm range of 130m/z</p>
+
     <pre>{{ url }}adducts/?adduct_weights__neutral__ppm=130,10</pre>
+
+    <p>Return all negatively charged metabolites that can potentially be putatively ionised within a 20ppm range of 140/mz.</p>
+
+    <pre>{{ url }}adducts/?adduct_weights__negative__ppm=140,20</pre>
+
     <h3>Integration with Python</h3>
 
     An example Python script to obtain all metabolites containing "Gangli" in their name, and appending the results to a list.

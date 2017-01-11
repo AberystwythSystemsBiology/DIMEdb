@@ -4,9 +4,13 @@ function render_view(base_url, id) {
     var y_plot = [];
 
     $.getJSON(url, function (data) {
+        // Obtain metabolite dictonary
         var metabolite = data["data"][0];
+
         // Change the document title.
         $(document).prop('title', metabolite["name"] + " : MetaBolomics DataBase");
+
+        // Fill up the Information Table.
         $("#met_name").html(metabolite["name"]);
         $("#get_json").attr("href", base_url+"api/metabolite/?id__exact="+metabolite["id"]);
         $("#molecular_formula").html(metabolite["molecular_formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
@@ -15,15 +19,14 @@ function render_view(base_url, id) {
         $("#neutral_mass").html(metabolite["adduct_weights"]["neutral"]);
         $("#smiles").html(metabolite["smiles"]);
 
-        console.log(metabolite);
-
         for (o in metabolite["origins"]) {
             $("#origins").append("<p>"+metabolite["origins"][o]+"</p>");
         }
 
-        for (result in metabolite["adduct_weights"]["negative"]["count"]) {
-            var peak = metabolite["adduct_weights"]["negative"]["peaks"];
-            $("#negative_adduct").append("<li class='list-group-item'><b>"+peak[0]+":</b> "+peak[1].toFixed(4)+"</li>");
+        // Negative
+        for (result in metabolite["adduct_weights"]["negative"]["peaks"]) {
+            var peak = metabolite["adduct_weights"]["negative"]["peaks"][result];
+            $("#negative_adduct").append("<li class='list-group-item'><b>"+peak["type"]+":</b> "+peak["peak"].toFixed(4)+"</li>");
         }
 
         $.ajax({

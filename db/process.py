@@ -88,24 +88,14 @@ def calculate_nom_distribution(ratios, weights):
     return sorted(n_d.items(), key=lambda x: x[0])
 
 
-'''
-
-    adduct_info : {
-        negative : {
-            adducts [
-                { type : M-H1, peak : int},
-                ... obv
-            ]
-            }
-
-'''
-
 # TODO: Implement rules.
 def get_anion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution):
     adducts = []
     if ndon > 0 and nch == 0:
         # Write a rule based calculator.
         adducts.append({"type" : "[M-H]1-", "peak" : nominal_distribution[0][0] - 1})
+    if ndon > 1 and nacc > 0 and nch == 0:
+        adducts.append({"type" : "[M+Na-2H]1-", "peak" : nominal_distribution[0][0] - 21})
     return adducts
 
 def get_canion(nacc, ndon, noh, nnhh, ncooh, nch, nominal_distribution):
