@@ -92,6 +92,16 @@ def gen_rule_dict(t, am, d):
             "isotopic_distribution" : d
     }
 
+def rule_dict_based(structure_dict, rule_dict):
+    for element in rule_dict["remove"]:
+        structure_dict[element] = structure_dict[element] - rule_dict["remove"][element]
+    for element in rule_dict["add"]:
+        try:
+            structure_dict[element] = structure_dict[element] + rule_dict["add"][element]
+        except KeyError:
+            structure_dict[element] = rule_dict["add"][element]
+    return structure_dict
+
 def rules(structure_dict, mol):
     nacc = rdMolDescriptors.CalcNumHBA(mol)
     ndon = rdMolDescriptors.CalcNumHBD(mol)
@@ -110,28 +120,15 @@ def rules(structure_dict, mol):
     adducts["negative"] = []
     adducts["positive"] = []
 
-    # These are all in the same fucking variable you STUPID FUCKING CUNT. NO WONDER IT DOENS'T WORK YOU COMPLETE AND UTTER FUCKING TIT
-    # FIRST CLASS DEGREE? MORE LIKE FIRST CLASS FUCKING MORON.
-    # Negative
     if ndon > 1 and nacc == 0:
-        structure_dict["H"] = structure_dict["H"] - 1
-        element = element_calculator(structure_dict)
-        d, am = function_name(element)
+        sd = rule_dict_based(structure_dict, {"remove" : {"H" : 1}, "add" : {}})
+        d, am = function_name(sd)
         adducts["negative"].append(gen_rule_dict("M-H", am, d))
     if nacc > 0 and nch == 0:
-        try:
-            structure_dict["Na"] = structure_dict["Na"] + 1
-        except KeyError:
-            structure_dict["Na"] = 1
-        element = element_calculator(structure_dict)
+        sd = rule_dict_based(structure_dict, {"remove" : {}, "add" : {"Na" : 1}})
+        element = element_calculator(sd)
         d, am = function_name(element)
         adducts["negative"].append(gen_rule_dict("M+Na", am, d))
-    # Positive
-    if nacc > 0 and nch == 0:
-        structure_dict["H"] = structure_dict["H"] + 1
-        element = element_calculator(structure_dict)
-        d, am = function_name(element)
-        adducts["positive"].append(gen_rule_dict("M+H", am, d))
 
     final_adducts = {}
     for ion in adducts.keys():

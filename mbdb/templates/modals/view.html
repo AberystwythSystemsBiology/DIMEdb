@@ -1,22 +1,23 @@
     <div class="modal fade" id="distribution_modal" role="dialog">
-    <div class="modal-dialog modal-sm">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 id="dtable_header" class="modal-title">Isotopic Distribution Table </h4>
+                <h4 id="dtable_header" class="modal-title">Isotopic Distribution Table (<span id="dm_adduct"></span>)</h4>
             </div>
             <div class="modal-body">
-                <table class="table table-striped" id="distribution_table">
+                <div class="container">
+                <table class="table table-striped" id="distribution_table" width="50%">
                     <thead>
                     <tr>
                         <th>Mass (m/z)</th>
-                        <th>Intensity (%)</th>
+                        <th>Relative Intensity (%)</th>
                     </tr>
                     </thead>
                     <tbody>
-
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     </div>

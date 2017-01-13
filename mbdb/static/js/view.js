@@ -38,20 +38,16 @@ function render_view(base_url, id) {
             else {
                 for (adduct_idx in metabolite["adducts"][result]["peaks"]) {
                     var adduct = metabolite["adducts"][result]["peaks"][adduct_idx];
-                    $("#"+result+"_adduct").append("<li class='list-group-item'><b>"+adduct["type"]+":</b> "+adduct["accurate_mass"].toFixed(4)+"</li>");
+                    $("#"+result+"_adduct").append("<li class='list-group-item'><b>"+adduct["type"]+":</b> "+adduct["accurate_mass"].toFixed(4)+"<button id='isotope' name='"+result+"_"+adduct_idx+"' class='btn btn-primary btn-sm pull-right'>Isotope</button><div class='clearfix'></div></li>");
                 }
             }
         }
 
-
         for (i in metabolite["adducts"]["neutral"]["peaks"][0]["isotopic_distribution"]) {
             var spectra = metabolite["adducts"]["neutral"]["peaks"][0]["isotopic_distribution"][i];
-            var mz_spectra = (spectra[0]);
-            x_plot.push(mz_spectra);
+            x_plot.push(spectra[0]);
             y_plot.push(spectra[1]);
-            $("#distribution_table tbody").append("<tr><td>" + mz_spectra.toFixed(4) + "</td><td>" + spectra[1].toFixed(2) + "</td></tr>")
         }
-
 
         var isotopic_data = [{
             x: x_plot,
@@ -83,9 +79,19 @@ function render_view(base_url, id) {
 
         // Prep table
 
-        $("#isotope").click(function () {
+        $('[id="isotope"]').click(function () {
+            var isotope_array = $(this).attr("name").split("_");
+            console.log(isotope_array);
+            var adduct_dict = metabolite["adducts"][isotope_array[0]]["peaks"][isotope_array[1]];
+            console.log(adduct_dict);
+            $("#distribution_table tbody").html("");
+            $("#dm_adduct").html(adduct_dict["type"]);
+            for (i in adduct_dict["isotopic_distribution"]) {
+                var spectra = adduct_dict["isotopic_distribution"][i];
+                $("#distribution_table tbody").append("<tr><td>" + spectra[0].toFixed(4) + "</td><td>" + spectra[1].toFixed(2) + "</td></tr>")
+
+            }
             $("#distribution_modal").modal("toggle");
-            console.log($(this).attr("name"));
         });
     });
 
