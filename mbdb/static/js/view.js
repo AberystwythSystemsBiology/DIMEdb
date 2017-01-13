@@ -12,36 +12,36 @@ function render_view(base_url, id) {
 
         // Fill up the Information Table.
         $("#met_name").html(metabolite["name"]);
-        $("#get_json").attr("href", base_url+"api/metabolite/?id__exact="+metabolite["id"]);
+        $("#get_json").attr("href", base_url + "api/metabolite/?id__exact=" + metabolite["id"]);
         $("#molecular_formula").html(metabolite["molecular_formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
-        $("#molecular_formula_search").attr("href", base_url+"api/metabolites/?molecular_formula__exact="+metabolite["molecular_formula"])
+        $("#molecular_formula_search").attr("href", base_url + "api/metabolites/?molecular_formula__exact=" + metabolite["molecular_formula"])
         $("#accurate_mass").html(metabolite["accurate_mass"]);
-        $("#neutral_mass").html(metabolite["adducts"]["neutral"]["peaks"][0]["accurate_mass"]);
         $("#smiles").html(metabolite["smiles"]);
 
         for (o in metabolite["origins"]) {
-            $("#origins").append("<p>"+metabolite["origins"][o]+"</p>");
+            $("#origins").append("<p>" + metabolite["origins"][o] + "</p>");
         }
 
 
         $.ajax({
-            url: base_url+"gen_structure/"+metabolite["id"],
+            url: base_url + "gen_structure/" + metabolite["id"],
             success: function (result) {
-                $("#structure").attr("src", "data:image/png;base64,"+result);
+                $("#structure").attr("src", "data:image/png;base64," + result);
             }
         });
 
-        // Negative
-        for (result in metabolite["adducts"]["negative"]["peaks"]) {
-            var peak = metabolite["adducts"]["negative"]["peaks"][result];
-            $("#negative_adduct").append("<li class='list-group-item'><b>"+peak["type"]+":</b> "+peak["accurate_mass"].toFixed(4)+"</li>");
-        }
+        for (result in metabolite["adducts"]) {
+            if (result == "neutral") {
+                $("#neutral_mass").html(metabolite["adducts"]["neutral"]["peaks"][0]["accurate_mass"]);
+            }
 
-        for (result in metabolite["adducts"]["positive"]["peaks"]) {
-            var peak = metabolite["adducts"]["positive"]["peaks"][result];
-            $("#positive_adduct").append("<li class='list-group-item'><b>"+peak["type"]+":</b> "+peak["accurate_mass"].toFixed(4)+"</li>");
+            else {
+                for (adduct_idx in metabolite["adducts"][result]["peaks"]) {
+                    var adduct = metabolite["adducts"][result]["peaks"][adduct_idx];
+                    $("#"+result+"_adduct").append("<li class='list-group-item'><b>"+adduct["type"]+":</b> "+adduct["accurate_mass"].toFixed(4)+"</li>");
+                }
+            }
         }
-
 
 
         for (i in metabolite["adducts"]["neutral"]["peaks"][0]["isotopic_distribution"]) {
@@ -49,7 +49,7 @@ function render_view(base_url, id) {
             var mz_spectra = (spectra[0]);
             x_plot.push(mz_spectra);
             y_plot.push(spectra[1]);
-            $("#distribution_table tbody").append("<tr><td>"+mz_spectra.toFixed(4)+"</td><td>"+spectra[1].toFixed(2)+"</td></tr>")
+            $("#distribution_table tbody").append("<tr><td>" + mz_spectra.toFixed(4) + "</td><td>" + spectra[1].toFixed(2) + "</td></tr>")
         }
 
 
@@ -63,7 +63,7 @@ function render_view(base_url, id) {
             xaxis: {
                 title: 'Mass (mz)',
                 showgrid: false,
-                range: [Math.min.apply(Math, x_plot)-10, Math.max.apply(Math, x_plot)+10]
+                range: [Math.min.apply(Math, x_plot) - 10, Math.max.apply(Math, x_plot) + 10]
             },
             yaxis: {
                 title: 'Intensity (%)',
@@ -78,7 +78,15 @@ function render_view(base_url, id) {
             }
         };
 
-        Plotly.newPlot("distribution_chart", isotopic_data, layout, {displayModeBar : false})
-        $("#container").show()
+        Plotly.newPlot("distribution_chart", isotopic_data, layout, {displayModeBar: false});
+        $("#container").show();
+
+        // Prep table
+
+        $("#isotope").click(function () {
+            $("#distribution_modal").modal("toggle");
+            console.log($(this).attr("name"));
+        });
     });
+
 }
