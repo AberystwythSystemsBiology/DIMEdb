@@ -75,6 +75,3 @@ def smiles_to_2d(id):
         return smiles_image.getvalue().encode("base64")
     except Exception, err:
         abort(404)
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
