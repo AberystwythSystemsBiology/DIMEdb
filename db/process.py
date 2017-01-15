@@ -119,7 +119,7 @@ def rules(structure_dict, mol):
 
     adducts["negative"] = []
     adducts["positive"] = []
-
+    # Negative Adducts
     if ndon > 1 and nacc == 0:
         sd = rule_dict_based(structure_dict, {"remove" : {"H" : 1}, "add" : {}})
         d, am = function_name(sd)
@@ -129,6 +129,13 @@ def rules(structure_dict, mol):
         element = element_calculator(sd)
         d, am = function_name(element)
         adducts["negative"].append(gen_rule_dict("M+Na", am, d))
+
+    # Positive Adducts
+    if nacc > 0 and nch == 0:
+        sd = rule_dict_based(structure_dict, {"remove" : {}, "add" : {"H" : 1}})
+        element = element_calculator(sd)
+        d, am = function_name(element)
+        adducts["positive"].append(gen_rule_dict("M+H", am, d))
 
     final_adducts = {}
     for ion in adducts.keys():

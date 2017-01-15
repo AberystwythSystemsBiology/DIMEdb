@@ -51,6 +51,7 @@ class Adducts(EmbeddedDocument):
 
 class MetaboliteAdducts(DynamicDocument):
     meta = { "collection" : "metabolites"}
-
     name = StringField()
+    accurate_mass = FloatField()
+    molecular_formula = StringField()
     adducts = EmbeddedDocumentField(Adducts)

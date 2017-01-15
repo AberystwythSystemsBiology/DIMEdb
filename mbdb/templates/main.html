@@ -16,13 +16,21 @@
         <div class="input-group">
             <input type="text" class="search-query form-control" id="search_text"/>
             <span class="input-group-btn">
+                <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span id="s_selector_button">Name</span> <span class="caret"></span></button>
+                <ul id="s_selector" class="dropdown-menu" area-labelledby="search_selector">
+                    <li><a>Name</a></li>
+                    <li><a>Accurate Mass</a></li>
+                    <li><a>Adduct</a></li>
+                </ul>
                 <button class="btn btn-danger" type="button" id="search_button">
                     <span class=" glyphicon glyphicon-search"></span> Query
                 </button>
         </span>
         </div>
-
-
+        <div id="hp_ionisation_selector" class="text-center">
+            <strong>Ionisaiton: </strong> <label class="radio-inline"><input type="radio" name="ioinisation" value="positive" checked> Positive (+)</label>
+            <label class="radio-inline"><input type="radio" name="ioinisation" value="negative">Negative (-)</label>
+        </div>
     </div>
 </div>
 
