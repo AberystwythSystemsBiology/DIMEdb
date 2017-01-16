@@ -16,10 +16,12 @@ function render_view(base_url, id) {
         $("#molecular_formula").html(metabolite["molecular_formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
         $("#molecular_formula_search").attr("href", base_url + "api/metabolites/?molecular_formula__exact=" + metabolite["molecular_formula"])
         $("#accurate_mass").html(metabolite["accurate_mass"]);
+        $("#num_atoms").html(metabolite["num_atoms"]);
+        $("#data_sources").html("<a href='http://www.hmdb.ca/metabolites/"+metabolite["source"]+"' target='_blank'><button class='btn btn-primary'>"+metabolite["source"]+"</button></a>")
         $("#smiles").html(metabolite["smiles"]);
 
         for (o in metabolite["origins"]) {
-            $("#origins").append("<p>" + metabolite["origins"][o] + "</p>");
+            $("#origins").append(metabolite["origins"][o] + "; ");
         }
 
 
@@ -39,7 +41,7 @@ function render_view(base_url, id) {
                 for (adduct_idx in metabolite["adducts"][result]["peaks"]) {
                     var adduct = metabolite["adducts"][result]["peaks"][adduct_idx];
                     $("#"+result+"_adduct").append("<li class='list-group-item'><b>"+adduct["type"]+":</b> "+adduct["accurate_mass"].toFixed(4)+"<button id='isotope' name='"+result+"_"+adduct_idx+"' class='btn btn-primary btn-sm pull-right'>Isotope</button><div class='clearfix'></div></li>");
-                }
+                   }
             }
         }
 
@@ -52,18 +54,19 @@ function render_view(base_url, id) {
         var isotopic_data = [{
             x: x_plot,
             y: y_plot,
-            type: 'bar'
+            type: 'markers',
+            marker: {
+                color: 'rgba(0, 0, 0, 1)'
+            }
         }];
 
         var layout = {
             xaxis: {
-                title: 'Mass (mz)',
-                showgrid: false,
-                range: [Math.min.apply(Math, x_plot) - 10, Math.max.apply(Math, x_plot) + 10]
+                title: 'Mass-to-ion (m/z)',
+                showgrid: false
             },
             yaxis: {
-                title: 'Intensity (%)',
-                showline: false
+                title: 'Relative Intensity (%)'
             },
             margin: {
                 l: 50,
@@ -74,7 +77,7 @@ function render_view(base_url, id) {
             }
         };
 
-        Plotly.newPlot("distribution_chart", isotopic_data, layout, {displayModeBar: false});
+        Plotly.newPlot("distribution_chart", isotopic_data, layout, {displayModeBar: false, barwidth :10});
         $("#container").show();
 
         // Prep table

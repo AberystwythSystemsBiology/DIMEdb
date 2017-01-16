@@ -62,8 +62,8 @@ def calculate_nom_distribution(ratios, weights):
     return sorted(n_d.items(), key=lambda x: x[0])
 
 def function_name(element):
-    raitos, weights = isotopes(element)
-    nd = calculate_nom_distribution(raitos, weights)
+    ratios, weights = isotopes(element)
+    nd = calculate_nom_distribution(ratios, weights)
     accurate_mass = nd[0][0]
     return nd, accurate_mass
 
@@ -123,17 +123,20 @@ def rules(structure_dict, mol):
     # Negative Adducts
     if ndon > 1 and nacc == 0:
         sd = rule_dict_based(structure_dict, {"remove" : {"H" : 1}, "add" : {}})
-        d, am = function_name(sd)
+        nominal_element = element_calculator(structure_dict)
+        d, am = function_name(nominal_element)
         adducts["negative"].append(gen_rule_dict("M-H", am, d))
 
     if ndon > 1 and nacc == 0:
         sd = rule_dict_based(structure_dict, {"remove" : {"H" : 2}, "add" : {"Na" : 1}})
-        d, am = function_name(sd)
+        nominal_element = element_calculator(structure_dict)
+        d, am = function_name(nominal_element)
         adducts["negative"].append(gen_rule_dict("M+Na-2H", am, d))
 
     if ndon > 1 and nacc > 0 and nch == 0:
         sd = rule_dict_based(structure_dict, {"add" : {"K" : 1}, "remove" : {"H" : 2}})
-        d, am = function_name(sd)
+        nominal_element = element_calculator(structure_dict)
+        d, am = function_name(nominal_element)
         adducts["negative"].append(gen_rule_dict("M+K-2H", am, d))
 
     # Positive Adducts
@@ -164,40 +167,51 @@ def split(formula):
     elem = re.findall('[A-Z][a-z]*', formula)
     elem_c = [re.findall('[0-9]+', x) for x in re.findall('[A-Z][a-z]*[0-9]*', formula)]
     for idx, e in enumerate(elem):
-        if elem_c[idx] == 0:
-            elem_c[idx] = 0
-        structure_dict[e] = int(elem_c[idx][0])
+        if len(elem_c[idx]) == 0:
+            elem_c[idx] = [0]
+        try:
+            structure_dict[e] = int(elem_c[idx][0])
+        except IndexError:
+            print "We have serious problems"
     return structure_dict
 
-def process_entity(entity):
-    # TODO: See where these exceptions are...
+def process_entity(entity, id):
+    final_d = {}
     try:
-        final_d = {}
         mol = Chem.MolFromSmiles(entity["smiles"])
         formula = rdMolDescriptors.CalcMolFormula(mol)
         structure_dict = split(formula)
         accurate_mass, adducts = rules(structure_dict, mol)
-
         final_d = {
-            "name" : entity["name"],
-            "molecular_formula" : formula,
-            "smiles" : entity["smiles"],
-            "origins" : entity["origins"],
-            "accurate_mass" : accurate_mass,
-            "adducts" : adducts,
+            "source" : id,
+            "synonyms" : entity["synonyms"]["synonym"],
+            "name": entity["name"],
+            "molecular_formula": formula,
+            "smiles": entity["smiles"],
+            "origins": entity["origins"],
+            "accurate_mass": accurate_mass,
+            "adducts": adducts,
+            "num_atoms" : sum([structure_dict[x] for x in structure_dict])
+
         }
-        return final_d
     except Exception, err:
-        return None
+        pass
+    return final_d
+
 
 
 def generate_db_file(output):
-    db = Parallel(n_jobs=8)(delayed(process_entity)(output[id]) for id in output)
+
+    db = Parallel(n_jobs=4)(delayed(process_entity)(output[id], id) for id in output)
+    '''
+    db = []
+    for id in tqdm.tqdm(output):
+        db.append(process_entity(output[id]))
+    '''
+
+
     db = [x for x in db if x != None]
-    '''
-    for id in output:
-        process_entity(output[id])
-    '''
+
     return db
 
 def save_db_file(db, fp="./output/mb-db.json"):

@@ -7,6 +7,9 @@ class MetaboliteFull(DynamicDocument):
     molecular_formula = StringField()
     smiles = StringField()
     accurate_mass = FloatField()
+    num_atoms = IntField()
+    source = StringField()
+    synonyms = ListField(StringField())
     adducts = StringField()
 
 class MetaboliteBasic(DynamicDocument):

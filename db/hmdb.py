@@ -43,6 +43,7 @@ def parse_hmdb_xml(fd="./dl-files/hmdb/xml_files/"):
                 entity = {
                     "name" : d["name"],
                     "smiles" : d["smiles"],
+                    "synonyms": d["synonyms"],
                     "origins" : origins,
                 }
                 hmdb_dict[d["accession"]] = entity

@@ -14,7 +14,12 @@
         <table class="table table-striped">
             <tbody>
             <tr>
-                <th width="25%">Molecular Formula</th>
+                <th width="25%">Synonyms</th>
+                <td id="synonyms">
+                </td>
+            </tr>
+            <tr>
+                <th>Molecular Formula</th>
                 <td>
                     <span id="molecular_formula"></span>
                     <a id="molecular_formula_search" href="" target="_blank"><button class="btn btn-success btn-sm pull-right">
@@ -34,6 +39,16 @@
             <tr>
                 <th>Origins</th>
                 <td id="origins">
+                </td>
+            </tr>
+            <tr>
+                <th>Number of atoms</th>
+                <td id="num_atoms">
+                </td>
+            </tr>
+            <tr>
+                <th>Data source(s)</th>
+                <td id="data_sources">
                 </td>
             </tr>
             </tbody>
@@ -64,7 +79,7 @@
                         <i class="glyphicon glyphicon glyphicon-stats"></i> Isotope Distribution Table
             </button>
         </h2>
-        <div id="distribution_chart" style="width:90%;height:400px;"></div>
+        <div id="distribution_chart" style="width:100%;height:350px;"></div>
     </div>
     <div class="col-md-3">
         <h2>Adducts</h2>
