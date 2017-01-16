@@ -20,6 +20,10 @@ function render_view(base_url, id) {
         $("#data_sources").html("<a href='http://www.hmdb.ca/metabolites/"+metabolite["source"]+"' target='_blank'><button class='btn btn-primary'>"+metabolite["source"]+"</button></a>")
         $("#smiles").html(metabolite["smiles"]);
 
+        for (o in metabolite["synonyms"]) {
+            $("#synonyms").append(metabolite["synonyms"][o] + "; ");
+        }
+
         for (o in metabolite["origins"]) {
             $("#origins").append(metabolite["origins"][o] + "; ");
         }
