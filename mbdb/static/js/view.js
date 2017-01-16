@@ -12,6 +12,7 @@ function render_view(base_url, id) {
 
         // Fill up the Information Table.
         $("#met_name").html(metabolite["name"]);
+        $("#met_name_modal").html(metabolite["name"]);
         $("#get_json").attr("href", base_url + "api/metabolite/?id__exact=" + metabolite["id"]);
         $("#molecular_formula").html(metabolite["molecular_formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
         $("#molecular_formula_search").attr("href", base_url + "api/metabolites/?molecular_formula__exact=" + metabolite["molecular_formula"])
@@ -20,14 +21,13 @@ function render_view(base_url, id) {
         $("#data_sources").html("<a href='http://www.hmdb.ca/metabolites/"+metabolite["source"]+"' target='_blank'><button class='btn btn-primary'>"+metabolite["source"]+"</button></a>")
         $("#smiles").html(metabolite["smiles"]);
 
-        for (o in metabolite["synonyms"]) {
-            $("#synonyms").append(metabolite["synonyms"][o] + "; ");
+        for (indx in metabolite["synonyms"]) {
+            $("#synonyms").append(metabolite["synonyms"][indx] + "; ");
         }
 
-        for (o in metabolite["origins"]) {
-            $("#origins").append(metabolite["origins"][o] + "; ");
+        for (indx in metabolite["origins"]) {
+            $("#origins").append(metabolite["origins"][indx] + "; ");
         }
-
 
         $.ajax({
             url: base_url + "gen_structure/" + metabolite["id"],
@@ -77,16 +77,19 @@ function render_view(base_url, id) {
                 r: 50,
                 b: 50,
                 t: 50,
-                pad: 4
-            }
+                pad: 2
+            },
+            autosize: false,
+            width:550,
+            height: 350
         };
 
         Plotly.newPlot("distribution_chart", isotopic_data, layout, {displayModeBar: false, barwidth :10});
         $("#container").show();
 
-        // Prep table
-
         $('[id="isotope"]').click(function () {
+            var x_plot = []
+            var y_plot = []
             var isotope_array = $(this).attr("name").split("_");
             console.log(isotope_array);
             var adduct_dict = metabolite["adducts"][isotope_array[0]]["peaks"][isotope_array[1]];
@@ -96,8 +99,22 @@ function render_view(base_url, id) {
             for (i in adduct_dict["isotopic_distribution"]) {
                 var spectra = adduct_dict["isotopic_distribution"][i];
                 $("#distribution_table tbody").append("<tr><td>" + spectra[0].toFixed(4) + "</td><td>" + spectra[1].toFixed(2) + "</td></tr>")
-
+                x_plot.push(spectra[0]);
+                y_plot.push(spectra[1]);
             }
+
+            var modal_data = [{
+            x: x_plot,
+            y: y_plot,
+            type: 'markers',
+            marker: {
+                color: 'rgba(0, 0, 0, 1)'
+            }
+            }];
+
+
+            Plotly.newPlot("distribution_chart_modal", modal_data, layout, {displayModeBar: false, barwidth :10});
+
             $("#distribution_modal").modal("toggle");
         });
     });

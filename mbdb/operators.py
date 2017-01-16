@@ -7,6 +7,13 @@ class PiPpm(Operator):
         mz = float(mz)
         ppm = float(ppm)
         difference = abs(mz * (ppm * 0.0001))
+
+        '''
+        db.metabolites.find(
+            { "adducts.positive.peaks.accurate_mass": {$gt : 1200, $lt : 1220}},
+            { "name" : 1, "accurate_mass" :1, "adducts.positive.peaks.$": 1}
+        )
+        '''
         return {
             "adducts__"+ionisation+"__peaks__accurate_mass__lt" : mz+difference,
             "adducts__" + ionisation + "__peaks__accurate_mass__gt": mz-difference
