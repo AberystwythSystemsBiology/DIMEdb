@@ -1,3 +1,17 @@
+/*
+    New search method.
+
+    == Standard text search option, keep it as it is - it's fine.
+
+    == PPI / Neutral
+
+    New table to be created
+
+    | Name | Adduct | Adduct m/z | Neutral m/z | Difference |
+
+
+ */
+
 function render_view(base_url, id) {
     var url = base_url + "api/metabolite/?id__exact=" + id;
     var x_plot = [];

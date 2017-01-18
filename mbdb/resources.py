@@ -67,3 +67,10 @@ class MetaboliteAdductsResource(Resource):
     related_resources = {
         "adducts" : AdductsResource
     }
+
+    def get_queryset(self, *args, **kwargs):
+        return super(MetaboliteAdductsResource, self).get_queryset(*args, **kwargs).fields(name=1, accurate_mass=1,
+                                                                                           molecular_formula=1, adducts=1,
+                                                                                           adducts_negative_peaks__S = 1,
+                                                                                           adducts_positive_peaks__S= 1,
+                                                                                           adducts_neutral_peaks__S = 1)
