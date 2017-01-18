@@ -74,6 +74,10 @@ table#search_results {
     width:100%;
 }
 
+.btn-space {
+    margin-right: 5px;
+}
+
 #home-page-search {
         max-width: 800px;
         margin:0 auto 0;

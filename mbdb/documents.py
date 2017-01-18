@@ -8,7 +8,8 @@ class MetaboliteFull(DynamicDocument):
     smiles = StringField()
     accurate_mass = FloatField()
     num_atoms = IntField()
-    source = StringField()
+    sources = StringField()
+    pathways = StringField()
     synonyms = ListField(StringField())
     adducts = StringField()
 
@@ -43,6 +44,13 @@ class NeutralPeaks(EmbeddedDocument):
     accurate_mass = FloatField()
     isotopic_distribution = ListField()
 
+'''
+class Sources(EmbeddedDocument):
+    kegg_id = StringField()
+    chebi_id = StringField()
+    pubchem_id = StringField()
+'''
+
 class NeutralAdducts(EmbeddedDocument):
     count = IntField()
     peaks = EmbeddedDocumentListField(PositivePeaks)
@@ -58,3 +66,4 @@ class MetaboliteAdducts(DynamicDocument):
     accurate_mass = FloatField()
     molecular_formula = StringField()
     adducts = EmbeddedDocumentField(Adducts)
+    #sources = EmbeddedDocumentField(Sources)

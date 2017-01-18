@@ -32,7 +32,37 @@ function render_view(base_url, id) {
         $("#molecular_formula_search").attr("href", base_url + "api/metabolites/?molecular_formula__exact=" + metabolite["molecular_formula"])
         $("#accurate_mass").html(metabolite["accurate_mass"]);
         $("#num_atoms").html(metabolite["num_atoms"]);
-        $("#data_sources").html("<a href='http://www.hmdb.ca/metabolites/"+metabolite["source"]+"' target='_blank'><button class='btn btn-primary'>"+metabolite["source"]+"</button></a>")
+
+        for (p in metabolite["pathways"]) {
+            var pw = metabolite["pathways"][p];
+            $("#pathway_listgroup").append("<li class='list-group-item'>"+
+                pw["name"]
+                +"</li>");
+        }
+
+        for (source in metabolite["sources"]) {
+            if (metabolite["sources"][source]) {
+                var id = metabolite["sources"][source];
+                if (source == "kegg_id") {
+                    var kegg_url = "http://www.genome.jp/dbget-bin/www_bget?compound+"+String(id)
+                    $("#data_sources").append("<a href='"+kegg_url+"'><button class='btn btn-success btn-sm btn-space'><i class='glyphicon glyphicon-link'></i> KEGG</button></a>");
+                }
+
+                if (source == "chebi_id") {
+                    var chebi_url = "http://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:"+String(id)
+                    $("#data_sources").append("<a href='"+chebi_url+"'><button class='btn btn-danger btn-sm btn-space'><i class='glyphicon glyphicon-link'></i> CHEBI</button></a>");
+
+                }
+
+                if (source == "pubchem_id") {
+                    var pubchem_url = "https://pubchem.ncbi.nlm.nih.gov/compound/"+String(id)
+                    $("#data_sources").append("<a href='"+pubchem_url+"'><button class='btn btn-warning btn-sm btn-space'><i class='glyphicon glyphicon-link'></i> PubChem</button></a>");
+
+                }
+            }
+        }
+
+        // $("#data_sources").html("<a href='http://www.hmdb.ca/metabolites/"+metabolite["source"]+"' target='_blank'><button class='btn btn-primary'>"+metabolite["source"]+"</button></a>")
         $("#smiles").html(metabolite["smiles"]);
 
         for (indx in metabolite["synonyms"]) {
@@ -58,7 +88,7 @@ function render_view(base_url, id) {
             else {
                 for (adduct_idx in metabolite["adducts"][result]["peaks"]) {
                     var adduct = metabolite["adducts"][result]["peaks"][adduct_idx];
-                    $("#"+result+"_adduct").append("<li class='list-group-item'><b>"+adduct["type"]+":</b> "+adduct["accurate_mass"].toFixed(4)+"<button id='isotope' name='"+result+"_"+adduct_idx+"' class='btn btn-primary btn-sm pull-right'>Isotope</button><div class='clearfix'></div></li>");
+                    $("#"+result+"_adduct").append("<li class='list-group-item'><b>"+adduct["type"]+":</b> "+adduct["accurate_mass"].toFixed(4)+"<button id='isotope' name='"+result+"_"+adduct_idx+"' class='btn btn-primary btn-sm pull-right'><i class='glyphicon glyphicon glyphicon-stats'></i> Isotope</button><div class='clearfix'></div></li>");
                    }
             }
         }
@@ -104,9 +134,7 @@ function render_view(base_url, id) {
             var x_plot = []
             var y_plot = []
             var isotope_array = $(this).attr("name").split("_");
-            console.log(isotope_array);
             var adduct_dict = metabolite["adducts"][isotope_array[0]]["peaks"][isotope_array[1]];
-            console.log(adduct_dict);
             $("#distribution_table tbody").html("");
             $("#dm_adduct").html(adduct_dict["type"]);
             for (i in adduct_dict["isotopic_distribution"]) {
@@ -119,14 +147,13 @@ function render_view(base_url, id) {
             var modal_data = [{
             x: x_plot,
             y: y_plot,
-            type: 'markers',
+            type: 'bar',
             marker: {
                 color: 'rgba(0, 0, 0, 1)'
             }
             }];
 
-
-            Plotly.newPlot("distribution_chart_modal", modal_data, layout, {displayModeBar: false, barwidth :10});
+            Plotly.newPlot("distribution_chart_modal", modal_data, layout, {displayModeBar: false});
 
             $("#distribution_modal").modal("toggle");
         });
