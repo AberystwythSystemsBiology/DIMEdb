@@ -128,7 +128,63 @@ $(document).ready(function () {
                 }
             }
             else if (search_type == "Accurate Mass") {
+                if (jQuery.isNumeric(query)) {
                 var url = current_url + "api/adducts/?adducts__pi_ppm=neutral," + String(query) + ",20";
+                $('#search_results').DataTable({
+                        "destroy": true,
+                        "ajax": url,
+                        "columns": [
+                            {
+                                "title": "Name",
+                                "width": "50%",
+                                "data": "name",
+                                "render": function (data, type, row) {
+                                    return data
+
+                                }
+                            },
+                            {
+                                "title": "Molecular Formula",
+                                "width": "10%",
+                                "data": "molecular_formula",
+                                "render": function (data, type, row) {
+                                    return data.replace(/([0-9]+)/g, '<sub>$1</sub>');
+                                }
+                            },
+                            {
+                                "title": "Accurate Mass (m/z)",
+                                "data": "adducts",
+                                "width": "10%",
+                                "render": function (data, type, row) {
+                                    return data["neutral"]["peaks"][0]["accurate_mass"].toFixed(3);
+                                }
+                            },
+                            {
+                                "title": "Difference (m/z)",
+                                "data": "adducts",
+                                "width": "5%",
+                                "render": function (data, type, row) {
+                                    return Math.abs(data["neutral"]["peaks"][0]["accurate_mass"] - parseFloat(query)).toFixed(3);
+                                }
+                            },
+                            {
+                                "title": "Actions",
+                                "data": "id",
+                                "width": "5%",
+                                "render": function (data, type, row) {
+                                    var view_url = current_url + "view/" + data;
+                                    return "<a href='" + view_url + "' target='_blank'><button class='btn btn-sm btn-primary'>View</button></a>"
+                                }
+                            }
+                        ],
+                        "searching": false,
+                        //"bSort" : false,
+                        "lengthChange": false,
+                        "pageLength": 10
+                    });
+                }
+
+
             }
             $("#search_results").fadeIn("slow");
         }
