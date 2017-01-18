@@ -63,6 +63,7 @@ class MetaboliteAdductsResource(Resource):
     filters = {
         "adducts": [o.PiPpm]
     }
+    max_limit, default_limit = [1000, 1000]
 
     related_resources = {
         "adducts" : AdductsResource

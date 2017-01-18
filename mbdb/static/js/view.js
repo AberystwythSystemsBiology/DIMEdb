@@ -72,7 +72,7 @@ function render_view(base_url, id) {
         var isotopic_data = [{
             x: x_plot,
             y: y_plot,
-            type: 'markers',
+            type: 'bar',
             marker: {
                 color: 'rgba(0, 0, 0, 1)'
             }
@@ -81,7 +81,8 @@ function render_view(base_url, id) {
         var layout = {
             xaxis: {
                 title: 'Mass-to-ion (m/z)',
-                showgrid: false
+                showgrid: false,
+                range: [Math.min.apply(Math, x_plot)-2, Math.max.apply(Math, x_plot)+2]
             },
             yaxis: {
                 title: 'Relative Intensity (%)'
@@ -93,9 +94,7 @@ function render_view(base_url, id) {
                 t: 50,
                 pad: 2
             },
-            autosize: false,
-            width:550,
-            height: 350
+            bargap : 0.99
         };
 
         Plotly.newPlot("distribution_chart", isotopic_data, layout, {displayModeBar: false, barwidth :10});
