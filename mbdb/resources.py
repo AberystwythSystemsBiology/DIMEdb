@@ -48,6 +48,9 @@ class PositiveAdductResource(Resource):
         "peaks" : PositivePeaksResource
     }
 
+class SourcesResource(Resource):
+    pass
+
 class AdductsResource(Resource):
     document = d.Adducts
 

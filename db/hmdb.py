@@ -32,23 +32,43 @@ def parse_hmdb_xml(fd="./dl-files/hmdb/xml_files/"):
     hmdb_dict = collections.defaultdict(dict)
     for file in tqdm(os.listdir(fd)):
         with open(fd+file, "r") as hmdb_xml_f:
-            try:
-                d = xmltodict.parse(hmdb_xml_f.read())["metabolite"]
+            if file.endswith(".xml"):
                 try:
-                    origins = d["ontology"]["origins"]["origin"]
-                    if type(origins) != list:
-                        origins = [origins]
-                except TypeError:
-                    origins = []
-                entity = {
-                    "name" : d["name"],
-                    "smiles" : d["smiles"],
-                    "synonyms": d["synonyms"],
-                    "origins" : origins,
-                }
-                hmdb_dict[d["accession"]] = entity
-            except Exception, err:
-                continue
+                    d = xmltodict.parse(hmdb_xml_f.read())["metabolite"]
+                    try:
+                        origins = d["ontology"]["origins"]["origin"]
+                        if type(origins) != list:
+                            origins = [origins]
+                    except TypeError:
+                        origins = []
+
+                    try:
+                        pathway = [{"name": d["pathways"][x]["name"],
+                          "kegg": d["pathways"][x]["kegg_map_id"],
+                          "smpdb": d["pathways"][x]["smpdb_id"]} for x in d["pathways"]]
+                    except TypeError:
+                        pathway = []
+
+                    try:
+                        synonyms = d["synonyms"]["synonym"]
+                    except TypeError:
+                        synonyms = []
+                    entity = {
+                        "name" : d["name"],
+                        "smiles" : d["smiles"],
+                        "synonyms": synonyms,
+                        "origins" : origins,
+                        "pathways" : pathway,
+                        "sources" : {
+                            "chebi_id" : d["chebi_id"],
+                            "pubchem_id" : d["pubchem_compound_id"],
+                            "kegg_id" : d["kegg_id"]
+                        }
+
+                    }
+                    hmdb_dict[d["accession"]] = entity
+                except ValueError, err:
+                    continue
     return hmdb_dict
 
 def save_hmdb_xml(d, fp="./output/hmdb.json"):

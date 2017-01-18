@@ -56,9 +56,14 @@ def calculate_nom_distribution(ratios, weights):
     signals = dict((key, tuple(v for (k, v) in pairs))
                    for (key, pairs) in itertools.groupby(sorted(paired_w_r), operator.itemgetter(0)))
     n_d = {}
-    lv = float(max(signals.values())[0])
+    peak_value = float(max(signals.values())[0])
     for mz, rel_int in signals.items():
-        n_d[mz] = float(sum(rel_int)) * 100 / lv
+        mz = round(mz, 6)
+        if mz not in n_d:
+            n_d[mz] = float(sum(rel_int)) * 100 / peak_value
+        else:
+            n_d[mz] = n_d[mz] + float(sum(rel_int)) * 100 / peak_value
+
     return sorted(n_d.items(), key=lambda x: x[0])
 
 def function_name(element):
@@ -183,16 +188,16 @@ def process_entity(entity, id):
         structure_dict = split(formula)
         accurate_mass, adducts = rules(structure_dict, mol)
         final_d = {
-            "source" : id,
-            "synonyms" : entity["synonyms"]["synonym"],
+            "sources" : entity["sources"],
+            "synonyms" : entity["synonyms"],
             "name": entity["name"],
             "molecular_formula": formula,
             "smiles": entity["smiles"],
             "origins": entity["origins"],
             "accurate_mass": accurate_mass,
+            "pathways" : entity["pathways"],
             "adducts": adducts,
-            "num_atoms" : sum([structure_dict[x] for x in structure_dict])
-
+            "num_atoms" : sum([structure_dict[x] for x in structure_dict])-1
         }
     except Exception, err:
         pass
@@ -201,15 +206,13 @@ def process_entity(entity, id):
 
 
 def generate_db_file(output):
-
     db = Parallel(n_jobs=4)(delayed(process_entity)(output[id], id) for id in output)
     '''
     db = []
     for id in tqdm.tqdm(output):
-        db.append(process_entity(output[id]))
+        db.append(process_entity(output[id], id))
+
     '''
-
-
     db = [x for x in db if x != None]
 
     return db
