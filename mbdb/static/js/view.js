@@ -35,9 +35,21 @@ function render_view(base_url, id) {
         // Rewrite this.
         for (p in metabolite["pathways"]) {
             var pw = metabolite["pathways"][p];
-            $("#pathway_listgroup").append("<li class='list-group-item'>" +
-                pw["name"]
-                + "<a href='http://smpdb.ca/view/"+pw["smpdb_id"]+"'<button class='btn btn-primary btn-sm pull-right'>SMPDB</button><div class='clearfix'></div></li>");
+            var kegg_button = "";
+            var smpdb_button = "";
+
+            if (pw["kegg_id"] != null) {
+                    var kegg_url = "http://www.genome.jp/kegg-bin/show_pathway?map="+pw["kegg_id"];
+                    var kegg_button = "<a href='"+kegg_url+"' target='_blank'><button class='btn btn-danger btn-sm pull-right btn-space'><i class='glyphicon glyphicon-link'></i> KEGG</button></a></div>"
+            }
+
+            if (pw["smpdb_id"] != null) {
+                var smpdb_url = "http://smpdb.ca/view/"+pw["smpdb_id"];
+                var smpdb_button = "<a href='"+smpdb_url+"' target='_blank'><button class='btn btn-success btn-sm pull-right btn-space'><i class='glyphicon glyphicon-link'></i> SMPDB</button></a></div>"
+            }
+
+            $("#pathway_listgroup").append("<li class='list-group-item'>"
+                +pw["name"]  + kegg_button + smpdb_button + "<div class='clearfix'></div></li>");
         }
 
         for (source in metabolite["sources"]) {
@@ -68,10 +80,8 @@ function render_view(base_url, id) {
             }
         }
 
-        // $("#data_sources").html("<a href='http://www.hmdb.ca/metabolites/"+metabolite["source"]+"' target='_blank'><button class='btn btn-primary'>"+metabolite["source"]+"</button></a>")
         $("#smiles").html(metabolite["smiles"]);
 
-        console.log(metabolite["synonyms"]);
 
         for (indx in metabolite["synonyms"]) {
             $("#synonyms").append(metabolite["synonyms"][indx] + "; ");
