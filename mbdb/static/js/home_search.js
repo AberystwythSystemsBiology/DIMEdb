@@ -54,9 +54,15 @@ $(document).ready(function () {
                 });
             }
             else if (search_type == "Adduct") {
-                var ion = $('input[name="ioinisation"]:checked').val();
+                if (ion == $("#ionisation").val()) {
+                    var ion = "positive";
+                }
+                else {
+                    var ion = "negative";
+                }
+                var ppm = $("#ppm_tolerance").val();
                 if (jQuery.isNumeric(query)) {
-                    var url = current_url + "api/adducts/?adducts__pi_ppm=" + String(ion) + "," + String(query) + ",20";
+                    var url = current_url + "api/adducts/?adducts__pi_ppm=" + String(ion) + "," + String(query) + ","+ppm;
                     $('#search_results').DataTable({
                         "destroy": true,
                         "ajax": url,
@@ -129,8 +135,9 @@ $(document).ready(function () {
             }
             else if (search_type == "Accurate Mass") {
                 if (jQuery.isNumeric(query)) {
-                var url = current_url + "api/adducts/?adducts__pi_ppm=neutral," + String(query) + ",20";
-                $('#search_results').DataTable({
+                    var ppm = $("#ppm_tolerance").val();
+                    var url = current_url + "api/adducts/?adducts__pi_ppm=neutral," + String(query) + "," + ppm;
+                    $('#search_results').DataTable({
                         "destroy": true,
                         "ajax": url,
                         "columns": [
@@ -203,15 +210,17 @@ $("#s_selector li").click(function () {
     var v = $(this).text();
     $("#s_selector_button").text(v);
     if (v == "Name") {
-        $("#hp_ionisation_selector").fadeOut("slow");
+        $("#search_settings").fadeOut("slow");
     }
 
     if (v == "Accurate Mass") {
-        $("#hp_ionisation_selector").fadeOut("slow");
+        $("#search_settings").fadeIn("slow");
+        $("#ionisation_divider").fadeOut("slow");
     }
 
     if (v == "Adduct") {
-        $("#hp_ionisation_selector").fadeIn("slow");
+        $("#search_settings").fadeIn("slow");
+        $("#ionisation_divider").fadeIn("slow");
     }
 
 });

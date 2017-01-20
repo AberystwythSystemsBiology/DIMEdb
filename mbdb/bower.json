@@ -17,7 +17,8 @@
   "dependencies": {
     "bootstrap": "^3.3.6",
     "datatables": "^1.10",
-    "plotly" : "^1.16.2"
+    "plotly" : "^1.16.2",
+    "bootstrap-toggle" : "^2.2.2"
   },
   "directory": "./static/bower_components"
 }

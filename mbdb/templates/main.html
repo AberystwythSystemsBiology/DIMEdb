@@ -1,6 +1,10 @@
 {% extends "template.html" %}
 
-{% block head %}Home{% endblock %}
+{% block title %}Home{% endblock %}
+
+{% block head %}
+<link href="{{ url_for('static', filename='bower_components/bootstrap-toggle/css/bootstrap-toggle.css') }}" rel="stylesheet">
+{% endblock %}
 
 {% block body %}
 
@@ -27,9 +31,26 @@
                 </button>
         </span>
         </div>
-        <div id="hp_ionisation_selector" class="text-center">
-            <strong>Ionisaiton: </strong> <label class="radio-inline"><input type="radio" name="ioinisation" value="positive" checked> Positive (+)</label>
-            <label class="radio-inline"><input type="radio" name="ioinisation" value="negative">Negative (-)</label>
+
+        <div id="search_settings" class="row">
+            <div id="tolerance" class="col-md-2">
+                <label for="ppm_tolerance">Tolerance</label>
+                <div class="input-group">
+                    <input id="ppm_tolerance" type="number" class="form-control input-sm" min="1" max="20" value="5" aria-describedby="value">
+                    <span class="input-group-addon" id="value">PPM</span>
+                </div>
+            </div>
+            <div id class="col-md-8">
+            </div>
+            <div class="col-md-2">
+                <div id="ionisation_divider">
+                    <label for="ionisation">Ionisation</label>
+                    <div class="input-group">
+                        <input type="checkbox" id="ionisation" checked data-toggle="toggle" data-on="+"
+                               data-off="-" data-onstyle="success" data-offstyle="danger" width="100%">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -45,5 +66,7 @@
 {% endblock %}
 
 {% block javascript %}
+<script src="{{ url_for('static', filename='bower_components/bootstrap-toggle/js/bootstrap-toggle.js') }}"></script>
 <script src="{{ url_for('static', filename='js/home_search.js') }}"></script>
+
 {% endblock %}

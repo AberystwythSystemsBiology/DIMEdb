@@ -66,6 +66,14 @@ body {
 
 #hp_ionisation_selector {
     padding-top:10px;
+}
+
+#search_settings {
+    padding-top:10px;
+    display: none;
+}
+
+#ionisation_divider {
     display:none;
 }
 
