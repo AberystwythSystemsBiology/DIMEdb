@@ -59,6 +59,12 @@ function render_view(base_url, id) {
                     $("#data_sources").append("<a href='"+pubchem_url+"'><button class='btn btn-warning btn-sm btn-space'><i class='glyphicon glyphicon-link'></i> PubChem</button></a>");
 
                 }
+
+                if (source == "hmdb_id") {
+                    var hmdb_url = "https://hmdb.ca/Metabolites/"+String(id)
+                    $("#data_sources").append("<a href='"+hmdb_url+"'><button class='btn btn-default btn-sm btn-space'><i class='glyphicon glyphicon-link'></i> HMDB</button></a>");
+
+                }
             }
         }
 
@@ -145,12 +151,12 @@ function render_view(base_url, id) {
             }
 
             var modal_data = [{
-            x: x_plot,
-            y: y_plot,
-            type: 'bar',
-            marker: {
-                color: 'rgba(0, 0, 0, 1)'
-            }
+                x: x_plot,
+                y: y_plot,
+                type: 'bar',
+                marker: {
+                    color: 'rgba(0, 0, 0, 1)'
+                }
             }];
 
             Plotly.newPlot("distribution_chart_modal", modal_data, layout, {displayModeBar: false});

@@ -62,7 +62,8 @@ def parse_hmdb_xml(fd="./dl-files/hmdb/xml_files/"):
                         "sources" : {
                             "chebi_id" : d["chebi_id"],
                             "pubchem_id" : d["pubchem_compound_id"],
-                            "kegg_id" : d["kegg_id"]
+                            "kegg_id" : d["kegg_id"],
+                            "hmdb_id" : d["accession"]
                         }
 
                     }
