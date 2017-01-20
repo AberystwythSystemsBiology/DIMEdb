@@ -32,11 +32,12 @@ function render_view(base_url, id) {
         $("#accurate_mass").html(metabolite["accurate_mass"].toFixed(6));
         $("#num_atoms").html(metabolite["num_atoms"]);
 
+        // Rewrite this.
         for (p in metabolite["pathways"]) {
             var pw = metabolite["pathways"][p];
             $("#pathway_listgroup").append("<li class='list-group-item'>" +
                 pw["name"]
-                + "</li>");
+                + "<a href='http://smpdb.ca/view/"+pw["smpdb_id"]+"'<button class='btn btn-primary btn-sm pull-right'>SMPDB</button><div class='clearfix'></div></li>");
         }
 
         for (source in metabolite["sources"]) {

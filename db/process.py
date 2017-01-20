@@ -98,6 +98,9 @@ def gen_rule_dict(t, am, d):
     }
 
 def rule_dict_based(s, rule_dict):
+    if "multiply" in rule_dict.keys():
+        for element in s:
+            s[element] = s[element] * rule_dict["multiply"]
     for element in rule_dict["remove"]:
         s[element] = s[element] - rule_dict["remove"][element]
     for element in rule_dict["add"]:
@@ -107,13 +110,23 @@ def rule_dict_based(s, rule_dict):
             s[element] = rule_dict["add"][element]
     return s
 
-def rules(structure_dict, mol):
+def adduct_calculator(formula, rule_dict):
+    structure_dict = split(formula)
+    altered_sd = rule_dict_based(structure_dict, rule_dict)
+    calculated_element = element_calculator(altered_sd)
+    d, accurate_mass = function_name(calculated_element)
+    return accurate_mass, d
+
+
+def rules(formula, mol):
     nacc = rdMolDescriptors.CalcNumHBA(mol)
     ndon = rdMolDescriptors.CalcNumHBD(mol)
     noh = sum([Fragments.fr_Al_OH(mol), Fragments.fr_Ar_OH(mol)])
     nnhh = Fragments.fr_NH2(mol)
     ncooh = Fragments.fr_COO(mol)
     nch = sum([atom.GetFormalCharge() for atom in mol.GetAtoms()])
+
+    structure_dict = split(formula)
     adducts = collections.defaultdict(list)
     # M (Neutral)
     nominal_element = element_calculator(structure_dict)
@@ -123,40 +136,53 @@ def rules(structure_dict, mol):
 
     adducts["negative"] = []
     adducts["positive"] = []
-    # print "H", structure_dict
 
     # Negative Adducts
-    if ndon > 1 and nacc == 0:
-        sd = rule_dict_based(structure_dict, {"remove" : {"H" : 1}, "add" : {}})
-        nominal_element = element_calculator(structure_dict)
-        d, am = function_name(nominal_element)
+    if ndon > 0 and nch == 0:
+        am, d = adduct_calculator(formula, {"remove": {"H": 1}, "add": {}})
         adducts["negative"].append(gen_rule_dict("M-H", am, d))
 
-    if ndon > 1 and nacc == 0:
-        sd = rule_dict_based(structure_dict, {"remove" : {"H" : 2}, "add" : {"Na" : 1}})
-        nominal_element = element_calculator(structure_dict)
-        d, am = function_name(nominal_element)
-        adducts["negative"].append(gen_rule_dict("M+Na-2H", am, d))
+    if ndon > 0 and nch == 0:
+        am, d = adduct_calculator(formula, {"remove" : {"H" : 1}, "add" : {}, "multiply" : 2})
+        adducts["negative"].append(gen_rule_dict("2M-H", am, d))
 
-    if ndon > 1 and nacc > 0 and nch == 0:
-        sd = rule_dict_based(structure_dict, {"add" : {"K" : 1}, "remove" : {"H" : 2}})
-        nominal_element = element_calculator(structure_dict)
-        d, am = function_name(nominal_element)
-        adducts["negative"].append(gen_rule_dict("M+K-2H", am, d))
+    if nacc > 0 and nch == 0:
+        am, d = adduct_calculator(formula, {"remove" : {}, "add" : {"Br" : 1}})
+        adducts["negative"].append(gen_rule_dict("M+Br", am, d))
+
+    if ndon > 0 and nch == 0:
+        am, d = adduct_calculator(formula, {"remove" : {"H" : 1}, "add" : {}, "multiply" : 3})
+        adducts["negative"].append(gen_rule_dict("3M-H", am, d))
+
+    if nacc > 0 and nch == 0:
+        am, d = adduct_calculator(formula, {"remove": {}, "add": {"Cl" : 1}})
+        adducts["negative"].append(gen_rule_dict("M+Cl", am, d))
 
     # Positive Adducts
+
     if nacc > 0 and nch == 0:
-        sd = rule_dict_based(structure_dict, {"remove" : {}, "add" : {"H" : 1}})
-        #print "M+H", sd
-        element = element_calculator(sd)
-        d, am = function_name(element)
+        am, d = adduct_calculator(formula, {"add": {"H": 1}, "remove": {}})
         adducts["positive"].append(gen_rule_dict("M+H", am, d))
 
     if nacc > 0 and nch == 0:
-        sd = rule_dict_based(structure_dict, {"remove": {}, "add": {"K": 1}})
-        element = element_calculator(sd)
-        d, am = function_name(element)
+        am, d = adduct_calculator(formula, {"add": {"Na": 1}, "remove": {}})
+        adducts["positive"].append(gen_rule_dict("M+Na", am, d))
+
+    if nacc > 0 and nch == 0:
+        am, d = adduct_calculator(formula, {"add": {"K": 1}, "remove": {}})
         adducts["positive"].append(gen_rule_dict("M+K", am, d))
+
+    if ndon > 0 and nch == 0:
+        am, d = adduct_calculator(formula, {"add": {"Na": 2}, "remove": {"H":1}})
+        adducts["positive"].append(gen_rule_dict("M+2Na-H", am, d))
+
+    if ndon > 0 and nch == 0:
+        am, d = adduct_calculator(formula, {"add": {"K": 2}, "remove": {"H":1}})
+        adducts["positive"].append(gen_rule_dict("M+2K-H", am, d))
+
+    if nacc > 0 and nch == 0:
+        am, d = adduct_calculator(formula, {"add": {"H": 1}, "remove": {}, "multiply" : 2})
+        adducts["positive"].append(gen_rule_dict("2M+H", am, d))
 
     final_adducts = {}
     for ion in adducts.keys():
@@ -185,10 +211,8 @@ def process_entity(entity, id):
     try:
         mol = Chem.MolFromSmiles(entity["smiles"])
         formula = rdMolDescriptors.CalcMolFormula(mol)
+        accurate_mass, adducts = rules(formula, mol)
         structure_dict = split(formula)
-        accurate_mass, adducts = rules(structure_dict, mol)
-
-
 
         final_d = {
             "sources" : entity["sources"],
@@ -202,22 +226,21 @@ def process_entity(entity, id):
             "adducts": adducts,
             "num_atoms" : sum([structure_dict[x] for x in structure_dict])-1
         }
+
     except Exception, err:
         pass
     return final_d
-
-
 
 def generate_db_file(output):
     db = Parallel(n_jobs=4)(delayed(process_entity)(output[id], id) for id in output)
     '''
     db = []
+
     for id in tqdm.tqdm(output):
         db.append(process_entity(output[id], id))
-
+        break
     '''
     db = [x for x in db if x != None]
-
     return db
 
 def save_db_file(db, fp="./output/mb-db.json"):
