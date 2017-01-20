@@ -187,6 +187,9 @@ def process_entity(entity, id):
         formula = rdMolDescriptors.CalcMolFormula(mol)
         structure_dict = split(formula)
         accurate_mass, adducts = rules(structure_dict, mol)
+
+
+
         final_d = {
             "sources" : entity["sources"],
             "synonyms" : entity["synonyms"],

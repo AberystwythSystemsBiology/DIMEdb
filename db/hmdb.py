@@ -42,17 +42,25 @@ def parse_hmdb_xml(fd="./dl-files/hmdb/xml_files/"):
                     except TypeError:
                         origins = []
 
+                    pathway = []
+
                     try:
-                        pathway = [{"name": d["pathways"][x]["name"],
-                          "kegg": d["pathways"][x]["kegg_map_id"],
-                          "smpdb": d["pathways"][x]["smpdb_id"]} for x in d["pathways"]]
+                        for i in d["pathways"]["pathway"]:
+                            pathway.append({
+                                "name" : i["name"],
+                                "kegg_id" : i["kegg_map_id"],
+                                "smpdb_id" : i["smpdb_id"]
+                            })
                     except TypeError:
-                        pathway = []
+                        pass
 
                     try:
                         synonyms = d["synonyms"]["synonym"]
+                        if type(synonyms) != list:
+                            synonyms = [synonyms]
                     except TypeError:
                         synonyms = []
+
                     entity = {
                         "name" : d["name"],
                         "smiles" : d["smiles"],
