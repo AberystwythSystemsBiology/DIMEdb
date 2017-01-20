@@ -24,13 +24,12 @@ function render_view(base_url, id) {
         // Change the document title.
         $(document).prop('title', metabolite["name"] + " : MetaBolomics DataBase");
 
-        // Fill up the Information Table.
         $("#met_name").html(metabolite["name"]);
         $("#met_name_modal").html(metabolite["name"]);
         $("#get_json").attr("href", base_url + "api/metabolite/?id__exact=" + metabolite["id"]);
         $("#molecular_formula").html(metabolite["molecular_formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
         $("#molecular_formula_search").attr("href", base_url + "api/metabolites/?molecular_formula__exact=" + metabolite["molecular_formula"])
-        $("#accurate_mass").html(metabolite["accurate_mass"]);
+        $("#accurate_mass").html(metabolite["accurate_mass"].toFixed(6));
         $("#num_atoms").html(metabolite["num_atoms"]);
 
         for (p in metabolite["pathways"]) {
@@ -110,7 +109,7 @@ function render_view(base_url, id) {
             y: y_plot,
             type: 'bar',
             marker: {
-                color: 'rgba(0, 0, 0, 1)'
+                color: 'rgba(46,109,164, 1)'
             }
         }];
 
@@ -118,7 +117,7 @@ function render_view(base_url, id) {
             xaxis: {
                 title: 'Mass-to-ion (m/z)',
                 showgrid: false,
-                range: [Math.min.apply(Math, x_plot)-2, Math.max.apply(Math, x_plot)+2]
+                range: [Math.min.apply(Math, x_plot)-0.5, Math.max.apply(Math, x_plot)+0.5]
             },
             yaxis: {
                 title: 'Relative Intensity (%)'
@@ -130,10 +129,9 @@ function render_view(base_url, id) {
                 t: 50,
                 pad: 2
             },
-            bargap : 0.99
+            bargap : 0.989
         };
-
-        Plotly.newPlot("distribution_chart", isotopic_data, layout, {displayModeBar: false, barwidth :10});
+        Plotly.newPlot("distribution_chart", isotopic_data, layout, {displayModeBar: false});
         $("#container").show();
 
         $('[id="isotope"]').click(function () {
@@ -141,25 +139,16 @@ function render_view(base_url, id) {
             var y_plot = []
             var isotope_array = $(this).attr("name").split("_");
             var adduct_dict = metabolite["adducts"][isotope_array[0]]["peaks"][isotope_array[1]];
+
             $("#distribution_table tbody").html("");
+
             $("#dm_adduct").html(adduct_dict["type"]);
             for (i in adduct_dict["isotopic_distribution"]) {
                 var spectra = adduct_dict["isotopic_distribution"][i];
-                $("#distribution_table tbody").append("<tr><td>" + spectra[0].toFixed(4) + "</td><td>" + spectra[1].toFixed(2) + "</td></tr>")
+                $("#distribution_table tbody").append("<tr><td>" + spectra[0].toFixed(4) + "</td><td>" + spectra[1].toFixed(3) + "</td></tr>")
                 x_plot.push(spectra[0]);
                 y_plot.push(spectra[1]);
             }
-
-            var modal_data = [{
-                x: x_plot,
-                y: y_plot,
-                type: 'bar',
-                marker: {
-                    color: 'rgba(0, 0, 0, 1)'
-                }
-            }];
-
-            Plotly.newPlot("distribution_chart_modal", modal_data, layout, {displayModeBar: false});
 
             $("#distribution_modal").modal("toggle");
         });

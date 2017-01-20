@@ -1,27 +1,24 @@
-    <div class="modal fade" id="distribution_modal" role="dialog">
+<div class="modal fade" id="distribution_modal" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 id="dtable_header" class="modal-title"><span id="met_name_modal"></span> Isotopic Distribution (<span id="dm_adduct"></span>)</h4>
+                <h4 id="dtable_header" class="modal-title">Adduct <span id="dm_adduct"></span>: <span id="met_name_modal"></span></h4>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <table class="table table-striped" id="distribution_table" width="100%">
-                            <thead>
-                            <tr>
-                                <th width="50%">Mass (m/z)</th>
-                                <th width="50%">Intensity (%)</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div id="distribution_chart_modal" style="width:100%;height:350px;"></div>
+                <div class="container">
+                <table class="table table-striped" id="distribution_table" width="60%" style="min-width: 400px;">
+                    <thead>
+                    <tr>
+                        <th width="50%">Mass-to-ion (m/z)</th>
+                        <th width="50%">Relative Intensity (%)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
+                </div>
         </div>
     </div>
 </div>
