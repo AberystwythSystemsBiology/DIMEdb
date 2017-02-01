@@ -66,9 +66,10 @@ class MetaboliteAdductsResource(Resource):
     document = d.MetaboliteAdducts
 
     filters = {
-        "adducts": [o.PiPpm]
+        "adducts": [o.PiPpm],
+        "origins" : [ops.Contains, ops.Exact]
     }
-    max_limit, default_limit = [1000, 1000]
+    max_limit, default_limit = [200, 200]
 
     related_resources = {
         "adducts" : AdductsResource
@@ -76,7 +77,7 @@ class MetaboliteAdductsResource(Resource):
 
     def get_queryset(self, *args, **kwargs):
         return super(MetaboliteAdductsResource, self).get_queryset(*args, **kwargs).fields(name=1, accurate_mass=1,
-                                                                                           molecular_formula=1, adducts=1,
-                                                                                           adducts_negative_peaks__S = 1,
-                                                                                           adducts_positive_peaks__S= 1,
-                                                                                           adducts_neutral_peaks__S = 1)
+                                                                                           molecular_formula=1,
+                                                                                           adducts = 1,
+                                                                                           adducts_negative_peaks__S = 1
+                                                                                           )

@@ -44,13 +44,33 @@ def parse_hmdb_xml(fd="./dl-files/hmdb/xml_files/"):
 
                     pathway = []
 
+                    biofluids = []
+                    try:
+                        for i in d["biofluid_locations"]["biofluid"]:
+                            if i == "Cerebrospinal Fluid (CSF)":
+                                i = "CSF"
+                            biofluids.append(i)
+                    except TypeError:
+                        pass
                     try:
                         for i in d["pathways"]["pathway"]:
-                            pathway.append({
-                                "name" : i["name"],
-                                "kegg_id" : i["kegg_map_id"],
-                                "smpdb_id" : i["smpdb_id"]
-                            })
+                            try:
+                                name = i["name"]
+                                try:
+                                    kegg_id = i["kegg_map_id"]
+                                except TypeError:
+                                    kegg_id = None
+                                try:
+                                    smpdb_id = i["smpdb_id"]
+                                except TypeError:
+                                    smpdb_id = None
+                                pathway.append({
+                                    "name": name,
+                                    "kegg_id": kegg_id,
+                                    "smpdb_id": smpdb_id
+                                })
+                            except TypeError:
+                                pass
                     except TypeError:
                         pass
 
@@ -67,6 +87,7 @@ def parse_hmdb_xml(fd="./dl-files/hmdb/xml_files/"):
                         "synonyms": synonyms,
                         "origins" : origins,
                         "pathways" : pathway,
+                        "biofluids" : biofluids,
                         "sources" : {
                             "chebi_id" : d["chebi_id"],
                             "pubchem_id" : d["pubchem_compound_id"],

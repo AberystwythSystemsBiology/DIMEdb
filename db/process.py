@@ -51,13 +51,16 @@ def isotopes(elements):
             weights.append(elements[x]["isotopic_weights"])
     return cartesian(ratios, weights, ratios[0], weights[0])
 
-def calculate_nom_distribution(ratios, weights):
+
+# Charges go here.
+def calculate_nom_distribution(ratios, weights, charges):
     paired_w_r = [(weights[index], r) for index, r in enumerate(ratios) if r > 1e-6]
     signals = dict((key, tuple(v for (k, v) in pairs))
                    for (key, pairs) in itertools.groupby(sorted(paired_w_r), operator.itemgetter(0)))
     n_d = {}
     peak_value = float(max(signals.values())[0])
     for mz, rel_int in signals.items():
+        #mz = round(mz+(mz/abs(charges)), 6)
         mz = round(mz, 6)
         if mz not in n_d:
             n_d[mz] = float(sum(rel_int)) * 100 / peak_value
@@ -66,9 +69,9 @@ def calculate_nom_distribution(ratios, weights):
 
     return sorted(n_d.items(), key=lambda x: x[0])
 
-def function_name(element):
+def function_name(element, charges):
     ratios, weights = isotopes(element)
-    nd = calculate_nom_distribution(ratios, weights)
+    nd = calculate_nom_distribution(ratios, weights, charges)
     accurate_mass = nd[0][0]
     return nd, accurate_mass
 
@@ -98,9 +101,6 @@ def gen_rule_dict(t, am, d):
     }
 
 def rule_dict_based(s, rule_dict):
-    if "multiply" in rule_dict.keys():
-        for element in s:
-            s[element] = s[element] * rule_dict["multiply"]
     for element in rule_dict["remove"]:
         s[element] = s[element] - rule_dict["remove"][element]
     for element in rule_dict["add"]:
@@ -110,11 +110,18 @@ def rule_dict_based(s, rule_dict):
             s[element] = rule_dict["add"][element]
     return s
 
-def adduct_calculator(formula, rule_dict):
+def adduct_calculator(formula, rule_dict, charges):
     structure_dict = split(formula)
     altered_sd = rule_dict_based(structure_dict, rule_dict)
     calculated_element = element_calculator(altered_sd)
-    d, accurate_mass = function_name(calculated_element)
+    d, accurate_mass = function_name(calculated_element, charges)
+    if "multiply" in rule_dict.keys():
+        d = [(x[0]*rule_dict["multiply"], x[1]) for x in d]
+        accurate_mass = accurate_mass / rule_dict["multiply"]
+
+    if "divide" in rule_dict.keys():
+        d = [(x[0]/rule_dict["divide"], x[1]) for x in d]
+        accurate_mass = accurate_mass / rule_dict["divide"]
     return accurate_mass, d
 
 
@@ -131,7 +138,7 @@ def rules(formula, mol):
     # M (Neutral)
     nominal_element = element_calculator(structure_dict)
     accurate_mass = sum([x["molecular_weight"] for x in nominal_element.values()])
-    d, am = function_name(nominal_element)
+    d, am = function_name(nominal_element, 1)
     adducts["neutral"].append(gen_rule_dict("M", am, d))
 
     adducts["negative"] = []
@@ -139,49 +146,49 @@ def rules(formula, mol):
 
     # Negative Adducts
     if ndon > 0 and nch == 0:
-        am, d = adduct_calculator(formula, {"remove": {"H": 1}, "add": {}})
+        am, d = adduct_calculator(formula, {"remove": {"H": 1}, "add": {}}, -1)
         adducts["negative"].append(gen_rule_dict("M-H", am, d))
 
     if ndon > 0 and nch == 0:
-        am, d = adduct_calculator(formula, {"remove" : {"H" : 1}, "add" : {}, "multiply" : 2})
+        am, d = adduct_calculator(formula, {"remove" : {"H" : 1}, "add" : {}, "divide" : 2}, -1)
         adducts["negative"].append(gen_rule_dict("2M-H", am, d))
 
     if nacc > 0 and nch == 0:
-        am, d = adduct_calculator(formula, {"remove" : {}, "add" : {"Br" : 1}})
+        am, d = adduct_calculator(formula, {"remove" : {}, "add" : {"Br" : 1}}, -1)
         adducts["negative"].append(gen_rule_dict("M+Br", am, d))
 
     if ndon > 0 and nch == 0:
-        am, d = adduct_calculator(formula, {"remove" : {"H" : 1}, "add" : {}, "multiply" : 3})
+        am, d = adduct_calculator(formula, {"remove" : {"H" : 1}, "add" : {}, "divide" : 3}, -1)
         adducts["negative"].append(gen_rule_dict("3M-H", am, d))
 
     if nacc > 0 and nch == 0:
-        am, d = adduct_calculator(formula, {"remove": {}, "add": {"Cl" : 1}})
+        am, d = adduct_calculator(formula, {"remove": {}, "add": {"Cl" : 1}}, -1)
         adducts["negative"].append(gen_rule_dict("M+Cl", am, d))
 
     # Positive Adducts
 
     if nacc > 0 and nch == 0:
-        am, d = adduct_calculator(formula, {"add": {"H": 1}, "remove": {}})
+        am, d = adduct_calculator(formula, {"add": {"H": 1}, "remove": {}}, 1)
         adducts["positive"].append(gen_rule_dict("M+H", am, d))
 
     if nacc > 0 and nch == 0:
-        am, d = adduct_calculator(formula, {"add": {"Na": 1}, "remove": {}})
+        am, d = adduct_calculator(formula, {"add": {"Na": 1}, "remove": {}}, 1)
         adducts["positive"].append(gen_rule_dict("M+Na", am, d))
 
     if nacc > 0 and nch == 0:
-        am, d = adduct_calculator(formula, {"add": {"K": 1}, "remove": {}})
+        am, d = adduct_calculator(formula, {"add": {"K": 1}, "remove": {}}, 1)
         adducts["positive"].append(gen_rule_dict("M+K", am, d))
 
     if ndon > 0 and nch == 0:
-        am, d = adduct_calculator(formula, {"add": {"Na": 2}, "remove": {"H":1}})
+        am, d = adduct_calculator(formula, {"add": {"Na": 2}, "remove": {"H":1}}, 1)
         adducts["positive"].append(gen_rule_dict("M+2Na-H", am, d))
 
     if ndon > 0 and nch == 0:
-        am, d = adduct_calculator(formula, {"add": {"K": 2}, "remove": {"H":1}})
+        am, d = adduct_calculator(formula, {"add": {"K": 2}, "remove": {"H":1}}, 1)
         adducts["positive"].append(gen_rule_dict("M+2K-H", am, d))
 
     if nacc > 0 and nch == 0:
-        am, d = adduct_calculator(formula, {"add": {"H": 1}, "remove": {}, "multiply" : 2})
+        am, d = adduct_calculator(formula, {"add": {"H": 1}, "remove": {}, "multiply" : 2}, 1)
         adducts["positive"].append(gen_rule_dict("2M+H", am, d))
 
     final_adducts = {}
@@ -227,19 +234,20 @@ def process_entity(entity, id):
             "num_atoms" : sum([structure_dict[x] for x in structure_dict])-1
         }
 
-    except Exception, err:
+    except ValueError, err:
         pass
     return final_d
 
 def generate_db_file(output):
-    db = Parallel(n_jobs=4)(delayed(process_entity)(output[id], id) for id in output)
-    '''
+    #db = Parallel(n_jobs=4)(delayed(process_entity)(output[id], id) for id in output)
+
+
     db = []
 
     for id in tqdm.tqdm(output):
-        db.append(process_entity(output[id], id))
-        break
-    '''
+        if id == "HMDB00254":
+            db.append(process_entity(output[id], id))
+
     db = [x for x in db if x != None]
     return db
 

@@ -15,12 +15,19 @@ class PiPpm(Operator):
         )
 
         db.metabolites.find(
-            {"adducts.negative.peaks": {$elemMatch : {"accurate_mass" : {$gt : 100.00, $lt : 105.00}}}},
+            {"adducts.
+            negative.peaks": {$elemMatch : {"accurate_mass" : {$gt : 100.00, $lt : 105.00}}}},
             { "name" : 1, "accurate_mass" :1, "adducts.negative.peaks.$": 1}
         )
+
+
         '''
         return {
-            "adducts__"+ionisation+"__peaks__accurate_mass__lt" : mz+difference,
-            "adducts__" + ionisation + "__peaks__accurate_mass__gt": mz-difference,
+            "adducts__"+ionisation+"__peaks__match": {
+                "accurate_mass__lt": mz + difference,
+                "accurate_mass__gt": mz - difference
+            }
         }
+    def return_values(self, field, value):
+        return value
 
