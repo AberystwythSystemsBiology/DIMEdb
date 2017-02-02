@@ -67,7 +67,8 @@ class MetaboliteAdductsResource(Resource):
 
     filters = {
         "adducts": [o.PiPpm],
-        "origins" : [ops.Contains, ops.Exact]
+        "origins" : [ops.Contains, ops.Exact],
+        "biofluids" : [ops.Contains]
     }
     max_limit, default_limit = [200, 200]
 

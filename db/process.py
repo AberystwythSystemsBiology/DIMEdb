@@ -220,7 +220,6 @@ def process_entity(entity, id):
         formula = rdMolDescriptors.CalcMolFormula(mol)
         accurate_mass, adducts = rules(formula, mol)
         structure_dict = split(formula)
-
         final_d = {
             "sources" : entity["sources"],
             "synonyms" : entity["synonyms"],
@@ -231,23 +230,24 @@ def process_entity(entity, id):
             "accurate_mass": accurate_mass,
             "pathways" : entity["pathways"],
             "adducts": adducts,
+            "biofluids" : entity["biofluids"],
             "num_atoms" : sum([structure_dict[x] for x in structure_dict])-1
         }
 
-    except ValueError, err:
+    except Exception, err:
         pass
     return final_d
 
 def generate_db_file(output):
-    #db = Parallel(n_jobs=4)(delayed(process_entity)(output[id], id) for id in output)
+    db = Parallel(n_jobs=4)(delayed(process_entity)(output[id], id) for id in output)
 
-
+    '''
     db = []
 
     for id in tqdm.tqdm(output):
         if id == "HMDB00254":
             db.append(process_entity(output[id], id))
-
+    '''
     db = [x for x in db if x != None]
     return db
 

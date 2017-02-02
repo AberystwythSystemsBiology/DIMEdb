@@ -73,7 +73,7 @@ function render_view(base_url, id) {
                 }
 
                 if (source == "hmdb_id") {
-                    var hmdb_url = "https://hmdb.ca/Metabolites/" + String(id)
+                    var hmdb_url = "http://www.hmdb.ca/metabolites/" + String(id)
                     $("#data_sources").append("<a href='" + hmdb_url + "'><button class='btn btn-default btn-sm btn-space'><i class='glyphicon glyphicon-link'></i> HMDB</button></a>");
 
                 }
@@ -91,6 +91,10 @@ function render_view(base_url, id) {
             $("#origins").append(metabolite["origins"][indx] + "; ");
         }
 
+
+        for (indx in metabolite["biofluids"]) {
+            $("#biofluids").append(metabolite["biofluids"][indx] + "; ")
+        }
         $.ajax({
             url: base_url + "gen_structure/" + metabolite["id"],
             success: function (result) {
