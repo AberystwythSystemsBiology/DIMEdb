@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="Keiron O'Shea">
-    <title>{% block title %}{% endblock %} : MetaBolomic DataBase</title>
+    <title>{% block title %}{% endblock %} : DIMEdb</title>
     <link href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.min.css') }}"
           rel="stylesheet">
     <link href="{{ url_for('static', filename='bower_components/datatables/media/css/dataTables.bootstrap.css') }}"
@@ -30,13 +30,14 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{{ url_for('homepage')}}"><img src="{{ url_for('static', filename='imgs/logo.svg')}}"></a>
+            <a class="navbar-brand" href="{{ url_for('homepage')}}"><img src="{{ url_for('static', filename='imgs/dimedb-nav.svg')}}"></a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li><a href="{{ url_for('homepage')}}">Home</a></li>
                 <li><a href="{{ url_for('api')}}">API</a></li>
             </ul>
+
         </div><!--/.nav-collapse -->
     </div>
 </nav>
@@ -49,7 +50,7 @@
 
 <footer class="footer">
     <div class="container">
-        <p class="text-muted">MB-DB is developed by researchers from <a href="http://www.aber.ac.uk">Aberystwyth
+        <p class="text-muted">DIMEdb is developed by researchers from <a href="http://www.aber.ac.uk">Aberystwyth
             University</a>.</p>
     </div>
 </footer>

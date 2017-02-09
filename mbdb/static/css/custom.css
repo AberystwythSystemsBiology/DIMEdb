@@ -33,17 +33,17 @@ body {
 
 .navbar-inverse {
     background-image: none;
-    background-color: #ffcc00;
+    background-color: #2e6da4;
     border-color: transparent;
-    color: #000;
+    color: #fff;
 }
 
 .navbar-inverse .navbar-brand {
-    color: #000;
+    color: #fff;
 }
 
 .navbar-inverse .navbar-nav > li > a {
-    color: #000;
+    color: #fff;
 }
 
 .navbar-inverse .active {
@@ -79,13 +79,19 @@ body {
 
 table#search_results {
     display:none;
-    width:100%;
+    width:80%;
+    margin: 0 auto 0;
 }
 
 .btn-space {
     margin-right: 5px;
 }
 
+.view_button {
+    width:5%;
+}
+
+th.dt-center, td.dt-center { text-align: center; }
 
 #home-page-search {
         max-width: 800px;
@@ -97,6 +103,6 @@ table#search_results {
     #home-page-search img {
         display: block;
         margin: 0 auto 0;
-        width: 400px;
+        width: 600px;
         margin-bottom: 30px;
     }

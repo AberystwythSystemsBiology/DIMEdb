@@ -13,8 +13,8 @@ $(document).ready(function () {
                     "ajax": url,
                     "columns": [
                         {
-                            "title": "Name",
-                            "width": "70%",
+                            "title": "Metabolite Name",
+                            "width": "60%",
                             "data": "name",
                             "render": function (data, type, row) {
                                 return data
@@ -24,26 +24,29 @@ $(document).ready(function () {
                         {
                             "title": "Molecular Formula",
                             "width": "10%",
+                            "className": "dt-center",
                             "data": "molecular_formula",
                             "render": function (data, type, row) {
-                                return data.replace(/([0-9]+)/g, '<sub>$1</sub>');
+                                return '<p style="text-align:center">'+data.replace(/([0-9]+)/g, '<sub>$1</sub>')+'</p>';
                             }
                         },
                         {
-                            "title": "Accurate Mass (m/z)",
+                            "title": "Neutral Mass (m/z)",
                             "data": "accurate_mass",
+                            "className": "dt-center",
                             "width": "10%",
                             "render": function (data, type, row) {
                                 return data.toFixed(4);
                             }
                         },
                         {
-                            "title": "Actions",
+                            "title": "",
                             "data": "id",
-                            "width": "10%",
+                            "className": "dt-center",
+                            "width": "5%",
                             "render": function (data, type, row) {
                                 var view_url = current_url + "view/" + data;
-                                return "<a href='" + view_url + "' target='_blank'><button class='btn btn-sm btn-primary'>View</button></a>"
+                                return "<a href='" + view_url + "' target='_blank'><button class='btn btn-sm btn-primary' id='view_button'>View</button></a>"
                             }
                         }
                     ],
