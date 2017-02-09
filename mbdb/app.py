@@ -12,7 +12,7 @@ import resources as r, documents as d
 app.config.update(
     MONGODB_HOST = "localhost",
     MONGODB_PORT = 27017,
-    MONGODB_DB = "mbdb",
+    MONGODB_DB = "dimedb",
     DEBUG = True
 )
 
