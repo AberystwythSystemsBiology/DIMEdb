@@ -1,8 +1,8 @@
-# MB-DB: MetaBolomic DataBase
+# DIMEdb: Direct Infusion Metabolite Database
 
 ## Installation
 
-These instructions are written for Ubuntu 16.04. If you require any platform-specific assistance in setting MB-DB up, please feel free to [open an issue](https://github.com/KeironO/MB-DB/issues).
+These instructions are written for Ubuntu 16.04. If you require any platform-specific assistance in setting DIMEdb up, please feel free to [open an issue](https://github.com/KeironO/DIMEdb/issues).
 
 ### MongoDB
 
@@ -62,11 +62,11 @@ sudo systemctl start mongodb && sudo systemctl enable mongodb
 #### Setting up the collection
 
 ```
-mongoimport --db mbdb --collection metabolites --type json --file mb-db.json --jsonArray 
+mongoimport --db dimedb --collection metabolites --type json --file dimedb.json --jsonArray 
 ```
 
 ### python-pip
 
 ## License
 
-Code released under [the MIT license](https://github.com/MB-DB/omicsdb/blob/master/LICENSE).
+Code released under [the MIT license](https://github.com/KeironO/DIMEdb/blob/master/LICENSE).

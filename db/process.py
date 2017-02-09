@@ -251,7 +251,7 @@ def generate_db_file(output):
     db = [x for x in db if x != None]
     return db
 
-def save_db_file(db, fp="./output/mb-db.json"):
+def save_db_file(db, fp="./output/dimedb.json"):
     mongodb_file = json.loads(dumps(db))
     with open(fp, "w") as output:
         json.dump(mongodb_file, output, indent=4)
