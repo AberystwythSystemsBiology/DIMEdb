@@ -22,7 +22,7 @@ function render_view(base_url, id) {
         var metabolite = data["data"][0];
 
         // Change the document title.
-        $(document).prop('title', metabolite["name"] + " : DIMEdb");
+        $(document).prop('title', metabolite["name"] + " : DIMEdb - Direct Infusion MEtabolite Database");
 
         $("#met_name").html(metabolite["name"]);
         $("#met_name_modal").html(metabolite["name"]);

@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=0.8">
     <meta name="description" content="">
     <meta name="author" content="Keiron O'Shea">
-    <title>{% block title %}{% endblock %} : DIMEdb</title>
+    <title>{% block title %}{% endblock %} : DIMEdb - Direct Infusion MEtabolite Database</title>
     <link href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.min.css') }}"
           rel="stylesheet">
     <link href="{{ url_for('static', filename='bower_components/datatables/media/css/dataTables.bootstrap.css') }}"
@@ -33,12 +33,11 @@
             <a class="navbar-brand" href="{{ url_for('homepage')}}"><img src="{{ url_for('static', filename='imgs/dimedb-nav.svg')}}"></a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav navbar-right">
                 <li><a href="{{ url_for('homepage')}}">Home</a></li>
-                <li><a href="{{ url_for('api')}}">API</a></li>
+                <li><a href="{{ url_for('help')}}">Help</a></li>
             </ul>
-
-        </div><!--/.nav-collapse -->
+        </div>
     </div>
 </nav>
 

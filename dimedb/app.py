@@ -40,9 +40,9 @@ class Adducts(ResourceView):
 def homepage():
     return render_template("main.html")
 
-@app.route("/api/")
-def api():
-    return render_template("api.html", url = request.url)
+@app.route("/help/")
+def help():
+    return render_template("help.html", url = request.url)
 
 @app.route("/view/<string:_id>/")
 def view(_id):
