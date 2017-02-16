@@ -82,38 +82,74 @@
 
     <h3>Examples</h3>
 
-        <div class="panel-group" id="examplesaccordion">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#examplesaccordion" href="#ex1">
-                            Return all metabolites whose name contains <i>"Ganglioside"</i></a>
-                    </h4>
+    <div class="panel-group" id="examples-accordion">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#examples-accordion" href="#example-1">
+                        Return all metabolites whose name contains <i>"Ganglioside"</i></a>
+                </h4>
+            </div>
+            <div id="example-1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <pre>{{ url }}metabolites/?name__contains=Ganglioside</pre>
                 </div>
-                <div id="ex1" class="panel-collapse collapse in">
-                    <div class="panel-body">
-                            <pre>{{ url }}metabolites/?name__contains=Ganglioside</pre>
-                    </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#examples-accordion" href="#example-2">
+                        Return all metabolites of which are found in <i>"Food"</i></a>
+                </h4>
+            </div>
+            <div id="example-2" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <pre>{{ url }}metabolites/?origins__contains=Food</pre>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#examples-accordion" href="#example-3">
+                        Return all metabolites that contain <i>"Gangli"</i> and are found in <i>"Food"</i></a>
+                </h4>
+            </div>
+            <div id="example-3" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <pre>{{ url }}metabolites/?origins__contains=Food&name__contains=Gangli</pre>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#examples-accordion" href="#example-4">
+                        Return all neutrally charged metabolites (M) that fall within a 10ppm range of 130m/z</a>
+                </h4>
+            </div>
+            <div id="example-4" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <pre>{{ url }}adducts/?adducts__pi_ppm=neutral,130,10</pre>
                 </div>
             </div>
         </div>
 
-    <p>Return all metabolites of which are found in Food</p>
-
-    <pre>{{ url }}metabolites/?origins__contains=Food</pre>
-
-    <p>Return all metabolites that contain "Gangli" and are found in Food</p>
-
-    <pre>{{ url }}metabolites/?origins__contains=Food&name__contains=Gangli</pre>
-
-    <p>Return all neutrally charged metabolites (accurate m/z) that fall within a 10ppm range of 130m/z</p>
-
-    <pre>{{ url }}adducts/?adducts__pi_ppm=neutral,130,10</pre>
-
-    <p>Return all negatively charged metabolites that can potentially be putatively ionised within a 20ppm range of
-        140/mz.</p>
-
-    <pre>{{ url }}adducts/?adducts__pi_ppm=negative,140,20</pre>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#examples-accordion" href="#example-5">
+                        Return all negatively charged metabolites that can potentially be putatively ionised within a
+                        20ppm range of 140/mz.</a></h4>
+            </div>
+            <div id="example-5" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <pre>{{ url }}adducts/?adducts__pi_ppm=negative,140,20</pre>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}
 
