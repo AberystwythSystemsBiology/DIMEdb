@@ -20,15 +20,15 @@
 
     <h2>Frequently Asked Questions</h2>
 
-    <div class="panel-group" id="accordion">
+    <div class="panel-group" id="faqaccordion">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                    <a data-toggle="collapse" data-parent="#faqaccordion" href="#faq1">
                         Can I download all of DIMEdb?</a>
                 </h4>
             </div>
-            <div id="collapse1" class="panel-collapse collapse in">
+            <div id="faq1" class="panel-collapse collapse in">
                 <div class="panel-body">Sure thing, just send us an email and we’ll get back to you as soon as we
                     can(!)
                 </div>
@@ -37,22 +37,22 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
-                        How to cite DIMEdb?</a>
+                    <a data-toggle="collapse" data-parent="#faqaccordion" href="#faq2">
+                        How can I cite DIMEdb?</a>
                 </h4>
             </div>
-            <div id="collapse2" class="panel-collapse collapse">
+            <div id="faq2" class="panel-collapse collapse">
                 <div class="panel-body">Publication Pending</div>
             </div>
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+                    <a data-toggle="collapse" data-parent="#faqaccordion" href="#faq3">
                         What databases does DIMEdb use to collate its data from?</a>
                 </h4>
             </div>
-            <div id="collapse3" class="panel-collapse collapse">
+            <div id="faq3" class="panel-collapse collapse">
                 <div class="panel-body">
                     HMDB, PUBMED, CHEBI and KEGG.
                 </div>
@@ -61,11 +61,11 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+                    <a data-toggle="collapse" data-parent="#faqaccordion" href="#faq4">
                         The query I got is really large, how can I best view it?</a>
                 </h4>
             </div>
-            <div id="collapse4" class="panel-collapse collapse">
+            <div id="faq4" class="panel-collapse collapse">
                 <div class="panel-body">
                     If the output is a little large (> 200mb), it's probably not a good idea to open it all at once. The
                     authors suggest using glogg to open up extremely large files.
@@ -77,12 +77,26 @@
     <h2>API</h2>
 
     <p>DIMEdb features a application programming interface (API) which enables anyone to extract data without the need
-        of the web application. The API is built with ease-of-use at mind, allowing you to download relevant information
+        of the web application. The API is built with ease-of-use in mind, allowing you to download relevant information
         without having to download the entirety of the database.</p>
 
-    <p>Return all metabolites whose name contains "Ganglioside"</p>
+    <h3>Examples</h3>
 
-    <pre>{{ url }}metabolites/?name__contains=Ganglioside</pre>
+        <div class="panel-group" id="examplesaccordion">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#examplesaccordion" href="#ex1">
+                            Return all metabolites whose name contains <i>"Ganglioside"</i></a>
+                    </h4>
+                </div>
+                <div id="ex1" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                            <pre>{{ url }}metabolites/?name__contains=Ganglioside</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     <p>Return all metabolites of which are found in Food</p>
 
@@ -91,9 +105,6 @@
     <p>Return all metabolites that contain "Gangli" and are found in Food</p>
 
     <pre>{{ url }}metabolites/?origins__contains=Food&name__contains=Gangli</pre>
-
-
-    <h3>Putative Ionisation Search</h3>
 
     <p>Return all neutrally charged metabolites (accurate m/z) that fall within a 10ppm range of 130m/z</p>
 

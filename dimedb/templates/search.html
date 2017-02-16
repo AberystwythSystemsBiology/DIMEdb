@@ -1,0 +1,104 @@
+{% extends "template.html" %}
+
+{% block title %}Advanced Search{% endblock %}
+
+{% block body %}
+
+    <h1>Advanced Search</h1>
+
+    <div id="advanced-search-container">
+        <div class="panel-group" id="advanced-search-accordion">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <a data-toggle="collapse" data-parent="#advanced-search-accordion" href="#toggle_advanced_search">
+                            <div class="btn btn-primary btn-sm pull-right">
+                                Click to toggle <i class="glyphicon glyphicon-arrow-down"></i>
+                            </div></a>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                <div id="toggle_advanced_search" class="panel-collapse collapse in">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Mass-to-ion</label>
+                        </div>
+                        <div class="col-md-4">
+                            <input class="form-control" type="number" id="mass" value="100.42">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Tolerance (ppm)</label>
+                        </div>
+                        <div class="col-md-2">
+                            <input id="ppm_tolerance" type="number" class="form-control input-sm" min="1" max="20" value="5">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Ionisation</label>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="radio">
+                                <label><input type="radio" name="optradio" checked>Neutral</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="optradio">Positive (+)</label>
+                            </div>
+                            <div class="radio">
+                                <label><input type="radio" name="optradio">Negative (-)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <select multiple class="form-control" id="sel2">
+                                <option selected>M</option>
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Origins</label>
+                        </div>
+                        <div class="col-md-10">
+                            <label class="checkbox-inline"><input type="checkbox" value="" checked>Endogenous</label>
+                            <label class="checkbox-inline"><input type="checkbox" value="" checked>Food</label>
+                            <label class="checkbox-inline"><input type="checkbox" value="" checked>Drug</label>
+                            <label class="checkbox-inline"><input type="checkbox" value="" checked>CSF</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label>Biofluids</label>
+                        </div>
+                        <div class="col-md-10">
+                            <label class="checkbox-inline"><input type="checkbox" value="" checked>Blood</label>
+                            <label class="checkbox-inline"><input type="checkbox" value="" checked>Saliva</label>
+                            <label class="checkbox-inline"><input type="checkbox" value="" checked>Urine</label>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-10">
+                        </div>
+                        <div class="col-md-2">
+                            <div class="btn btn-success">
+                                <i class="glyphicon glyphicon-search"></i> Search
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block javascript %}
+    <script src="{{ url_for('static', filename='js/search.js') }}"></script>
+{% endblock %}

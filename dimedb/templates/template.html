@@ -30,12 +30,19 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{{ url_for('homepage')}}"><img src="{{ url_for('static', filename='imgs/dimedb-nav.svg')}}"></a>
+            <a class="navbar-brand" href="{{ url_for('homepage')}}"><img src="{{ url_for('static', filename='imgs/dimedb-nav.png')}}"></a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="{{ url_for('homepage')}}">Home</a></li>
-                <li><a href="{{ url_for('help')}}">Help</a></li>
+                <li><a href="{{ url_for('homepage')}}">
+                    <i class="glyphicon glyphicon-home"></i> Home
+                </a></li>
+                <li><a href="{{ url_for('search')}}">
+                    <i class="glyphicon glyphicon-search"></i> Search
+                </a></li>
+                <li><a href="{{ url_for('help')}}">
+                    <i class="glyphicon glyphicon-question-sign"></i> Help
+                </a></li>
             </ul>
         </div>
     </div>
