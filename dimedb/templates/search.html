@@ -23,8 +23,11 @@
                         <div class="col-md-2">
                             <label>Mass-to-ion</label>
                         </div>
-                        <div class="col-md-4">
-                            <input class="form-control" type="number" id="mass" value="1872.42">
+                        <div class="col-md-3">
+                            <div class="input-group">
+                                <input id="mass" type="number" class="form-control" min="1" value="1872.42" aria-describedby="mz_label">
+                                <span class="input-group-addon" id="mz_label">m/z</span>
+                            </div>
                         </div>
                     </div>
 
@@ -34,8 +37,8 @@
                         </div>
                         <div class="col-md-3">
                             <div class="input-group">
-                                <input id="ppm_tolerance" type="number" class="form-control input-sm" min="1" max="20" value="5" aria-describedby="value">
-                                <span class="input-group-addon" id="value">PPM</span>
+                                <input id="ppm_tolerance" type="number" class="form-control" min="1" max="20" value="5" aria-describedby="ppm_label">
+                                <span class="input-group-addon" id="ppm_label">ppm</span>
                             </div>
                         </div>
                     </div>
@@ -46,17 +49,17 @@
                         </div>
                         <div class="col-md-5">
                             <div class="radio">
-                                <label><input type="radio" name="optradio" checked>Neutral</label>
+                                <label><input type="radio" name="ionisation" value="neutral" checked>Neutral</label>
                             </div>
                             <div class="radio">
-                                <label><input type="radio" name="optradio">Positive (+)</label>
+                                <label><input type="radio" name="ionisation" value="positive">Positive (+)</label>
                             </div>
                             <div class="radio">
-                                <label><input type="radio" name="optradio">Negative (-)</label>
+                                <label><input type="radio" name="ionisation" value="negative">Negative (-)</label>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <select multiple class="form-control" id="sel2">
+                            <select multiple class="form-control" id="ionisation-adducts">
                                 <option selected>M</option>
                             </select>
                         </div>
@@ -68,10 +71,19 @@
                             <label>Origins</label>
                         </div>
                         <div class="col-md-10">
-                            <label class="checkbox-inline"><input type="checkbox" value="" checked>Endogenous</label>
-                            <label class="checkbox-inline"><input type="checkbox" value="" checked>Food</label>
-                            <label class="checkbox-inline"><input type="checkbox" value="" checked>Drug</label>
-                            <label class="checkbox-inline"><input type="checkbox" value="" checked>CSF</label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="origins" value="Endogenous" checked>
+                                Endogenous
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="origins" value="Food" checked>
+                                Food
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="origins" value="Drug" checked>
+                                Drug
+                            </label>
+
                         </div>
                     </div>
 
@@ -80,9 +92,22 @@
                             <label>Biofluids</label>
                         </div>
                         <div class="col-md-10">
-                            <label class="checkbox-inline"><input type="checkbox" value="" checked>Blood</label>
-                            <label class="checkbox-inline"><input type="checkbox" value="" checked>Saliva</label>
-                            <label class="checkbox-inline"><input type="checkbox" value="" checked>Urine</label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="biofluids" value="Blood" checked>
+                                Blood
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="biofluids" value="Saliva" checked>
+                                Saliva
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="biofluids" value="Urine" checked>
+                                    Urine
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="biofluids" value="CSF" checked>
+                                CSF
+                            </label>
                         </div>
                     </div>
 
@@ -90,7 +115,7 @@
                         <div class="col-md-10">
                         </div>
                         <div class="col-md-2">
-                            <div class="btn btn-success">
+                            <div class="btn btn-success" id="search_button">
                                 <i class="glyphicon glyphicon-search"></i> Search
                             </div>
                         </div>
@@ -103,5 +128,5 @@
 
 
 {% block javascript %}
-    <script src="{{ url_for('static', filename='js/search.js') }}"></script>
+<script src="{{ url_for('static', filename='js/search.js') }}"></script>
 {% endblock %}

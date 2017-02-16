@@ -78,7 +78,6 @@ body {
 }
 
 table#search_results {
-    display:none;
     width:80%;
     margin: 0 auto 0;
 }
@@ -93,19 +92,28 @@ table#search_results {
 
 th.dt-center, td.dt-center { text-align: center; }
 
-#home-page-search {
-        max-width: 800px;
+#home-page-welcome-search {
+        max-width: 600px;
         margin:0 auto 0;
-        margin-top: 40px;
+        margin-top: 100px;
         padding-bottom: 10px;
     }
 
-    #home-page-search img {
+    #home-page-welcome-search img {
         display: block;
         margin: 0 auto 0;
         width: 600px;
         margin-bottom: 30px;
     }
+
+#home-page-search-results {
+    padding-top:10px;
+    display: none;
+}
+
+#home-page-search-results img {
+    width:100%;
+}
 
 
 #advanced-search-container {

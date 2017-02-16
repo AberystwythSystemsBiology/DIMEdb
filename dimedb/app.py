@@ -47,7 +47,8 @@ def search():
 
 @app.route("/help/")
 def help():
-    return render_template("help.html", url = request.url)
+    print request.url_root
+    return render_template("help.html", url = request.url_root)
 
 @app.route("/view/<string:_id>/")
 def view(_id):
