@@ -4,7 +4,7 @@
 
 {% block body %}
 
-    <h1>Advanced Search</h1>
+    <h1>DIMEdb Advanced Search (Alpha)</h1>
 
     <div id="advanced-search-container">
         <div class="panel-group" id="advanced-search-accordion">
@@ -72,15 +72,15 @@
                         </div>
                         <div class="col-md-10">
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="origins" value="Endogenous" checked>
+                                <input type="checkbox" name="origins" value="Endogenous">
                                 Endogenous
                             </label>
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="origins" value="Food" checked>
+                                <input type="checkbox" name="origins" value="Food">
                                 Food
                             </label>
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="origins" value="Drug" checked>
+                                <input type="checkbox" name="origins" value="Drug">
                                 Drug
                             </label>
 
@@ -93,19 +93,19 @@
                         </div>
                         <div class="col-md-10">
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="biofluids" value="Blood" checked>
+                                <input type="checkbox" name="biofluids" value="Blood">
                                 Blood
                             </label>
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="biofluids" value="Saliva" checked>
+                                <input type="checkbox" name="biofluids" value="Saliva">
                                 Saliva
                             </label>
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="biofluids" value="Urine" checked>
+                                <input type="checkbox" name="biofluids" value="Urine">
                                     Urine
                             </label>
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="biofluids" value="CSF" checked>
+                                <input type="checkbox" name="biofluids" value="CSF">
                                 CSF
                             </label>
                         </div>
@@ -124,7 +124,19 @@
             </div>
         </div>
     </div>
+
+    <table id="search_results" class="table table-striped table-responsive display" width="100%">
+            <thead>
+                <tr>
+                </tr>
+            </thead>
+        </table>
+
+
+
+
 {% endblock %}
+
 
 
 {% block javascript %}

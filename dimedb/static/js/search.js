@@ -29,19 +29,91 @@ $(document).ready(function () {
         base_api += ionisation + ",";
         base_api += $("#mass").val() +",";
         base_api += $("#ppm_tolerance").val();
-        // console.log(current_url+base_api)
 
-        $("input[name='origins']:checked").each(function() {
-            base_api += "&origins__contains="+this.value +",";
-        });
+        var origins = $("input[name='origins']:checked").map(function(){
+            return $(this).val();
+        }).toArray();
 
-        $("input[name='biofluids']:checked").each(function() {
-            base_api += "&biofluids__contains="+this.value +",";
-        });
+        var biofluids = $("input[name='biofluids']:checked").map(function(){
+            return $(this).val();
+        }).toArray();
 
-        console.log(current_url+base_api)
+        if (origins.length > 0) {
+            base_api += "&origins__contains=";
+            for (i in origins) {
+                if (i == origins.length-1) {
+                    base_api += origins[i];
+                }
+                else {
+                    base_api += origins[i]+",";
+                }
+            }
+        }
+
+        if (biofluids.length > 0) {
+            base_api += "&biofluids__contains=";
+            for (i in biofluids) {
+                if (i == biofluids.length-1) {
+                    base_api += biofluids[i];
+                }
+                else {
+                    base_api += biofluids[i]+",";
+                }
+            }
+        }
+
+        render_search_results(base_api);
     });
 
 });
 
-// $("#ionisation-adducts").val()
+function render_search_results(url) {
+    $('#search_results').delay(100).DataTable({
+                    "destroy": true,
+                    "ajax": url,
+                    "columns": [
+                        {
+                            "title": "Metabolite Name",
+                            "width": "60%",
+                            "data": "name",
+                            "render": function (data, type, row) {
+                                return data
+
+                            }
+                        },
+                        {
+                            "title": "Molecular Formula",
+                            "width": "10%",
+                            "className": "dt-center",
+                            "data": "molecular_formula",
+                            "render": function (data, type, row) {
+                                return '<p style="text-align:center">'+data.replace(/([0-9]+)/g, '<sub>$1</sub>')+'</p>';
+                            }
+                        },
+                        {
+                            "title": "Neutral Mass (m/z)",
+                            "data": "accurate_mass",
+                            "className": "dt-center",
+                            "width": "10%",
+                            "render": function (data, type, row) {
+                                return data.toFixed(4);
+                            }
+                        },
+                        {
+                            "title": "",
+                            "data": "id",
+                            "className": "dt-center",
+                            "width": "5%",
+                            "render": function (data, type, row) {
+                                var view_url = window.location.protocol + "//" + window.location.host + "/" + "view/" + data;
+                                return "<a href='" + view_url + "' target='_blank'><button class='btn btn-sm btn-primary' id='view_button'>View</button></a>"
+                            }
+                        }
+                    ],
+                    "searching": false,
+                    //"bSort" : false,
+                    "lengthChange": false,
+                    "pageLength": 10
+                });
+
+}
