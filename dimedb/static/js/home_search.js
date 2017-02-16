@@ -87,10 +87,14 @@ function render_search_results(query) {
                             }
                         }
                     ],
+                    "buttons": [
+                        "copy"
+                    ],
                     "searching": false,
-                    //"bSort" : false,
                     "lengthChange": false,
                     "pageLength": 10
                 });
+
+    $("#download_json").attr("href", url);
 
 }

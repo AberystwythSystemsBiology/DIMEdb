@@ -32,6 +32,8 @@ function render_view(base_url, id) {
         $("#accurate_mass").html(metabolite["accurate_mass"].toFixed(6));
         $("#num_atoms").html(metabolite["num_atoms"]);
 
+
+
         // Rewrite this.
         for (p in metabolite["pathways"]) {
             var pw = metabolite["pathways"][p];
@@ -39,8 +41,8 @@ function render_view(base_url, id) {
             var smpdb_button = "";
 
             if (pw["kegg_id"] != null) {
-                    var kegg_url = "http://www.genome.jp/kegg-bin/show_pathway?map="+pw["kegg_id"];
-                    var kegg_button = "<a href='"+kegg_url+"' target='_blank'><button class='btn btn-danger btn-sm pull-right btn-space'><i class='glyphicon glyphicon-link'></i> KEGG</button></a></div>"
+                var kegg_url = "http://www.genome.jp/kegg-bin/show_pathway?map="+pw["kegg_id"];
+                var kegg_button = "<a href='"+kegg_url+"' target='_blank'><button class='btn btn-danger btn-sm pull-right btn-space' id='pathway'><i class='glyphicon glyphicon-link'></i> KEGG</button></a></div>"
             }
 
             if (pw["smpdb_id"] != null) {
@@ -79,6 +81,7 @@ function render_view(base_url, id) {
                 }
             }
         }
+
 
         $("#smiles").html(metabolite["smiles"]);
 
@@ -201,5 +204,8 @@ function render_view(base_url, id) {
             $("#distribution_modal").modal("toggle");
         });
     });
+}
+
+function pathway_view() {
 
 }
