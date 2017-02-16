@@ -113,6 +113,8 @@ th.dt-center, td.dt-center { text-align: center; }
 
 #home-page-search-results img {
     width:100%;
+    max-width: 150px;
+
 }
 
 
