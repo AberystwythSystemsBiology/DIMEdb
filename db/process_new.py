@@ -10,7 +10,7 @@ from rdkit.Chem import rdMolDescriptors, Fragments
 url="https://gist.githubusercontent.com/KeironO/a2ce6d7fb7e7e10f616a51f511cb27b4/raw/71b0ad0abf92ef101a4833dd9ee0837609939f9d/gistfile1.txt"
 periodic_table = json.loads(urllib2.urlopen(url).read())
 
-def load_output(hmdb_fp="./output/hmdb.json"):
+def load_output(hmdb_fp="./output/hmdb_new.json"):
     output = collections.defaultdict(dict)
     ds = [hmdb_fp]
     for s in ds:
@@ -145,6 +145,10 @@ def rules(formula, mol):
     adducts["positive"] = []
 
     # Negative Adducts
+    if nch != "qwerty": #Always true
+        am, d = adduct_calculator(formula, {"remove" : {}, "add" : {}}, -1)
+        adducts["negative"].append(gen_rule_dict("[M-.]-", am, d))
+
     if ndon > 0 and nch == 0:
         am, d = adduct_calculator(formula, {"remove": {"H": 1}, "add": {}}, -1)
         adducts["negative"].append(gen_rule_dict("[M-H]-", am, d))
@@ -166,6 +170,10 @@ def rules(formula, mol):
         adducts["negative"].append(gen_rule_dict("[M+Cl]-", am, d))
 
     # Positive Adducts
+
+    if nch != "qwerty": #Always true
+        am, d = adduct_calculator(formula, {"remove" : {}, "add" : {}}, 1)
+        adducts["positive"].append(gen_rule_dict("[M+.]+", am, d))
 
     if nacc > 0 and nch == 0:
         am, d = adduct_calculator(formula, {"add": {"H": 1}, "remove": {}}, 1)
@@ -214,40 +222,46 @@ def split(formula):
     return structure_dict
 
 def process_entity(entity, id):
-    final_d = {}
     try:
         mol = Chem.MolFromSmiles(entity["smiles"])
         formula = rdMolDescriptors.CalcMolFormula(mol)
         accurate_mass, adducts = rules(formula, mol)
         structure_dict = split(formula)
-        final_d = {
-            "name" : entity["name"],
-            "smiles": entity["smiles"],
-            "synonyms": entity["synonyms"],
-            "sources" : entity["sources"],
-            "molecular_formula": formula,
-            "origins": entity["origins"],
-            "accurate_mass": accurate_mass,
-            "pathways" : entity["pathways"],
-            "adducts": adducts,
-            "biofluids" : entity["biofluids"],
-            "num_atoms" : sum([structure_dict[x] for x in structure_dict])-1
-        }
 
+
+        tuple = [
+            ("_id", entity["_id"]),
+            ("name", entity["name"]),
+            ("synonyms", entity["synonyms"]),
+            ("molecular_formula", formula),
+            ("accurate_mass", accurate_mass),
+            ("num_atoms", sum([structure_dict[x] for x in structure_dict])-1),
+            ("inchi", entity["inchi"]),
+            ("smiles", ["smiles"]),
+            ("biofluid_locations", entity["biofluid_locations"]),
+            ("tissue_locations", entity["tissue_locations"]),
+            ("pathways", entity["pathways"]),
+            ("sources", entity["sources"]),
+            ("adducts", adducts)
+        ]
+        final_d = collections.OrderedDict(tuple)
+        return final_d
     except Exception, err:
-        pass
-    return final_d
+        return
 
 def generate_db_file(output):
-    db = Parallel(n_jobs=4)(delayed(process_entity)(output[id], id) for id in output)
-    db = [x for x in db if x != None]
+    db = Parallel(n_jobs=30)(delayed(process_entity)(output[id], id) for id in output)
+    '''
+    db = []
 
-
-    return db
+    for id in tqdm.tqdm(output):
+        db.append(process_entity(output[id], id))
+    '''
+    return [x for x in db if x != None]
 
 def save_db_file(db, fp="./output/dimedb.json"):
-    mongodb_file = json.loads(dumps(db))
-    with open(fp, "w") as output:
+    mongodb_file = json.loads(dumps(db), object_pairs_hook=collections.OrderedDict)
+    with open(fp, "wb") as output:
         json.dump(mongodb_file, output, indent=4)
 
 if __name__ == "__main__":
