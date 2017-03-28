@@ -41,6 +41,8 @@ def test(file_name):
 
         try:
             origins = metabolite["ontology"]["origins"]["origin"]
+            if type(origins) != list:
+                origins = [origins]
         except TypeError:
             origins = None
 
@@ -61,7 +63,7 @@ def test(file_name):
             "hmdb_id": metabolite["accession"]
         }
 
-        return collections.OrderedDict([("_id" , _id), ("name", name), ("synonyms", synonyms),
+        return collections.OrderedDict([("_id" , _id), ("name", name), ("synonyms", synonyms), ("origins", origins),
                                       ("inchi", inchi), ("smiles", smiles), ("biofluid_locations", biofluid_locations),
                                       ("tissue_locations", tissue_locations), ("pathways", pathways), ("sources", sources)])
 

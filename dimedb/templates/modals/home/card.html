@@ -1,0 +1,67 @@
+<div class="modal fade" id="card" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Metabolite Card: <span id="card_metabolite_name"></span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="container">
+                        <table id="card_table" class="table table-striped">
+                            <tbody>
+                            <tr>
+                                <th width="30%">Molecular Formula</th>
+                                <td id="molecular_formula">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Neutral Mass (m/z)</th>
+                                <td id="neutral_mass"></td>
+                            </tr>
+                            <tr>
+                                <th>Origins</th>
+                                <td id="origins">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Biofluids</th>
+                                <td id="biofluids"></td>
+                            </tr>
+                            <tr>
+                                <th>Tissues</th>
+                                <td id="tissues"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                Positive <label class="pull-right"><i class="glyphicon glyphicon-plus-sign"></i></label>
+                            </div>
+                            <div class="list-group" id="positive_adduct">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel panel-danger">
+                            <div class="panel-heading">
+                                Negative <label class="pull-right"><i
+                                    class="glyphicon glyphicon-minus-sign"></i></label>
+                            </div>
+                            <div class="list-group" id="negative_adduct">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                    <a id="viewfromcard" target='_blank'><button class="btn btn-primary btn-sm pull-right">View</button></a>
+                    <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>

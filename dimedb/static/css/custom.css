@@ -111,12 +111,12 @@ th.dt-center, td.dt-center { text-align: center; }
     display: none;
 }
 
+
 #home-page-search-results img {
     width:100%;
     max-width: 150px;
 
 }
-
 
 #advanced-search-container {
     max-width: 800px;
@@ -126,4 +126,14 @@ th.dt-center, td.dt-center { text-align: center; }
 
 #advanced-search-container .row {
     padding:10px;
+}
+
+.modal-view_pathway {
+    /* new custom width */
+    width: 90%;
+    height:90vh;
+}
+
+#modal_distribution_chart {
+    width:100%;
 }

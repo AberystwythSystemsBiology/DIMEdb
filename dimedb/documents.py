@@ -2,14 +2,17 @@ from mongoengine import *
 
 class MetaboliteFull(DynamicDocument):
     meta = {"collection" : "metabolites"}
+    id = StringField(primary_key=True)
     name = StringField()
     origins = ListField(StringField())
     molecular_formula = StringField()
     smiles = StringField()
+    inchi = StringField()
     accurate_mass = FloatField()
     num_atoms = IntField()
     sources = StringField()
-    biofluids = StringField()
+    biofluid_locations = StringField()
+    tissue_locations = StringField()
     pathways = StringField()
     synonyms = ListField(StringField())
     adducts = StringField()

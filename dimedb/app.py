@@ -69,7 +69,7 @@ def smiles_to_2d(id):
     from rdkit.Chem import Draw
     import StringIO
     try:
-        smiles = d.MetaboliteBasic.objects.filter(id=id)[0].smiles
+        smiles = d.MetaboliteBasic.objects.filter(_id=id)[0].smiles
         smiles_image = StringIO.StringIO()
         mol = Chem.MolFromSmiles(smiles)
         Draw.MolToFile(mol, fileName=smiles_image, imageType="png", size=(300, 300))

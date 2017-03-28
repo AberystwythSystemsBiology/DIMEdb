@@ -1,5 +1,5 @@
 <div class="modal fade" id="distribution_modal" role="dialog">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -7,20 +7,21 @@
                         id="met_name_modal"></span></h4>
             </div>
             <div class="modal-body">
-                <div class="container">
+                <p class="text-center"><strong>Abundance Table</strong></p>
                     <table class="table table-striped" id="distribution_table" width="60%" style="min-width: 400px;">
                         <thead>
                         <tr>
-                            <th width="50%">Mass-to-ion (m/z)</th>
-                            <th width="50%">Relative Intensity (%)</th>
+                            <th width="50%" class="text-center">Mass-to-ion (m/z)</th>
+                            <th width="50%" class="text-center">Relative Intensity (%)</th>
                         </tr>
                         </thead>
                         <tbody>
                         </tbody>
                     </table>
+                <p class="text-center"><strong>Mass Spectrum</strong></p>
+
                     <div id="modal_distribution_chart">
                     </div>
-                </div>
             </div>
         </div>
     </div>
@@ -35,6 +36,21 @@
             </div>
             <div class="modal-body">
                 <pre class="smiles" id="smiles">
+               </pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="inchi_view" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">View InCHI</h4>
+            </div>
+            <div class="modal-body">
+                <pre class="inchi" id="inchi">
                </pre>
             </div>
         </div>

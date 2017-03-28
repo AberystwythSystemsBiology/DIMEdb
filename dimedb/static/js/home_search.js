@@ -26,11 +26,12 @@ $(document).ready(function () {
             $("#search_results").fadeOut();
             render_search_results(query);
             $("#search_results").delay(460).fadeIn();
+
         }
         else {
             alert("You don't seem to have entered anything?");
         }
-    })
+    });
 
     $('#search_text_results').keypress(function (e) {
         if (e.which == 13) {
@@ -38,8 +39,68 @@ $(document).ready(function () {
         }
     });
 
+    $('#home-page-search-results').on('click', "#view_card", function() {
+        $("#card_table td").html("");
+        generate_card($(this).attr("name"))
+    });
 
 });
+
+function generate_card(id) {
+    var current_url = window.location.href;
+    $.getJSON(current_url + "api/metabolite/?id=" +id, function(json){
+        var metabolite = json["data"][0];
+        console.log(metabolite);
+        $("#card_metabolite_name").html(metabolite["name"]);
+        $("#molecular_formula").html(metabolite["molecular_formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
+
+
+        for (result in metabolite["adducts"]) {
+            if (result == "neutral") {
+                $("#neutral_mass").html(metabolite["adducts"]["neutral"]["peaks"][0]["accurate_mass"]);
+            }
+
+            else {
+                for (adduct_idx in metabolite["adducts"][result]["peaks"]) {
+                    var adduct = metabolite["adducts"][result]["peaks"][adduct_idx];
+                    $("#" + result + "_adduct").append("<li class='list-group-item'><b>" + adduct["type"] + ":</b> " + adduct["accurate_mass"].toFixed(4)+"</li>");
+                }
+            }
+        }
+
+        if (metabolite["origins"] == null) {
+            $("#origins").append("<i class='text-primary'>None</i>");
+        }
+        else {
+            for (indx in metabolite["origins"]) {
+                $("#origins").append(metabolite["origins"][indx] + "; ");
+            }
+        }
+
+        if (metabolite["biofluid_locations"] == null) {
+            $("#biofluids").append("<i class='text-primary'>None</i>");
+        }
+        else {
+            for (indx in metabolite["biofluid_locations"]) {
+                $("#biofluids").append(metabolite["biofluid_locations"][indx] + "; ");
+            }
+        }
+
+        if (metabolite["tissue_locations"] == null) {
+            $("#tissues").append("<i class='text-primary'>None</i>");
+        }
+        else {
+            for (indx in metabolite["tissue_locations"]) {
+                $("#tissues").append(metabolite["tissue_locations"][indx] + "; ");
+            }
+        }
+
+        $("#viewfromcard").attr("href", current_url+"view/"+id);
+
+    });
+    // Get the JSON data
+    $("#card").modal("toggle");
+}
 
 
 function render_search_results(query) {
@@ -80,10 +141,15 @@ function render_search_results(query) {
                             "title": "",
                             "data": "id",
                             "className": "dt-center",
-                            "width": "5%",
+                            "width": "10%",
                             "render": function (data, type, row) {
                                 var view_url = current_url + "view/" + data;
-                                return "<a href='" + view_url + "' target='_blank'><button class='btn btn-sm btn-primary' id='view_button'>View</button></a>"
+                                return "<div class='btn-toolbar'> <a href='" + view_url + "' target='_blank'>" +
+                                    "<button class='btn btn-sm btn-primary' id='view_button'>View</button>" +
+                                    "</a>" +
+                                    "<button id='view_card' class='btn btn-sm btn-danger' name='"+data+"'><i class='glyphicon glyphicon-book'></i></button></div>"
+
+
                             }
                         }
                     ],
@@ -96,5 +162,4 @@ function render_search_results(query) {
                 });
 
     $("#download_json").attr("href", url);
-
 }

@@ -46,6 +46,10 @@
                 <td id="biofluids"></td>
             </tr>
             <tr>
+                <th>Tissues</th>
+                <td id="tissues"></td>
+            </tr>
+            <tr>
                 <th>Number of atoms</th>
                 <td id="num_atoms">
                 </td>
@@ -67,9 +71,14 @@
                 <img id="structure" src="" style="display:block; margin:0 auto 0; max-width:300px; width:80%;">
             </div>
             <div class="panel-footer">
+                <div class="btn-toolbar">
+
                 <button class="btn btn-sm pull-right" data-toggle="modal" data-target="#smiles_view">
-                    View SMILES
+                    <i class="glyphicon glyphicon-eye-open"></i> SMILES
                 </button>
+                <button class="btn btn-sm pull-right" data-toggle="modal" data-target="#inchi_view">
+                    <i class="glyphicon glyphicon-eye-open"></i> InCHI
+                </button></div>
                 <div class="clearfix"></div>
             </div>
         </div>
@@ -84,8 +93,7 @@
         </h2>
         <div id="distribution_chart" style="width:100%;height:350px;"></div>
 
-        <h2>Pathways</h2>
-
+        <h2>KEGG Pathways</h2>
         <ul id="pathway_listgroup" class="list-group">
         </ul>
     </div>
