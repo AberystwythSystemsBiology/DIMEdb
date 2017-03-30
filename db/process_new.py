@@ -145,9 +145,12 @@ def rules(formula, mol):
     adducts["positive"] = []
 
     # Negative Adducts
+    '''
     if nch != "qwerty": #Always true
         am, d = adduct_calculator(formula, {"remove" : {}, "add" : {}}, -1)
         adducts["negative"].append(gen_rule_dict("[M-.]-", am, d))
+    '''
+
 
     if ndon > 0 and nch == 0:
         am, d = adduct_calculator(formula, {"remove": {"H": 1}, "add": {}}, -1)
@@ -170,10 +173,11 @@ def rules(formula, mol):
         adducts["negative"].append(gen_rule_dict("[M+Cl]-", am, d))
 
     # Positive Adducts
-
+    '''
     if nch != "qwerty": #Always true
         am, d = adduct_calculator(formula, {"remove" : {}, "add" : {}}, 1)
         adducts["positive"].append(gen_rule_dict("[M+.]+", am, d))
+    '''
 
     if nacc > 0 and nch == 0:
         am, d = adduct_calculator(formula, {"add": {"H": 1}, "remove": {}}, 1)

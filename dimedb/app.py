@@ -1,4 +1,4 @@
-from flask import Flask, render_template, abort, request, jsonify
+from flask import Flask, render_template, abort, request, jsonify, url_for
 
 from flask_mongoengine import MongoEngine
 from flask_mongorest import MongoRest
@@ -15,6 +15,8 @@ app.config.update(
     MONGODB_DB = "dimedb",
     DEBUG = True
 )
+
+is_maintenance_mode = True
 
 db = MongoEngine(app)
 api = MongoRest(app)
@@ -47,7 +49,6 @@ def search():
 
 @app.route("/help/")
 def help():
-    print request.url_root
     return render_template("help.html", url = request.url_root)
 
 @app.route("/view/<string:_id>/")
@@ -61,6 +62,12 @@ def view(_id):
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("./misc/404.html"), 404
+
+@app.before_request
+def maintenence_page():
+    if is_maintenance_mode:
+        return render_template("./misc/503.html"), 503
+
 
 # Temporary until I find a better solution.
 @app.route("/gen_structure/<string:id>/")

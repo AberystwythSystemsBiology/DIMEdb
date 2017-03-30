@@ -73,12 +73,14 @@ def test(file_name):
 if __name__ == "__main__":
     files = os.listdir("/home/keo7/PycharmProjects/DIMEdb/db/dl-files/hmdb/xml_files/")
 
+    files = [x for x in files if x.endswith("swp") != True]
 
     processed_list = []
-    for i in range(0, len(files), 1000):
-        print i
+
+    fr = range(0, len(files), 1000)
+    for idx, i in enumerate(fr):
+        print idx+1,  "/", len(fr)
         processed_list.extend(Parallel(n_jobs=500)(delayed(test)(file) for file in files[i:i+1000]))
-        break
 
     dict = {}
 
