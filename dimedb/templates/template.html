@@ -53,6 +53,9 @@
 {% endblock %}
 </div>
 
+
+{% include "modals/clipboard.html" %}
+
 <footer class="footer">
     <div class="container">
         <p class="text-muted">DIMEdb is developed by researchers from <a href="http://www.aber.ac.uk">Aberystwyth
@@ -69,5 +72,8 @@
 
 {% block javascript %}
 {% endblock %}
+
+<script src="{{ url_for('static', filename='js/clipboard.js') }}"></script>
+
 
 </html>

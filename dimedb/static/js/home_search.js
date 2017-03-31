@@ -44,6 +44,10 @@ $(document).ready(function () {
         generate_card($(this).attr("name"))
     });
 
+    $('#home-page-search-results').on('click', "#add_to_clipboard", function() {
+        clipboard_hook($(this).attr("name"));
+    });
+
 });
 
 function generate_card(id) {
@@ -141,15 +145,15 @@ function render_search_results(query) {
                             "title": "",
                             "data": "id",
                             "className": "dt-center",
-                            "width": "10%",
+                            "width": "15%",
                             "render": function (data, type, row) {
                                 var view_url = current_url + "view/" + data;
-                                return "<div class='btn-toolbar'> <a href='" + view_url + "' target='_blank'>" +
+                                return "<div id='tester' class='btn-toolbar'>" +
+                                    "<a href='" + view_url + "' target='_blank'>" +
                                     "<button class='btn btn-sm btn-primary' id='view_button'>View</button>" +
                                     "</a>" +
-                                    "<button id='view_card' class='btn btn-sm btn-danger' name='"+data+"'><i class='glyphicon glyphicon-book'></i></button></div>"
-
-
+                                    "<button id='view_card' class='btn btn-sm btn-danger' name='"+data+"'><i class='glyphicon glyphicon-book'></i></button>" +
+                                    "<button id='add_to_clipboard' class='btn btn-sm btn-success' name='"+data+"'><i class='glyphicon glyphicon-plus'></i></button></div>"
                             }
                         }
                     ],

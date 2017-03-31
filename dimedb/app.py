@@ -16,7 +16,7 @@ app.config.update(
     DEBUG = True
 )
 
-is_maintenance_mode = True
+is_maintenance_mode = False
 
 db = MongoEngine(app)
 api = MongoRest(app)
