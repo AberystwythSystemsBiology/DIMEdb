@@ -54,7 +54,6 @@ function generate_card(id) {
     var current_url = window.location.href;
     $.getJSON(current_url + "api/metabolite/?id=" +id, function(json){
         var metabolite = json["data"][0];
-        console.log(metabolite);
         $("#card_metabolite_name").html(metabolite["name"]);
         $("#molecular_formula").html(metabolite["molecular_formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
 

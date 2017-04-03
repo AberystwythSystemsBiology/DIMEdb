@@ -1,76 +1,69 @@
 $(document).ready(function () {
-    $("input[type=radio][name=ionisation]").change(function() {
 
+
+    $("input[type=radio][name=ionisation]").change(function () {
         var iad = {
-            "negative" : [["M-H", 1], ["M+Cl", 1], ["M+Br", 0]],
-            "positive" : [["M+H", 1], ["M+K", 1], ["2M+H", 0]],
-            "neutral" : [["M", 1]]
-        }
+            "negative": [["M-H", 1], ["M+Cl", 1], ["M+Br", 0]],
+            "positive": [["M+H", 1], ["M+K", 1], ["2M+H", 0]],
+            "neutral": [["M", 1]]
+        };
 
-        $("#ionisation-adducts").empty()
+        $("#ionisation-adducts").empty();
 
-        for(x in iad[this.value]) {
+        for (x in iad[this.value]) {
             var adduct = (iad[this.value][x]);
             if (adduct[1] == 1) {
-                $("#ionisation-adducts").append("<option selected>"+adduct[0]+"</option>")
+                $("#ionisation-adducts").append("<option selected>" + adduct[0] + "</option>")
             }
             else {
-                $("#ionisation-adducts").append("<option>"+adduct[0]+"</option>")
+                $("#ionisation-adducts").append("<option>" + adduct[0] + "</option>")
             }
         }
 
     });
 
-    $("#search_button").click(function() {
-        var ionisation = $("input[type=radio][name=ionisation]:checked").val();
-        var current_url = window.location.protocol + "//" + window.location.host
-
-        var base_api = "/api/adducts/?adducts__pi_ppm=";
-        base_api += ionisation + ",";
-        base_api += $("#mass").val() +",";
-        base_api += $("#ppm_tolerance").val();
-
-        var origins = $("input[name='origins']:checked").map(function(){
-            return $(this).val();
-        }).toArray();
-
-        var biofluids = $("input[name='biofluids']:checked").map(function(){
-            return $(this).val();
-        }).toArray();
-
-        if (origins.length > 0) {
-            base_api += "&origins__contains=";
-            for (i in origins) {
-                if (i == origins.length-1) {
-                    base_api += origins[i];
-                }
-                else {
-                    base_api += origins[i]+",";
-                }
-            }
-        }
-
-        if (biofluids.length > 0) {
-            base_api += "&biofluids__contains=";
-            for (i in biofluids) {
-                if (i == biofluids.length-1) {
-                    base_api += biofluids[i];
-                }
-                else {
-                    base_api += biofluids[i]+",";
-                }
-            }
-        }
-
-        render_search_results(base_api);
+    $("#search_button").click(function () {
+        var masses = $("#masses").tagsinput("items");
+        $("#advanced_search_results").fadeOut("slow");
+        $("#advanced_search_results").empty();
+        masses.forEach(function (mass, index) {
+            api_url = generate_api_url(mass);
+            populate_results(mass, getBaseURL()+api_url);
+        });
     });
-
 });
 
-function render_search_results(url) {
-    $('#search_results').delay(100).DataTable({
+
+function generate_api_url(mass) {
+    var ionisation = $("input[type=radio][name=ionisation]:checked").val();
+    var ppm_tolerance = $("#ppm_tolerance").val();
+
+    var base_api = "api/adducts/?adducts__pi_ppm=";
+    base_api += ionisation+ "," + mass + "," + ppm_tolerance;
+    return base_api;
+}
+
+function generate_results_table(mass) {
+    var mass_table = "<table id='search_results_"+mass.replace(".", "_")+"' class='table table-striped table-responsive display'><thead>"+
+                "<tr></tr></thead></table>";
+    return mass_table;
+}
+
+
+function populate_results(mass, api_url) {
+    $("#advanced_search_results").append("<h3> "+mass+" m/z</h3>");
+    $("#advanced_search_results").append(generate_results_table(mass));
+    render_search_results(mass, api_url);
+    $('#advanced_search_results').fadeIn("slow");
+
+}
+
+
+function render_search_results(mass, api_url) {
+    console.log(api_url);
+    $('#search_results_'+mass.replace(".", "_")).delay(100).DataTable({
                     "destroy": true,
-                    "ajax": url,
+                    "ajax": api_url,
                     "columns": [
                         {
                             "title": "Metabolite Name",
@@ -113,7 +106,12 @@ function render_search_results(url) {
                     "searching": false,
                     //"bSort" : false,
                     "lengthChange": false,
-                    "pageLength": 10
+                    "pageLength": 5
                 });
 
+}
+
+function getBaseURL () {
+   return location.protocol + "//" + location.hostname +
+      (location.port && ":" + location.port) + "/";
 }

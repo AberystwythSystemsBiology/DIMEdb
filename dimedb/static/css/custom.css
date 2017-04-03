@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
 
 
 html {
@@ -7,12 +7,16 @@ html {
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     padding-top: 50px;
     color: #000;
     -webkit-font-smoothing: antialiased;
     -webkit-overflow-scrolling: touch;
     margin-bottom: 70px;
+
+}
+
+h1, h2, h3, h4, h5, h6 {
 
 }
 
@@ -94,6 +98,10 @@ table#search_results {
     width:5%;
 }
 
+#advanced_search_results {
+    display: none;
+}
+
 th.dt-center, td.dt-center { text-align: center; }
 
 #home-page-welcome-search {
@@ -151,4 +159,22 @@ th.dt-center, td.dt-center { text-align: center; }
     width:17.5%;
     min-width: 200px;
 
+}
+.bootstrap-tagsinput {
+    width: 100%;
+}
+
+.label {
+    line-height: 2 !important;
+}
+
+.modal-dialog {
+  width: 90%;
+  height: 100%;
+}
+
+.modal-content {
+  height: auto;
+  min-height: 100%;
+  border-radius: 0;
 }
