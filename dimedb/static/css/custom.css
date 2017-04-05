@@ -175,6 +175,10 @@ th.dt-center, td.dt-center { text-align: center; }
     border-bottom:2px dashed #337AB7;
 }
 
+.modal-lg {
+    height:100%;
+}
+
 .modal-content {
   height: auto;
   min-height: 100%;

@@ -13,10 +13,15 @@ function render_view(base_url, id) {
         $("#met_name_modal").html(metabolite["name"]);
         $("#get_json").attr("href", base_url + "api/metabolite/?id__exact=" + metabolite["id"]);
         $("#molecular_formula").html(metabolite["molecular_formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
-        $("#molecular_formula_search").attr("href", base_url + "api/metabolites/?molecular_formula__exact=" + metabolite["molecular_formula"])
+        //$("#molecular_formula_search").attr("href", base_url + )
         $("#accurate_mass").html(metabolite["accurate_mass"].toFixed(6));
         $("#num_atoms").html(metabolite["num_atoms"]);
 
+
+        $("#molecular_formula_search").click(function() {
+            render_search_results("mol_form_search_results", "api/metabolites/?molecular_formula__exact=" + metabolite["molecular_formula"], 10);
+            $("#molecular_formula_modal").modal("toggle");
+        });
 
         kegg_dict = {
             "map00010": "Glycolysis / Gluconeogenesis",

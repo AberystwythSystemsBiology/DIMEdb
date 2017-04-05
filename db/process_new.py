@@ -201,7 +201,7 @@ def rules(formula, mol):
 
     if nacc > 0 and nch == 0:
         am, d = adduct_calculator(formula, {"add": {"H": 1}, "remove": {}, "multiply" : 2}, 1)
-        adducts["positive"].append(gen_rule_dict("2M+H", am, d))
+        adducts["positive"].append(gen_rule_dict("[2M+H]+", am, d))
 
     final_adducts = {}
     for ion in adducts.keys():
