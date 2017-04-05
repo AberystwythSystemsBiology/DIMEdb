@@ -4,6 +4,18 @@ from joblib import Parallel, delayed
 
 from bioservices import KEGG, KEGGParser
 
+origins_dictonary = {
+    "Toxin/Pollutant" : "Toxin",
+    "Plant" : "Plant",
+    "Drug metabolite" : "Drug",
+    "Drug or steroid metabolite" : "Drug",
+    "Drug" : "Drug",
+    "Food" : "Food",
+    "Microbial" : "Microbial",
+    "Cosmetic" : "Cosmetic",
+    "Endogenous" : "Endogenous"
+}
+
 def test(file_name):
     with open("/home/keo7/PycharmProjects/DIMEdb/db/dl-files/hmdb/xml_files/"+file_name, "r") as xml_in:
         metabolite = xmltodict.parse(xml_in.read())["metabolite"]
@@ -42,7 +54,7 @@ def test(file_name):
         try:
             origins = metabolite["ontology"]["origins"]["origin"]
             if type(origins) != list:
-                origins = [origins]
+                origins = [biofluid_locations[x] for x in origins]
         except TypeError:
             origins = None
 

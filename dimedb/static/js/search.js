@@ -45,6 +45,22 @@ function generate_api_url(mass) {
 
     var base_api = "api/adducts/?adducts__pi_ppm=";
     base_api += ionisation+ "," + mass + "," + ppm_tolerance;
+
+    var origins = $("input[name='origins']:checked").map(function(){
+            return $(this).val();
+        }).toArray();
+
+    if (origins.length > 0) {
+        base_api += "&origins__contains=";
+        for (i in origins) {
+                if (i == origins.length-1) {
+                    base_api += origins[i];
+                }
+                else {
+                    base_api += origins[i]+",";
+                }
+        }
+    }
     return base_api;
 }
 
