@@ -28,9 +28,9 @@
             </div>
             <div class="col-md-10">
                 <div class="input-group">
-            <input type="text" class="search-query form-control" id="search_text_results" placeholder="Search metabolite name (Sucrose, Ganglioside GM1...)">
+            <input type="text" class="search-query form-control" id="search_text" placeholder="Search metabolite name (Sucrose, Ganglioside GM1...)">
             <span class="input-group-btn">
-                <button class="btn btn-success" type="button" id="search_text_button">
+                <button class="btn btn-success" type="button" id="search_button">
                     <span class="glyphicon glyphicon-search"></span> Search
                 </button>
             </span>
@@ -51,10 +51,6 @@
 
 
     </div>
-
-{% include "modals/home/card.html" %}
-
-
 {% endblock %}
 
 {% block javascript %}

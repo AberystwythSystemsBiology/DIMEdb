@@ -1,4 +1,4 @@
-var base_url = window.location.protocol + "//" + window.location.host + "/" + window.location.pathname.split('/')[1];
+
 var metabolite_array = load_metabolites();
 
 $(document).ready(function () {
@@ -57,7 +57,7 @@ function clipboard_hook(id) {
 
 function populate_clipboard(m) {
     $("#clipboard_list_group").append(
-        "<li id='" + m[0] + "' class='list-group-item'>" + m[1] + "<a href='" + base_url + "view/" + m[0] + "'>" +
+        "<li id='" + m[0] + "' class='list-group-item'>" + m[1] + "<a href='" + getBaseURL() + "view/" + m[0] + "'>" +
         "<button class='btn btn-success btn-sm pull-right'>" +
         "<i class='glyphicon glyphicon-link'></i> View" +
         "</button></a><div class='clearfix'></div></li>"
@@ -65,7 +65,7 @@ function populate_clipboard(m) {
 }
 
 function get_metabolite(id, callback) {
-    $.getJSON(base_url + "api/metabolite/?id=" + id, function (data) {
+    $.getJSON(getBaseURL() + "api/metabolite/?id=" + id, function (data) {
         callback(data["data"][0]);
     });
 }

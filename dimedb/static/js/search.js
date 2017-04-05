@@ -1,6 +1,4 @@
 $(document).ready(function () {
-
-
     $("input[type=radio][name=ionisation]").change(function () {
         var iad = {
             "negative": [["M-H", 1], ["M+Cl", 1], ["M+Br", 0]],
@@ -19,7 +17,14 @@ $(document).ready(function () {
                 $("#ionisation-adducts").append("<option>" + adduct[0] + "</option>")
             }
         }
+    });
 
+    $('#advanced_search_results').on('click', "#add_to_clipboard", function() {
+        clipboard_hook($(this).attr("name"));
+    });
+
+    $('#advanced_search_results').on('click', "#view_card", function() {
+        generate_card($(this).attr("name"))
     });
 
     $("#search_button").click(function () {
@@ -28,7 +33,7 @@ $(document).ready(function () {
         $("#advanced_search_results").empty();
         masses.forEach(function (mass, index) {
             api_url = generate_api_url(mass);
-            populate_results(mass, getBaseURL()+api_url);
+            populate_results(mass, api_url);
         });
     });
 });
@@ -53,65 +58,7 @@ function generate_results_table(mass) {
 function populate_results(mass, api_url) {
     $("#advanced_search_results").append("<h3> "+mass+" m/z</h3>");
     $("#advanced_search_results").append(generate_results_table(mass));
-    render_search_results(mass, api_url);
+    render_search_results("search_results_"+mass.replace(".", "_"), api_url, 5);
     $('#advanced_search_results').fadeIn("slow");
 
-}
-
-
-function render_search_results(mass, api_url) {
-    console.log(api_url);
-    $('#search_results_'+mass.replace(".", "_")).delay(100).DataTable({
-                    "destroy": true,
-                    "ajax": api_url,
-                    "columns": [
-                        {
-                            "title": "Metabolite Name",
-                            "width": "60%",
-                            "data": "name",
-                            "render": function (data, type, row) {
-                                return data
-
-                            }
-                        },
-                        {
-                            "title": "Molecular Formula",
-                            "width": "10%",
-                            "className": "dt-center",
-                            "data": "molecular_formula",
-                            "render": function (data, type, row) {
-                                return '<p style="text-align:center">'+data.replace(/([0-9]+)/g, '<sub>$1</sub>')+'</p>';
-                            }
-                        },
-                        {
-                            "title": "Neutral Mass (m/z)",
-                            "data": "accurate_mass",
-                            "className": "dt-center",
-                            "width": "10%",
-                            "render": function (data, type, row) {
-                                return data.toFixed(4);
-                            }
-                        },
-                        {
-                            "title": "",
-                            "data": "id",
-                            "className": "dt-center",
-                            "width": "5%",
-                            "render": function (data, type, row) {
-                                var view_url = window.location.protocol + "//" + window.location.host + "/" + "view/" + data;
-                                return "<a href='" + view_url + "' target='_blank'><button class='btn btn-sm btn-primary' id='view_button'>View</button></a>"
-                            }
-                        }
-                    ],
-                    "searching": false,
-                    //"bSort" : false,
-                    "lengthChange": false,
-                    "pageLength": 5
-                });
-
-}
-
-function getBaseURL () {
-   return location.protocol + "//" + location.hostname +
-      (location.port && ":" + location.port) + "/";
 }

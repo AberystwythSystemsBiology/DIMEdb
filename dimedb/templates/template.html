@@ -55,6 +55,7 @@
 
 
 {% include "modals/clipboard.html" %}
+{% include "modals/metabolite_card.html" %}
 
 <footer class="footer">
     <div class="container">
@@ -72,7 +73,7 @@
 
 {% block javascript %}
 {% endblock %}
-
+<script src="{{ url_for('static', filename='js/global.js') }}"></script>
 <script src="{{ url_for('static', filename='js/clipboard.js') }}"></script>
 
 

@@ -1,10 +1,11 @@
 <div class="modal fade" id="distribution_modal" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-distribution">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 id="dtable_header" class="modal-title">Adduct <span id="dm_adduct"></span>: <span
-                        id="met_name_modal"></span></h4>
+                <h4 id="dtable_header" class="modal-title">
+                    <span id="met_name_modal"></span> <span id="dm_adduct"></span>
+                </h4>
             </div>
             <div class="modal-body">
                 <p class="text-center"><strong>Abundance Table</strong></p>
@@ -19,7 +20,6 @@
                         </tbody>
                     </table>
                 <p class="text-center"><strong>Mass Spectrum</strong></p>
-
                     <div id="modal_distribution_chart">
                     </div>
             </div>
@@ -47,7 +47,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">View InCHI</h4>
+                <h4 class="modal-title">View InChI</h4>
             </div>
             <div class="modal-body">
                 <pre class="inchi" id="inchi">

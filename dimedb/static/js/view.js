@@ -1,17 +1,3 @@
-/*
- New search method.
-
- == Standard text search option, keep it as it is - it's fine.
-
- == PPI / Neutral
-
- New table to be created
-
- | Name | Adduct | Adduct m/z | Neutral m/z | Difference |
-
-
- */
-
 function render_view(base_url, id) {
     var url = base_url + "api/metabolite/?id__exact=" + id;
     var x_plot = [];
@@ -560,26 +546,26 @@ function render_view(base_url, id) {
 
         for (source in metabolite["sources"]) {
             if (metabolite["sources"][source]) {
-                var id = metabolite["sources"][source];
+                var source_id = metabolite["sources"][source];
                 if (source == "kegg_id") {
-                    var kegg_url = "http://www.genome.jp/dbget-bin/www_bget?compound+" + String(id)
+                    var kegg_url = "http://www.genome.jp/dbget-bin/www_bget?compound+" + String(source_id);
                     $("#data_sources").append("<a href='" + kegg_url + "'><button class='btn btn-success btn-sm btn-space'><i class='glyphicon glyphicon-link'></i> KEGG</button></a>");
                 }
 
                 if (source == "chebi_id") {
-                    var chebi_url = "http://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:" + String(id)
+                    var chebi_url = "http://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:" + String(source_id);
                     $("#data_sources").append("<a href='" + chebi_url + "'><button class='btn btn-danger btn-sm btn-space'><i class='glyphicon glyphicon-link'></i> CHEBI</button></a>");
 
                 }
 
                 if (source == "pubchem_id") {
-                    var pubchem_url = "https://pubchem.ncbi.nlm.nih.gov/compound/" + String(id)
+                    var pubchem_url = "https://pubchem.ncbi.nlm.nih.gov/compound/" + String(source_id);
                     $("#data_sources").append("<a href='" + pubchem_url + "'><button class='btn btn-warning btn-sm btn-space'><i class='glyphicon glyphicon-link'></i> PubChem</button></a>");
 
                 }
 
                 if (source == "hmdb_id") {
-                    var hmdb_url = "http://www.hmdb.ca/metabolites/" + String(id)
+                    var hmdb_url = "http://www.hmdb.ca/metabolites/" + String(source_id);
                     $("#data_sources").append("<a href='" + hmdb_url + "'><button class='btn btn-default btn-sm btn-space'><i class='glyphicon glyphicon-link'></i> HMDB</button></a>");
 
                 }
@@ -592,7 +578,7 @@ function render_view(base_url, id) {
 
 
         if (metabolite["synonyms"].length == 0) {
-            $("#synonyms").append("<i class='text-primary'>None</i>");
+            $("#synonyms").append("<span class='text-info'>Not available</span>");
 
         }
         else {
@@ -603,7 +589,7 @@ function render_view(base_url, id) {
 
 
         if (metabolite["origins"] == null) {
-            $("#origins").append("<i class='text-primary'>None</i>");
+            $("#origins").append("<i class='text-info'>Not available</i>");
         }
         else {
             for (indx in metabolite["origins"]) {
@@ -612,7 +598,7 @@ function render_view(base_url, id) {
         }
 
         if (metabolite["biofluid_locations"] == null) {
-            $("#biofluids").append("<i class='text-primary'>None</i>");
+            $("#biofluids").append("<span class='text-info'>Not available</span>");
         }
         else {
             for (indx in metabolite["biofluid_locations"]) {
@@ -621,7 +607,7 @@ function render_view(base_url, id) {
         }
 
         if (metabolite["tissue_locations"] == null) {
-            $("#tissues").append("<i class='text-primary'>None</i>");
+            $("#tissues").append("<span class='text-primary'>Not available</span>");
         }
         else {
             for (indx in metabolite["tissue_locations"]) {
@@ -684,6 +670,11 @@ function render_view(base_url, id) {
         };
         Plotly.newPlot("distribution_chart", isotopic_data, layout, {displayModeBar: false});
         $("#container").show();
+
+        $('[id="add_to_clipboard"]').click(function() {
+            console.log(id);
+            clipboard_hook(id);
+        });
 
         $('[id="view_pathway_button"]').click(function() {
             var pathway_array = $(this).attr("name").split("_");

@@ -168,9 +168,11 @@ th.dt-center, td.dt-center { text-align: center; }
     line-height: 2 !important;
 }
 
-.modal-dialog {
-  width: 90%;
-  height: 100%;
+.modal-header {
+    background-color: #337AB7;
+    padding:16px 16px;
+    color:#FFF;
+    border-bottom:2px dashed #337AB7;
 }
 
 .modal-content {
