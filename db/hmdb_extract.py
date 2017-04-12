@@ -1,23 +1,37 @@
 import os, xmltodict, collections, json
-
-from joblib import Parallel, delayed
+from xml.etree import ElementTree as ET
 
 from bioservices import KEGG, KEGGParser
 
-origins_dictonary = {
-    "Toxin/Pollutant" : "Toxin",
-    "Plant" : "Plant",
-    "Drug metabolite" : "Drug",
-    "Drug or steroid metabolite" : "Drug",
-    "Drug" : "Drug",
-    "Food" : "Food",
-    "Microbial" : "Microbial",
-    "Cosmetic" : "Cosmetic",
-    "Endogenous" : "Endogenous"
-}
+from joblib import Parallel, delayed
 
-def test(file_name):
-    with open("/home/keo7/PycharmProjects/DIMEdb/db/dl-files/hmdb/xml_files/"+file_name, "r") as xml_in:
+def split_hmdb_file(file_path=None, out_dir=None):
+    data = ET.iterparse(file_path, events=("end", ))
+    count = 0
+    for event, element in data:
+        count += 1
+        if element.tag == "{http://www.hmdb.ca}metabolite":
+            accession = element.find("{http://www.hmdb.ca}accession").text
+            with open(out_dir+accession+".xml", "wb") as save_file:
+                save_file.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+                save_file.write(ET.tostring(element).replace("ns0:", "")) #Forgive me father for I have sinned.
+
+
+
+def parse_hmdb(file_name):
+    origins_dictonary = {
+        "Toxin/Pollutant": "Toxin",
+        "Plant": "Plant",
+        "Drug metabolite": "Drug",
+        "Drug or steroid metabolite": "Drug",
+        "Drug": "Drug",
+        "Food": "Food",
+        "Microbial": "Microbial",
+        "Cosmetic": "Cosmetic",
+        "Endogenous": "Endogenous"
+    }
+
+    with open(file_name, "r") as xml_in:
         metabolite = xmltodict.parse(xml_in.read())["metabolite"]
 
         try:
@@ -54,7 +68,8 @@ def test(file_name):
         try:
             origins = metabolite["ontology"]["origins"]["origin"]
             if type(origins) != list:
-                origins = [biofluid_locations[x] for x in origins]
+                origins = [origins]
+            origins = [origins_dictonary[x] for x in origins]
         except TypeError:
             origins = None
 
@@ -80,24 +95,29 @@ def test(file_name):
                                       ("tissue_locations", tissue_locations), ("pathways", pathways), ("sources", sources)])
 
 
-
-
 if __name__ == "__main__":
-    files = os.listdir("/home/keo7/PycharmProjects/DIMEdb/db/dl-files/hmdb/xml_files/")
+    hmdb_file = "/home/keo7/.data/hmdb/hmdb_metabolites.xml"
+    hmdb_directory = "/home/keo7/.data/hmdb/out/"
+    output_directory = "./output/"
+    files = os.listdir(hmdb_directory)
 
-    files = [x for x in files if x.endswith("swp") != True]
+    if files == []:
+        split_hmdb_file(file_path=hmdb_file, out_dir=hmdb_directory)
+        files = os.listdir(hmdb_directory)
+
 
     processed_list = []
 
     fr = range(0, len(files), 1000)
     for idx, i in enumerate(fr):
         print idx+1,  "/", len(fr)
-        processed_list.extend(Parallel(n_jobs=500)(delayed(test)(file) for file in files[i:i+1000]))
-
+        processed_list.extend(Parallel(n_jobs=300)(delayed(parse_hmdb)(hmdb_directory+file) for file in files[i:i+1000]))
+        break
     dict = {}
 
     for indx, metabolite in enumerate(processed_list):
         dict[indx] = metabolite
 
-    with open(os.path.dirname(__file__)+"/output/hmdb_new.json", "w") as outfile:
+    with open(os.path.dirname(__file__)+"/output/hmdb.json", "w") as outfile:
         json.dump(dict, outfile, indent=4)
+
