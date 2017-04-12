@@ -25,17 +25,6 @@ api = MongoRest(app)
 class MetaboliteFullView(ResourceView):
     resource = r.MetaboliteFullResource
     methods = [methods.List]
-
-@api.register(name="metabolites", url="/api/metabolites/")
-class MetaboliteBasicView(ResourceView):
-    resource = r.MetaboliteBasicResource
-    methods = [methods.List, methods.Fetch]
-
-@api.register(name="adducts", url="/api/adducts/")
-class Adducts(ResourceView):
-    resource = r.MetaboliteAdductsResource
-    methods = [methods.List, methods.Fetch]
-
 # Annoying webpage stuff.
 
 @app.route("/")

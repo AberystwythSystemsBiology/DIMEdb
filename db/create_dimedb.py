@@ -1,7 +1,9 @@
 import json, collections
 from rdkit.Chem import rdMolDescriptors, Fragments
-
+from bioservices import KEGG, KEGGParser
 from pyidick import Molecule
+from bson.json_util import dumps
+from joblib import Parallel, delayed
 
 def load_files(hmdb_file="./output/hmdb.json"):
     with open(hmdb_file, "r") as hmdb:
@@ -138,20 +140,56 @@ def get_adducts(py_mol):
                 calculate("[M+2H+2a]3+", py_mol, {"add": {"H": 2, "Na": 1}, "remove": {}}, charge=3, electrons=-3))
             adducts["positive"].append(
                 calculate("[M+3H]3+", py_mol, {"add": {"H": 3}, "remove": {}}, charge=3, electrons=-3))
-
     return adducts
 
 
 def process_metabolite(metabolite):
-    py_mol = Molecule(metabolite["smiles"])
+    try:
+        py_mol = Molecule(metabolite["smiles"])
 
-    adducts = get_adducts(py_mol)
+        adducts = get_adducts(py_mol)
 
-    print adducts
+        try:
+            kegg_dict = KEGGParser().parse(KEGG().get(metabolite["kegg_id"]))
+            pathways = kegg_dict["PATHWAY"].keys()
+        except TypeError:
+            pathways = None
+        except KeyError:
+            pathways = None
+        except Exception, err:
+            pathways = None
 
+        metabolite_tuple = [
+            ["_id", metabolite["_id"]],
+            ["name", metabolite["name"]],
+            ["synonyms", metabolite["synonyms"]],
+            ["molecular_formula", py_mol.molecular_formula],
+            ["accurate_mass", py_mol.accurate_mass],
+            ["num_atoms", py_mol.num_atoms],
+            ["inchi", metabolite["inchi"]],
+            ["smiles", metabolite["smiles"]],
+            ["origins", metabolite["origins"]],
+            ["biofluid_location", metabolite["biofluid_locations"]],
+            ["tissue_locations", metabolite["tissue_locations"]],
+            ["pathways", pathways],
+            ["sources", metabolite["sources"]],
+            ["adducts", adducts]
+        ]
+
+
+        return collections.OrderedDict(metabolite_tuple)
+    except Exception, err:
+        return None
 
 if __name__ == "__main__":
     data = load_files()
-    for count, metabolite in data.items():
-        process_metabolite(metabolite)
 
+
+    db = Parallel(n_jobs=300)(delayed(process_metabolite)(data[id]) for id in data)
+    db = [x for x in db if x != None]
+
+    fp = "./output/dimedb.json"
+
+    mongodb_file = json.loads(dumps(db), object_pairs_hook=collections.OrderedDict)
+    with open(fp, "wb") as output:
+        json.dump(mongodb_file, output, indent=4)

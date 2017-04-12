@@ -1,7 +1,6 @@
 import os, xmltodict, collections, json
 from xml.etree import ElementTree as ET
 
-from bioservices import KEGG, KEGGParser
 
 from joblib import Parallel, delayed
 
@@ -73,16 +72,6 @@ def parse_hmdb(file_name):
         except TypeError:
             origins = None
 
-        try:
-            kegg_dict = KEGGParser().parse(KEGG().get(metabolite["kegg_id"]))
-            pathways = kegg_dict["PATHWAY"].keys()
-        except TypeError:
-            pathways = None
-        except KeyError:
-            pathways = None
-        except Exception, err:
-            pathways = None
-
         sources = {
             "chebi_id": metabolite["chebi_id"],
             "pubchem_id": metabolite["pubchem_compound_id"],
@@ -92,7 +81,7 @@ def parse_hmdb(file_name):
 
         return collections.OrderedDict([("_id" , _id), ("name", name), ("synonyms", synonyms), ("origins", origins),
                                       ("inchi", inchi), ("smiles", smiles), ("biofluid_locations", biofluid_locations),
-                                      ("tissue_locations", tissue_locations), ("pathways", pathways), ("sources", sources)])
+                                      ("tissue_locations", tissue_locations), ("sources", sources)])
 
 
 if __name__ == "__main__":
@@ -108,10 +97,11 @@ if __name__ == "__main__":
 
     processed_list = []
 
-    fr = range(0, len(files), 1000)
+    fr = range(0, len(files), 500)
     for idx, i in enumerate(fr):
         print idx+1,  "/", len(fr)
-        processed_list.extend(Parallel(n_jobs=300)(delayed(parse_hmdb)(hmdb_directory+file) for file in files[i:i+1000]))
+        processed_data = Parallel(n_jobs=100)(delayed(parse_hmdb)(hmdb_directory+file) for file in files[i:i+500])
+        processed_list.extend([x for x in processed_data if x != None])
         break
     dict = {}
 
