@@ -14,13 +14,13 @@ class AdductsResource(Resource):
         "neutral": AdductResource
     }
 
-
 class MetaboliteFullResource(Resource):
     document = d.MetaboliteFull
     max_limit, default_limit = [1, 1]
 
     filters = {
-        "id" : [ops.Exact]
+        "id" : [ops.Exact],
+        "adducts" : [o.AdductPpm]
     }
 
     related_resources = {

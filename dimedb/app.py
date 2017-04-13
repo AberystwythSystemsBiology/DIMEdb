@@ -21,10 +21,23 @@ is_maintenance_mode = False
 db = MongoEngine(app)
 api = MongoRest(app)
 
+if app.config["DEBUG"] == True:
+    from flask_debugtoolbar import DebugToolbarExtension
+    app.config['DEBUG_TB_PANELS'] = ['flask_mongoengine.panels.MongoDebugPanel']
+    app.config['SECRET_KEY'] = "Hello World"
+    toolbar = DebugToolbarExtension(app)
+
 @api.register(name="metabolites_f", url="/api/metabolite/")
 class MetaboliteFullView(ResourceView):
     resource = r.MetaboliteFullResource
     methods = [methods.List]
+
+
+@api.register(name="metabolites_search", url="/api/search/")
+class MetaboliteFullView(ResourceView):
+    resource = r.MetaboliteFullResource
+    methods = [methods.List]
+
 # Annoying webpage stuff.
 
 @app.route("/")

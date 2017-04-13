@@ -1,6 +1,5 @@
 from mongoengine import *
 
-
 class Adduct(EmbeddedDocument):
     type = StringField()
     accurate_mass = FloatField()
@@ -26,4 +25,11 @@ class MetaboliteFull(DynamicDocument):
     biofluid_locations = ListField(StringField())
     tissue_locations = ListField(StringField())
     pathways = ListField(StringField())
+    adducts = EmbeddedDocumentField(Adducts)
+
+class SearchMetabolite(DynamicDocument):
+    meta = {"collection" : "metabolites"}
+    id = StringField(primary_key=True)
+    name = StringField()
+    molecular_formula = StringField()
     adducts = EmbeddedDocumentField(Adducts)
