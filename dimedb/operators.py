@@ -2,7 +2,7 @@ from flask_mongorest.operators import Operator
 import documents
 
 '''
-    Create an dictonary containing the url-suitable URLs?
+    Create an dictonary containing the url-suitable Adducts?
 '''
 
 class AdductPpm(Operator):
@@ -30,4 +30,7 @@ class AdductPpm(Operator):
                                       '$lt': float(mz) + difference}
                 }
             }}
-        )).only("adducts."+ionisation)
+        )).only(
+            "name",
+            "adducts."+ionisation+".accurate_mass",
+            "adducts."+ionisation+".type")
