@@ -20,6 +20,7 @@ class MetaboliteFullResource(Resource):
 
     filters = {
         "id" : [ops.Exact],
+        "name" : [ops.IContains],
         "adducts" : [o.AdductPpm]
     }
 
