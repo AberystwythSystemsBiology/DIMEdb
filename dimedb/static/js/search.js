@@ -10,7 +10,7 @@ $(document).ready(function () {
                 ["[3M-H]1-", 0],
                 ["[2M+Hac-H]1-", 0],
                 ["[2M+FA-H]1-", 0],
-                ["[2M-H]1-", 0]
+                ["[2M-H]1-", 0],
                 ["[M+TFA-H]1-", 0],
                 ["[M+Hac-H]1-", 0],
                 ["[M+FA-H]1-", 0],
@@ -115,7 +115,6 @@ function generate_results_table(mass) {
 function populate_results(mass, ionisation, api_url) {
     $("#advanced_search_results").append("<h3> "+mass+" m/z</h3>");
     $("#advanced_search_results").append(generate_results_table(mass));
-    //  render_search_results("search_results_"+mass.replace(".", "_"), api_url, 5);
     generate_search_results(mass, ionisation, api_url);
     $('#advanced_search_results').fadeIn("slow");
 

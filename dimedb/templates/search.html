@@ -11,22 +11,17 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <div class="panel-title">
-                        <a data-toggle="collapse" data-parent="#advanced-search-accordion"
-                           href="#toggle_advanced_search">
-                            <div class="btn btn-primary btn-sm pull-right">
-                                Click to toggle <i class="glyphicon glyphicon-arrow-down"></i>
-                            </div>
-                        </a>
-                        <div class="clearfix"></div>
+                        <i class="glyphicon glyphicon-search"></i> Search Filters
+                        <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
                     </div>
                 </div>
-                <div id="toggle_advanced_search" class="panel-collapse collapse in">
+                <div id="toggle_advanced_search" class="panel-body collapsable">
                     <div class="row">
                         <div class="col-md-2">
                             <label>Masses (m/z):</label>
                         </div>
                         <div class="col-md-9">
-                            <input id="masses" type="text" value="240.10,245.20,318" data-role="tagsinput"/>
+                            <input id="masses" type="text" value="240.10, 245.20, 318" data-role="tagsinput"/>
                             <p class="small pull-right"> <i class="glyphicon glyphicon-exclamation-sign"></i> Seperate masses using ","</p>
                         </div>
                     </div>
