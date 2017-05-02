@@ -1,35 +1,82 @@
-from mongoengine import *
+class Sources(object):
+    def __new__(self):
+        return {
+    "schema" : {
+        "kegg_id" : "string",
+        "hmdb_id" : "string",
+        "chebi_id" : "string",
+        "pubchem_id" : "string"
+    }
+}
 
-class Adduct(EmbeddedDocument):
-    type = StringField()
-    accurate_mass = FloatField()
-    isotopic_distribution = ListField(ListField(FloatField()))
+class Adduct(object):
+    def __new__(self):
+        {
+            "schema": {
+                "type": "string",
+                "accurate_mass": "float",
+                "isotopic_distribution": "list"
+            }
+        }
 
-class Adducts(EmbeddedDocument):
-    neutral = EmbeddedDocumentListField(Adduct)
-    positive = EmbeddedDocumentListField(Adduct)
-    negative = EmbeddedDocumentListField(Adduct)
-
-class MetaboliteFull(DynamicDocument):
-    meta = {"collection" : "metabolites"}
-    id = StringField(primary_key=True)
-    name = StringField()
-    synonyms = ListField(StringField())
-    origins = ListField(StringField())
-    molecular_formula = StringField()
-    smiles = StringField()
-    inchi = StringField()
-    accurate_mass = FloatField()
-    num_atoms = IntField()
-    sources = StringField()
-    biofluid_locations = ListField(StringField())
-    tissue_locations = ListField(StringField())
-    pathways = ListField(StringField())
-    adducts = EmbeddedDocumentField(Adducts)
-
-class SearchMetabolite(DynamicDocument):
-    meta = {"collection" : "metabolites"}
-    id = StringField(primary_key=True)
-    name = StringField()
-    molecular_formula = StringField()
-    adducts = EmbeddedDocumentField(Adducts)
+class Metabolites(object):
+    def __new__(self):
+        return {
+            'resource_methods': ["GET"],
+            "schema": {
+                "name": {
+                    "type": "string"
+                },
+                "synonyms": {
+                    "type": "list"
+                },
+                "molecular_formula": {
+                    "type": "string"
+                },
+                "accurate_mass": {
+                    "type": "float"
+                },
+                "num_atoms": {
+                    "type": "integer"
+                },
+                "inchi": {
+                    "type": "string"
+                },
+                "smiles": {
+                    "type": "string"
+                },
+                "origins": {
+                    "type": "list"
+                },
+                "biofluid_location": {
+                    "type": "list"
+                },
+                "tissue_locations": {
+                    "type": "list"
+                },
+                "pathways": {
+                    "type": "list"
+                },
+                "sources": {
+                    "type": "dict",
+                    "schema": Sources
+                },
+                "adducts": {
+                    "type": "dict",
+                    "schema": {
+                        "positive": {
+                            "type": "list",
+                            "schema": Adduct
+                        },
+                        "negative": {
+                            "type": "list",
+                            "schema": Adduct
+                        },
+                        "neutral": {
+                            "type": "list",
+                            "schema": Adduct
+                        }
+                    }
+                }
+            }
+        }

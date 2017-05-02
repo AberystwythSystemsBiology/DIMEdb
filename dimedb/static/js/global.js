@@ -3,61 +3,6 @@ function getBaseURL () {
       (location.port && ":" + location.port) + "/";
 }
 
-// Generalised Results Generator
-function render_search_results(table_id, api_url, length) {
-    $('#'+table_id+'').delay(100).DataTable({
-                    "destroy": true,
-                    "ajax": getBaseURL()+api_url,
-                    "columns": [
-                        {
-                            "title": "Metabolite Name",
-                            "width": "60%",
-                            "data": "name",
-                            "render": function (data, type, row) {
-                                return data
-
-                            }
-                        },
-                        {
-                            "title": "Molecular Formula",
-                            "width": "10%",
-                            "className": "dt-center",
-                            "data": "molecular_formula",
-                            "render": function (data, type, row) {
-                                return '<p style="text-align:center">'+data.replace(/([0-9]+)/g, '<sub>$1</sub>')+'</p>';
-                            }
-                        },
-                        {
-                            "title": "Neutral Mass (m/z)",
-                            "data": "accurate_mass",
-                            "className": "dt-center",
-                            "width": "10%",
-                            "render": function (data, type, row) {
-                                return data.toFixed(4);
-                            }
-                        },
-                        {
-                            "title": "Actions",
-                            "data": "id",
-                            "className": "dt-center",
-                            "width": "15%",
-                            "render": function (data, type, row) {
-                                var view_url = getBaseURL() + "view/" + data;
-                                return "<div id='tester' class='btn-toolbar text-center'>" +
-                                    "<a href='" + view_url + "' target='_blank'>" +
-                                    "<button class='btn btn-sm btn-primary' id='view_button'>View</button>" +
-                                    "</a>" +
-                                    "<button id='view_card' class='btn btn-sm btn-danger' name='"+data+"'><i class='glyphicon glyphicon-book'></i></button>" +
-                                    "<button id='add_to_clipboard' class='btn btn-sm btn-success' name='"+data+"'><i class='glyphicon glyphicon-plus'></i></button></div>"
-                            }
-                        }
-                    ],
-                    "searching": false,
-                    //"bSort" : false,
-                    "lengthChange": false,
-                    "pageLength": length
-                });
-}
 
 function clear_card() {
     $("#card_metabolite_name").empty();
@@ -70,10 +15,23 @@ function clear_card() {
     $("#tissues").empty();
 }
 
+$(document).on('click', '.panel-heading span.clickable', function(e){
+    var $this = $(this);
+	if(!$this.hasClass('panel-collapsed')) {
+		$this.parents('.panel').find('.panel-body').slideDown();
+		$this.addClass('panel-collapsed');
+		$this.find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+	} else {
+		$this.parents('.panel').find('.panel-body').slideUp();
+		$this.removeClass('panel-collapsed');
+		$this.find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+	}
+});
+
 function generate_card(id) {
     var current_url = getBaseURL();
-    $.getJSON(current_url + "api/metabolite/?id=" +id, function(json){
-        var metabolite = json["data"][0];
+    $.getJSON(current_url + 'api/metabolites/?where={"_id" :"'+id+'"}', function(json){
+        var metabolite = json["_items"][0];
         clear_card();
 
         $("#card_metabolite_name").html(metabolite["name"]);
@@ -81,12 +39,12 @@ function generate_card(id) {
 
         for (result in metabolite["adducts"]) {
             if (result == "neutral") {
-                $("#neutral_mass").html(metabolite["adducts"]["neutral"]["peaks"][0]["accurate_mass"]);
+                $("#neutral_mass").html(metabolite["adducts"]["neutral"][0]["accurate_mass"]);
             }
 
             else {
-                for (adduct_idx in metabolite["adducts"][result]["peaks"]) {
-                    var adduct = metabolite["adducts"][result]["peaks"][adduct_idx];
+                for (adduct_idx in metabolite["adducts"][result]) {
+                    var adduct = metabolite["adducts"][result][adduct_idx];
                     $("#" + result + "_adduct").append("<li class='list-group-item'><b>" + adduct["type"] + ":</b> " + adduct["accurate_mass"].toFixed(4)+"</li>");
                 }
             }

@@ -10,7 +10,6 @@
 
     <div id="home-page-welcome-search">
         <img src="{{ url_for('static', filename='imgs/dimedb.png')}}">
-
         <div class="input-group">
             <input type="text" class="search-query form-control" id="search_text" placeholder="Search metabolite name (Sucrose, Ganglioside GM1...)">
             <span class="input-group-btn">
@@ -28,20 +27,18 @@
             </div>
             <div class="col-md-10">
                 <div class="input-group">
-            <input type="text" class="search-query form-control" id="search_text" placeholder="Search metabolite name (Sucrose, Ganglioside GM1...)">
-            <span class="input-group-btn">
-                <button class="btn btn-success" type="button" id="search_button">
-                    <span class="glyphicon glyphicon-search"></span> Search
-                </button>
-            </span>
-        </div>
+                    <input type="text" class="search-query form-control" id="results_search_text" placeholder="Search metabolite name (Sucrose, Ganglioside GM1...)">
+                    <span class="input-group-btn">
+                        <button class="btn btn-success" type="button" id="results_search_button">
+                            <span class="glyphicon glyphicon-search"></span> Search
+                        </button>
+                    </span>
+                </div>
             </div>
         </div>
 
         <table id="search_results" class="table table-striped table-responsive display" width="100%">
             <thead>
-                <tr>
-                </tr>
             </thead>
         </table>
 
@@ -55,6 +52,6 @@
 
 {% block javascript %}
 <script src="{{ url_for('static', filename='bower_components/bootstrap-toggle/js/bootstrap-toggle.js') }}"></script>
-<script src="{{ url_for('static', filename='js/home_search.js') }}"></script>
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
 
 {% endblock %}

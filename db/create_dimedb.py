@@ -82,7 +82,7 @@ def get_adducts(py_mol):
     # POSITIVE
 
     if nch == 1:
-        adducts["negative"].append(calculate("[M1+.]1+", py_mol, {"add": {}, "remove": {}}, charge=1, electrons=-0))
+        adducts["positive"].append(calculate("[M1+.]1+", py_mol, {"add": {}, "remove": {}}, charge=1, electrons=-0))
 
     if nch == 0:
         if nacc > 0:

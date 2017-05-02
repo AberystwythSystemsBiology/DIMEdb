@@ -131,8 +131,7 @@ th.dt-center, td.dt-center { text-align: center; }
 }
 
 #advanced-search-container {
-    max-width: 800px;
-    width: 80%;
+    width: 90%;
     margin: 0 auto 0;
 }
 

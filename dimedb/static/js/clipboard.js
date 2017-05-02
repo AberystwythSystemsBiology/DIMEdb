@@ -65,8 +65,8 @@ function populate_clipboard(m) {
 }
 
 function get_metabolite(id, callback) {
-    $.getJSON(getBaseURL() + "api/metabolite/?id=" + id, function (data) {
-        callback(data["data"][0]);
+    $.getJSON(encodeURI(getBaseURL() + 'api/metabolites/?where={"_id" :"' + id + '"}'), function (data) {
+        callback(data["_items"][0]);
     });
 }
 
