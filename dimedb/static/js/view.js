@@ -68,6 +68,16 @@ function basic_information(metabolite) {
 }
 
 function sidebar(metabolite) {
+
+    function get_structure(id) {
+        $.ajax({
+            url: getBaseURL() + "gen_structure/" + id,
+            success: function (result) {
+                $("#structure").attr("src", "data:image/png;base64," + result);
+            }
+        });
+    }
+
     function fill_pathways(pathways) {
         if (pathways != null) {
             for (pathway in pathways) {
@@ -119,8 +129,10 @@ function sidebar(metabolite) {
             );
         }
     }
-    fill_pathways(metabolite["pathways"])
-    fill_sources(metabolite["sources"])
+
+    get_structure(metabolite["_id"]);
+    fill_pathways(metabolite["pathways"]);
+    fill_sources(metabolite["sources"]);
 }
 
 function isotopic_distributions(adducts) {
@@ -131,8 +143,8 @@ function isotopic_distributions(adducts) {
             var ionisation = ionisations[i];
             for (j in adducts[ionisation]) {
                 var adduct  = adducts[ionisation][j];
-
-                var button = "<div class='btn btn-primary btn-sm pull-right'>View Isotopes <i class='glyphicon glyphicon-signal'></i></div><div class='clearfix'></div>";
+                var name = ionisation + "," + adduct["type"];
+                var button = "<div class='btn btn-primary btn-sm pull-right' id='view_isotope' name='"+name+"'>View Isotopes <i class='glyphicon glyphicon-signal'></i></div><div class='clearfix'></div>";
 
                 $("#"+ionisation+"_adducts_list").append(
                     "<li class='list-group-item'><b>"+ adduct["type"] + ":</b> "+adduct["accurate_mass"].toFixed(4)+ button +"</li>"
@@ -149,7 +161,8 @@ function isotopic_distributions(adducts) {
 function render_adduct_chart_and_table(adducts, ionisation, type) {
 
     function render_title(ionisation, type) {
-        $("#adduct_label").html(ionisation + " " + type);
+        $("#adduct_label").html(ionisation + ", " + type );
+        $('#adduct_label').css('textTransform', 'capitalize');
     }
 
     function render_distribution_table(i_d) {
@@ -224,4 +237,11 @@ function render_metabolite_view(metabolite_id) {
     render_adduct_chart_and_table(metabolite["adducts"], "neutral", "[M]");
     isotopic_distributions(metabolite["adducts"]);
 
+
+    $('[id="view_isotope"]').click(function () {
+        var i_array = $(this).attr("name").split(",");
+        render_adduct_chart_and_table(metabolite["adducts"], i_array[0], i_array[1])
+    });
+
 }
+
