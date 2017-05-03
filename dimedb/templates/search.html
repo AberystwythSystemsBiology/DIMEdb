@@ -17,20 +17,20 @@
                 </div>
                 <div id="toggle_advanced_search" class="panel-body collapsable">
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label>Masses (m/z):</label>
                         </div>
-                        <div class="col-md-9">
+                        <div class="col-md-8">
                             <input id="masses" type="text" value="240.10, 245.20, 318" data-role="tagsinput"/>
                             <p class="small pull-right"> <i class="glyphicon glyphicon-exclamation-sign"></i> Seperate masses using ","</p>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label>Tolerance  (&#177;):</label>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="input-group">
                                 <input id="ppm_tolerance" type="number" class="form-control" min="1" max="20" value="5"
                                        aria-describedby="ppm_label">
@@ -40,10 +40,10 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label>Ionisation:</label>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <div class="radio">
                                 <label><input type="radio" name="ionisation" value="neutral" checked>Neutral</label>
                             </div>
@@ -61,12 +61,11 @@
                         </div>
                     </div>
 
-
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label>Origins:</label>
                         </div>
-                        <div class="col-md-10">
+                        <div class="col-md-9">
                             <label class="checkbox-inline">
                                 <input type="checkbox" name="origins" value="Microbial">
                                 Microbial
@@ -90,6 +89,62 @@
                             <label class="checkbox-inline">
                                 <input type="checkbox" name="origins" value="Plant">
                                 Plant
+                            </label>
+                        </div>
+                    </div>
+
+                     <div class="row">
+                        <div class="col-md-3">
+                            <label>Biofluid Locations:</label>
+                        </div>
+                        <div class="col-md-9">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="biofluid_location" value="Blood">
+                                Blood
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="biofluid_location" value="Feces">
+                                Feces
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="biofluid_location" value="Saliva">
+                                Saliva
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="biofluid_location" value="Urine">
+                                Urine
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="biofluid_location" value="CSF">
+                                CSF
+                            </label>
+                        </div>
+                    </div>
+
+                     <div class="row">
+                        <div class="col-md-3">
+                            <label>Tissue Locations:</label>
+                        </div>
+                        <div class="col-md-9">
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="tissue_location" value="Brain">
+                                Brain
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="tissue_location" value="Prostate">
+                                Prostate
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="tissue_location" value="Skin">
+                                Skin
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="tissue_location" value="All">
+                                All
+                            </label>
+                            <label class="checkbox-inline">
+                                <input type="checkbox" name="tissue_location" value="Lung">
+                                Lung
                             </label>
                         </div>
                     </div>

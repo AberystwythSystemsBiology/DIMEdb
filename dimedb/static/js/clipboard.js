@@ -64,11 +64,7 @@ function populate_clipboard(m) {
     );
 }
 
-function get_metabolite(id, callback) {
-    $.getJSON(encodeURI(getBaseURL() + 'api/metabolites/?where={"_id" :"' + id + '"}'), function (data) {
-        callback(data["_items"][0]);
-    });
-}
+
 
 function load_metabolites() {
     var metabolite_array = [];

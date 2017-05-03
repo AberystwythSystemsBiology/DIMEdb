@@ -9,11 +9,11 @@ html {
 body {
     font-family: 'Open Sans', sans-serif;
     padding-top: 50px;
-    color: #000;
+    line-height: 1.5;
+    color: #333;
     -webkit-font-smoothing: antialiased;
     -webkit-overflow-scrolling: touch;
     margin-bottom: 70px;
-
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -22,7 +22,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .container {
     width: auto 0 auto;
-    max-width: 95%;
+    width: 95%;
 }
 
 .container .text-muted {
@@ -156,7 +156,7 @@ th.dt-center, td.dt-center { text-align: center; }
     z-index: 999;
     margin:3em;
     width:17.5%;
-    min-width: 200px;
+    min-width: 250px;
 
 }
 .bootstrap-tagsinput {
@@ -182,4 +182,12 @@ th.dt-center, td.dt-center { text-align: center; }
   height: auto;
   min-height: 100%;
   border-radius: 0;
+}
+
+a.morelink {
+	text-decoration:none;
+	outline: none;
+}
+.morecontent span {
+	display: none;
 }

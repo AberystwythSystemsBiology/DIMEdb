@@ -33,9 +33,6 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="{{ url_for('homepage')}}">
-                    <i class="glyphicon glyphicon-home"></i> Home
-                </a></li>
                 <li><a href="{{ url_for('search')}}">
                     <i class="glyphicon glyphicon-search"></i> Advanced Search
                 </a></li>
@@ -71,10 +68,11 @@
 <script src="{{ url_for('static', filename='bower_components/datatables/media/js/jquery.dataTables.js') }}"></script>
 <script src="{{ url_for('static', filename='bower_components/datatables/media/js/dataTables.bootstrap.js') }}"></script>
 
-{% block javascript %}
-{% endblock %}
 <script src="{{ url_for('static', filename='js/global.js') }}"></script>
 <script src="{{ url_for('static', filename='js/clipboard.js') }}"></script>
 
+
+{% block javascript %}
+{% endblock %}
 
 </html>

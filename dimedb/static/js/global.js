@@ -3,6 +3,25 @@ function getBaseURL () {
       (location.port && ":" + location.port) + "/";
 }
 
+function get_metabolite(id) {
+    var api_url = encodeURI(getBaseURL()+'api/metabolites/?where={"_id" : "'+id+'"}');
+
+    var json = (function () {
+        var json = null;
+        $.ajax({
+            'async': false,
+            'global': false,
+            'url': api_url,
+            'dataType': "json",
+            'success': function (data) {
+                json = data;
+            }
+        });
+        return json;
+    })();
+    return json["_items"][0]
+}
+
 
 function clear_card() {
     $("#card_metabolite_name").empty();

@@ -3,138 +3,146 @@
 {% block title %}Loading{% endblock %}
 
 {% block body %}
+    <h1 id="name"></h1>
 
-<div id="metabolite_view">
-<h1><span id="met_name"></span>
-    <div class="btn-group pull-right">
-    <a id="add_to_clipboard"><label class="btn btn-success btn-sm"><i class='glyphicon glyphicon-plus'></i> Add to Clipboard</label></a>
-    <a id="get_json" href=""><label class="btn btn-primary btn-sm"><i class='glyphicon glyphicon-download'></i> Download JSON</label></a>
-        </div>
-</h1>
-
-<div class="row">
-    <div class="col-md-9">
-
-        <table class="table table-striped">
-            <tbody>
-            <tr>
-                <th width="25%">Synonyms</th>
-                <td id="synonyms">
-                </td>
-            </tr>
-            <tr>
-                <th>Molecular Formula</th>
-                <td>
-                    <span id="molecular_formula"></span>
-                    <button class="btn btn-success btn-sm pull-right" id="molecular_formula_search">
-                        <i class="glyphicon glyphicon-search"></i> Search
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <th>Accurate Mass (m/z)</th>
-                <td id="accurate_mass">
-                </td>
-            </tr>
-            <tr>
-                <th>Neutral Mass (m/z)</th>
-                <td id="neutral_mass"></td>
-            </tr>
-            <tr>
-                <th>Origins</th>
-                <td id="origins">
-                </td>
-            </tr>
-            <tr>
-                <th>Biofluids</th>
-                <td id="biofluids"></td>
-            </tr>
-            <tr>
-                <th>Tissues</th>
-                <td id="tissues"></td>
-            </tr>
-            <tr>
-                <th>Number of atoms</th>
-                <td id="num_atoms">
-                </td>
-            </tr>
-            <tr>
-                <th>Data source(s)</th>
-                <td id="data_sources">
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div id class="col-md-3">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                2D Structure
-            </div>
-            <div class="panel-body">
-                <img id="structure" src="" style="display:block; margin:0 auto 0; max-width:300px; width:80%;">
-            </div>
-            <div class="panel-footer">
-                <div class="btn-toolbar">
-
-                <button class="btn btn-sm pull-right" data-toggle="modal" data-target="#smiles_view">
-                    <i class="glyphicon glyphicon-eye-open"></i> SMILES
-                </button>
-                <button class="btn btn-sm pull-right" data-toggle="modal" data-target="#inchi_view">
-                    <i class="glyphicon glyphicon-eye-open"></i> InChI
-                </button></div>
-                <div class="clearfix"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-9">
-        <h2>
-            Neutral Isotopic Distribution <button id="isotope" name="neutral_0" class="btn btn-primary pull-right">
-                        <i class="glyphicon glyphicon glyphicon-stats"></i> Neutral Isotope </button>
-        </h2>
-        <div id="distribution_chart" style="width:100%;height:350px;"></div>
-
-        <h2>KEGG Pathways</h2>
-        <ul id="pathway_listgroup" class="list-group">
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>Adducts</h2>
-        <div class="panel-group">
-            <div class="panel panel-success">
+    <div id="row">
+        <div class="col-sm-3">
+            <div class="panel panel-default">
                 <div class="panel-heading">
-                    Positive <label class="pull-right"><i class="glyphicon glyphicon-plus-sign"></i></label>
+                    Molecular Structure
                 </div>
-                <div class="list-group" id="positive_adduct">
+                <div class="panel-body">
+
+                </div>
+                <div class="panel-footer">
+
                 </div>
             </div>
-            <div class="panel panel-danger">
+
+            <div class="panel panel-default">
                 <div class="panel-heading">
-                    Negative <label class="pull-right"><i class="glyphicon glyphicon-minus-sign"></i></label>
+                    Data Sources
                 </div>
-                <div class="list-group" id="negative_adduct">
+                <div class="panel-body">
+                    <ul id="data_sources">
+
+                    </ul>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    KEGG Pathways
+                </div>
+                <ul id="kegg_pathways_list" class="list-group">
+
+                </ul>
+            </div>
+
+        </div>
+        <div class="col-sm-9">
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <th width="25%">Synonyms:</th>
+                        <td><div id="synonyms" class="comment more"></div></td>
+                    </tr>
+                    <tr>
+                        <th width="25%">Molecular Formula:</th>
+                        <td id="molecular_formula"></td>
+                    </tr>
+                    <tr>
+                        <th width="25%">Number of Atoms:</th>
+                        <td id="num_atoms"></td>
+                    </tr>
+                    <tr>
+                        <th width="25%">Accurate Mass (m/z):</th>
+                        <td id="accurate_mass"></td>
+                    </tr>
+                    <tr>
+                        <th width="25%">Neutral Mass (m/z):</th>
+                        <td id="neutral_mass"></td>
+                    </tr>
+                    <tr>
+                        <th width="25%">Origins:</th>
+                        <td id="origins"></td>
+                    </tr>
+                    <tr>
+                        <th width="25%">Biofluid Location:</th>
+                        <td id="biofluids"></td>
+                    </tr>
+                    <tr>
+                        <th width="25%">Tissue Location:</th>
+                        <td id="tissue"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Isotopic Information: </h2>
+
+            <div id="row">
+                <div class="col-sm-8">
+                    <div id="isotopic_distribution_chart" style="height:500px; padding:1em;">
+
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Isotopic Distribution Table
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-striped" id="distribution_table" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th width="50%" class="text-center">Mass (m/z)</th>
+                                        <th width="50%" class="text-center">Intensity (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="row">
+                <div class="col-sm-6">
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            Positive <i class="glyphicon glyphicon-plus-sign pull-right"></i>
+                        </div>
+                        <ul id="positive_adducts_list" class="list-group">
+
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="panel panel-danger">
+                        <div class="panel-heading">
+                            Negative <i class="glyphicon glyphicon-minus-sign pull-right"></i>
+                        </div>
+                        <ul id="negative_adducts_list" class="list-group">
+
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-</div>
-
-
-{% include "modals/view/distribution_modal.html" %}
-{% include "modals/view/pathway_view.html" %}
-{% include "modals/view/molecular_formula_modal.html" %}
 
 {% endblock %}
 
 {% block javascript %}
 <script src="{{ url_for('static', filename='bower_components/plotly/plotly.js') }}"></script>
 <script src="{{ url_for('static', filename='js/view.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/comment.js') }}"></script>
+
 <script>
-    render_view("{{ id }}");
-    $("#metabolite_view").fadeIn("slow");
+render_metabolite_view("{{ id }}")
 </script>
 {% endblock %}
