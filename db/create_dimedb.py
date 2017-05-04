@@ -152,10 +152,6 @@ def process_metabolite(metabolite):
         try:
             kegg_dict = KEGGParser().parse(KEGG().get(metabolite["kegg_id"]))
             pathways = kegg_dict["PATHWAY"].keys()
-        except TypeError:
-            pathways = None
-        except KeyError:
-            pathways = None
         except Exception, err:
             pathways = None
 

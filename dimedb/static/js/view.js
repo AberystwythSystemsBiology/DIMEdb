@@ -56,7 +56,6 @@ function basic_information(metabolite) {
 
         return tissues
     }
-
     $("#synonyms").html(fill_synonyms(metabolite["synonyms"]));
     $("#molecular_formula").html(metabolite["molecular_formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
     $("#num_atoms").html(metabolite["num_atoms"]);
@@ -202,13 +201,9 @@ function render_adduct_chart_and_table(adducts, ionisation, type) {
             yaxis: {
                 title: 'Relative Intensity (%)'
             },
-            margin: {
-                l: 50,
-                r: 50,
-                b: 50,
-                t: 50,
-                pad: 1
-            },
+            autosize: false,
+            width: 500,
+            height: 350,
             bargap: 0.99
         };
 
@@ -230,6 +225,7 @@ function render_adduct_chart_and_table(adducts, ionisation, type) {
 function render_metabolite_view(metabolite_id) {
     var metabolite = get_metabolite(metabolite_id);
 
+    document.title = metabolite["name"] +" : DIMEdb - Direct Infusion MEtabolite Database";
     $("#name").html(metabolite["name"]);
 
     basic_information(metabolite);
@@ -243,5 +239,17 @@ function render_metabolite_view(metabolite_id) {
         render_adduct_chart_and_table(metabolite["adducts"], i_array[0], i_array[1])
     });
 
+    $("#inchi_view").click(function () {
+        $("#inchi_key").html(metabolite["inchi"]);
+        $('#view_inchi').modal('toggle');
+    });
+
+    $("#smiles_view").click(function () {
+        $("#smiles").html(metabolite["smiles"]);
+        $('#view_smiles').modal('toggle');
+    });
+
+
 }
+
 
