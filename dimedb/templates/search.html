@@ -6,165 +6,142 @@
 
     <h1>Advanced Search</h1>
 
-    <div id="advanced-search-container">
-        <div class="panel-group" id="advanced-search-accordion">
+    <div class="row">
+
+        <div class="col-sm-4">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <div class="panel-title">
-                        <i class="glyphicon glyphicon-search"></i> Search Filters
-                        <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
-                    </div>
+                    Search Filters <i class="glyphicon glyphicon-search pull-right"></i>
                 </div>
-                <div id="toggle_advanced_search" class="panel-body collapsable">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label>Masses (m/z):</label>
-                        </div>
-                        <div class="col-md-8">
-                            <input id="masses" type="text" value="240.10, 245.20, 318" data-role="tagsinput"/>
-                            <p class="small pull-right"> <i class="glyphicon glyphicon-exclamation-sign"></i> Seperate masses using ","</p>
-                        </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="masses">Masses (m/z): </label>
+                        <input id="masses" type="text" value="300" data-role="tagsinput"/>
+                        <p class="small pull-right"> <i class="glyphicon glyphicon-exclamation-sign"></i> Seperate masses using ","</p>
                     </div>
-
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label>Tolerance  (&#177;):</label>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="input-group">
+                    <div class="form-group">
+                        <label for="tolerance">Tolerance (&#177;):</label>
+                        <div class="input-group">
                                 <input id="ppm_tolerance" type="number" class="form-control" min="1" max="20" value="5"
                                        aria-describedby="ppm_label">
                                 <span class="input-group-addon" id="ppm_label">ppm</span>
-                            </div>
                         </div>
                     </div>
-
                     <div class="row">
-                        <div class="col-md-3">
-                            <label>Ionisation:</label>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="ionisation">Ionisation: </label>
+                                <div id="ionisation" class="radio">
+                                        <label><input type="radio" name="ionisation" value="neutral" checked>Neutral</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="ionisation" value="positive">Positive (+)</label>
+                                    </div>
+                                    <div class="radio">
+                                        <label><input type="radio" name="ionisation" value="negative">Negative (-)</label>
+                                    </div>
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="radio">
-                                <label><input type="radio" name="ionisation" value="neutral" checked>Neutral</label>
-                            </div>
-                            <div class="radio">
-                                <label><input type="radio" name="ionisation" value="positive">Positive (+)</label>
-                            </div>
-                            <div class="radio">
-                                <label><input type="radio" name="ionisation" value="negative">Negative (-)</label>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <select multiple class="form-control" id="ionisation-adducts">
+                        <div class="col-sm-6">
+                            <label for="ionisation">Adducts: </label>
+                            <select multiple class="form-control" id="ionisation_adducts">
                                 <option selected>[M]</option>
                             </select>
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label>Origins:</label>
-                        </div>
-                        <div class="col-md-9">
+                    <div class="form-group">
+                        <label for="origins">Origins: </label>
+                        <div id="origins" class="form-check form-check-inline">
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="origins" value="Microbial">
+                                <input type="checkbox" value="Microbial">
                                 Microbial
                             </label>
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="origins" value="Endogenous">
+                                <input type="checkbox" value="Endogenous">
                                 Endogenous
                             </label>
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="origins" value="Food">
+                                <input type="checkbox" value="Food">
                                 Food
                             </label>
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="origins" value="Drug">
+                                <input type="checkbox" value="Drug">
                                 Drug
                             </label>
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="origins" value="Cosmetic">
+                                <input type="checkbox" value="Cosmetic">
                                 Cosmetic
                             </label>
                             <label class="checkbox-inline">
-                                <input type="checkbox" name="origins" value="Plant">
+                                <input type="checkbox" value="Plant">
                                 Plant
                             </label>
                         </div>
                     </div>
-
-                     <div class="row">
-                        <div class="col-md-3">
-                            <label>Biofluid Locations:</label>
-                        </div>
-                        <div class="col-md-9">
-                            <label class="checkbox-inline">
-                                <input type="checkbox" name="biofluid_location" value="Blood">
+                    <div class="form-group">
+                        <label for="biofluids">Biofluids: </label>
+                            <div id="biofluid_location" class="form-check form-check-inline">
+                                <label class="checkbox-inline">
+                                <input type="checkbox" value="Blood">
                                 Blood
-                            </label>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" name="biofluid_location" value="Feces">
-                                Feces
-                            </label>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" name="biofluid_location" value="Saliva">
-                                Saliva
-                            </label>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" name="biofluid_location" value="Urine">
-                                Urine
-                            </label>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" name="biofluid_location" value="CSF">
-                                CSF
-                            </label>
-                        </div>
-                    </div>
-
-                     <div class="row">
-                        <div class="col-md-3">
-                            <label>Tissue Locations:</label>
-                        </div>
-                        <div class="col-md-9">
-                            <label class="checkbox-inline">
-                                <input type="checkbox" name="tissue_location" value="Brain">
-                                Brain
-                            </label>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" name="tissue_location" value="Prostate">
-                                Prostate
-                            </label>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" name="tissue_location" value="Skin">
-                                Skin
-                            </label>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" name="tissue_location" value="All">
-                                All
-                            </label>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" name="tissue_location" value="Lung">
-                                Lung
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-10">
-                        </div>
-                        <div class="col-md-2">
-                            <div class="btn btn-success" id="search_button">
-                                <i class="glyphicon glyphicon-search"></i> Search
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" value="Feces">
+                                    Feces
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" value="Saliva">
+                                    Saliva
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" value="Urine">
+                                    Urine
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" value="CSF">
+                                    CSF
+                                </label>
                             </div>
-                        </div>
                     </div>
+                    <div class="form-group">
+                        <label for="tissue">Tissue: </label>
+                            <div id="tissue_location" class="form-check form-check-inline">
+                                <label class="checkbox-inline">
+                                <input type="checkbox" value="Brain">
+                                    Brain
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" value="Prostate">
+                                    Prostate
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="tissue_location" value="Skin">
+                                    Skin
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" value="All">
+                                    All
+                                </label>
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" value="Lung">
+                                    Lung
+                                </label>
+                            </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div id="search_button" class="btn btn-primary pull-right">
+                        <i class="glyphicon glyphicon-search"></i> Search
+                    </div>
+                    <div class="clearfix"></div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div id="advanced_search_results">
-        <h2>Search Results</h2>
+        <div id="search_results" class="col-sm-8">
+
+        </div>
+
     </div>
 
 

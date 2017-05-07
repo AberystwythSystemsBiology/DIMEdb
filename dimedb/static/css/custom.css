@@ -4,9 +4,11 @@
 html {
     position: relative;
     min-height: 100%;
+
 }
 
 body {
+    background-color: #fcfcfc;
     font-family: 'Open Sans', sans-serif;
     padding-top: 50px;
     line-height: 1.5;
@@ -192,4 +194,31 @@ a.morelink {
 }
 .morecontent span {
 	display: none;
+}
+
+#loading_divider {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    height: 100px;
+}
+
+.glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -webkit-animation: spin2 .7s infinite linear;
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
 }

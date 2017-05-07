@@ -1,4 +1,3 @@
-
 var metabolite_array = load_metabolites();
 
 $(document).ready(function () {

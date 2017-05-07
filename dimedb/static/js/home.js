@@ -130,3 +130,82 @@ function generate_homepage_results(query) {
         ],
     });
 }
+
+function generate_card(id) {
+
+
+    function fill_origins(origins_array) {
+        if (origins_array.length != 0) {
+            var origins = "";
+            for (i = 0; i < origins_array.length; i++) {
+                origins += origins_array[i] + "; ";
+            }
+        }
+
+        else {
+            var origins = "Not available";
+        }
+
+        return origins;
+    }
+
+    function fill_biofluids(biofluids_array) {
+        if (biofluids_array != null) {
+            var biofluids = "";
+            for (i = 0; i < biofluids_array.length; i++) {
+                biofluids += biofluids_array[i] + "; ";
+            }
+        }
+
+        else {
+            var biofluids = "Not available";
+        }
+
+        return biofluids;
+    }
+
+    function fill_tissue_locations(tissue_locations_array) {
+        if (tissue_locations_array != null) {
+            var tissues = "";
+            for (i = 0; i < tissue_locations_array.length; i++) {
+                tissues += tissue_locations_array[i] + "; ";
+            }
+        }
+        else {
+            var tissues = "Not available";
+        }
+
+        return tissues
+    }
+
+    function fill_adduct_panels(adducts) {
+        var ionisations = ["negative", "positive"];
+
+        for (i in ionisations) {
+            var ionisation = ionisations[i];
+            for (j in adducts[ionisation]) {
+                var adduct  = adducts[ionisation][j];
+                var name = ionisation + "," + adduct["type"];
+                //card_negative_adduct
+                $("#card_"+ionisation+"_adduct").append(
+                    "<li class='list-group-item'><b>"+ adduct["type"] + ":</b> "+adduct["accurate_mass"].toFixed(4)+ "</li>"
+                )
+            }
+        }
+
+    }
+
+    var metabolite = get_metabolite(id);
+
+    console.log(metabolite);
+    $("#card_metabolite_name").html(metabolite["name"]);
+    $("#card_molecular_formula").html(metabolite["molecular_formula"]);
+
+    $("#card_accurate_mass").html(metabolite["accurate_mass"].toFixed(6));
+    $("#card_neutral_mass").html(metabolite["adducts"]["neutral"][0]["accurate_mass"].toFixed(6));
+    $("#card_origins").html(fill_origins(metabolite["origins"]));
+    $("#card_biofluids").html(fill_biofluids(metabolite["biofluid_location"]));
+    $("#card_tissues").html(fill_tissue_locations(metabolite["tissue_locations"]));
+    $("#metabolite_card").modal("toggle");
+    fill_adduct_panels(metabolite["adducts"]);
+}
