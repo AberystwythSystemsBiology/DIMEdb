@@ -28,7 +28,7 @@ function generate_table(mass, ionisation, api_url) {
                     "width": "40%",
                     "data": "name",
                     "render": function (data, type, row) {
-                        return "<a href='" + getBaseURL() + "view/" + row._id + "'>" + row.name + "</a>"
+                        return "<a href='" + getBaseURL() + "view/" + row._id + "' target='_blank'>" + row.name + "</a>"
                     }
                 },
                 {
@@ -146,7 +146,15 @@ function generate_api_url(mass, ionisation) {
     var api_url = getBaseURL() + "api/metabolites/?where={";
 
 
-    api_url += '"adducts.' + ionisation + '" : {"$elemMatch" : {"type" : {"$in" : ' + generate_adducts() + '},';
+    if (ionisation == "positive") {
+        api_url += '"adducts.' + ionisation + '" : {"$elemMatch" : {';
+    }
+
+    else {
+        api_url += '"adducts.' + ionisation + '" : {"$elemMatch" : {"type" : {"$in" : ' + generate_adducts() + '},';
+
+    }
+
 
 
     var lte = parseFloat(mass) + parseFloat(tolerance);
