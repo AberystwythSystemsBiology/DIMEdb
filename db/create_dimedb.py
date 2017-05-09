@@ -100,8 +100,6 @@ def get_adducts(py_mol):
             adducts["positive"].append(
                 calculate("[M+2Na-H]1+", py_mol, {"add": {"Na": 2}, "remove": {"H": 1}}, charge=1, electrons=-1))
             adducts["positive"].append(
-                calculate("[M+2K-H]1+", py_mol, {"add": {"K": 2}, "remove": {"H": 1}}, charge=1, electrons=-1))
-            adducts["positive"].append(
                 calculate("[M+K]1+", py_mol, {"add": {"K": 1}, "remove": {}}, charge=1, electrons=-1))
             adducts["positive"].append(
                 calculate("[M+Na]1+", py_mol, {"add": {"Na": 1}, "remove": {}}, charge=1, electrons=-1))
@@ -144,34 +142,35 @@ def get_adducts(py_mol):
 
 
 def process_metabolite(metabolite):
+
     try:
         py_mol = Molecule(metabolite["smiles"])
 
         adducts = get_adducts(py_mol)
 
-        try:
-            kegg_dict = KEGGParser().parse(KEGG().get(metabolite["kegg_id"]))
+        if metabolite["sources"]["kegg_id"] != None:
+            kegg_dict = KEGGParser().parse(KEGG().get(metabolite["sources"]["kegg_id"]))
             pathways = kegg_dict["PATHWAY"].keys()
-        except Exception, err:
-            pathways = None
+        else:
+            pathways = []
+
 
         metabolite_tuple = [
             ["_id", metabolite["_id"]],
             ["name", metabolite["name"]],
-            ["synonyms", metabolite["synonyms"]],
-            ["molecular_formula", py_mol.molecular_formula],
+            ["other_names", metabolite["synonyms"]],
+            ["chemical_formula", py_mol.molecular_formula],
             ["accurate_mass", py_mol.accurate_mass],
             ["num_atoms", py_mol.num_atoms],
             ["inchi", metabolite["inchi"]],
             ["smiles", metabolite["smiles"]],
             ["origins", metabolite["origins"]],
-            ["biofluid_location", metabolite["biofluid_locations"]],
+            ["biofluid_locations", metabolite["biofluid_locations"]],
             ["tissue_locations", metabolite["tissue_locations"]],
             ["pathways", pathways],
             ["sources", metabolite["sources"]],
             ["adducts", adducts]
         ]
-
 
         return collections.OrderedDict(metabolite_tuple)
     except Exception, err:
@@ -180,9 +179,22 @@ def process_metabolite(metabolite):
 if __name__ == "__main__":
     data = load_files()
 
+    lim = 100
+    keys = data.keys()
+    data_length = range(0, len(keys), lim)
 
-    db = Parallel(n_jobs=300)(delayed(process_metabolite)(data[id]) for id in data)
-    db = [x for x in db if x != None]
+    db = []
+
+    import time
+
+    for idx, i in enumerate(data_length):
+
+        print idx+1 , "/", len(data_length)
+        start = time.clock()
+        processed_data = Parallel(n_jobs=2)(delayed(process_metabolite)(data[id]) for id in keys[i:i+lim])
+        db.extend([x for x in processed_data if x != None])
+        end = time.clock()
+        print 'Run time of is %4.2fs' % (end - start)
 
     fp = "./output/dimedb.json"
 

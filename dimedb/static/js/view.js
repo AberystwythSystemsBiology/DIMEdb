@@ -56,13 +56,13 @@ function basic_information(metabolite) {
 
         return tissues
     }
-    $("#synonyms").html(fill_synonyms(metabolite["synonyms"]));
-    $("#molecular_formula").html(metabolite["molecular_formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
+    $("#synonyms").html(fill_synonyms(metabolite["other_names"]));
+    $("#molecular_formula").html(metabolite["chemical_formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
     $("#num_atoms").html(metabolite["num_atoms"]);
     $("#accurate_mass").html(metabolite["accurate_mass"].toFixed(6));
     $("#neutral_mass").html(metabolite["adducts"]["neutral"][0]["accurate_mass"].toFixed(6));
     $("#origins").html(fill_origins(metabolite["origins"]));
-    $("#biofluids").html(fill_biofluids(metabolite["biofluid_location"]));
+    $("#biofluids").html(fill_biofluids(metabolite["biofluid_locations"]));
     $("#tissue").html(fill_tissue_locations(metabolite["tissue_locations"]))
 }
 
@@ -78,11 +78,15 @@ function sidebar(metabolite) {
     }
 
     function fill_pathways(pathways) {
-        if (pathways != null) {
+
+        if (pathways.length > 0) {
             for (pathway in pathways) {
-                $("#kegg_pathways_list").append(
-                    "<li class='list-group-item'>"+pathways[pathway]+"</li>"
-                )
+                var lgi = "<li class='list-group-item'>";
+                lgi += kegg_dict[pathways[pathway]];
+                lgi += "<div id='map_pathway' name='"+pathways[pathway]+"' class='btn btn-primary btn-sm pull-right'>Map</div>";
+                lgi += "<div class='clearfix'></div>";
+                lgi += "</li>";
+                $("#kegg_pathways_list").append(lgi);
             }
         }
 
@@ -121,11 +125,14 @@ function sidebar(metabolite) {
                 var source_colour = "list-group-item-danger";
             }
 
-            var source_id = sources[source]
+            var source_id = sources[source];
 
-            $("#data_sources").append(
-                "<li><b>"+source_name+"</b> (<a href='"+source_url+"' target='_blank'>"+source_id+"</a>)</li>"
-            );
+            if (source_id != null) {
+
+                $("#data_sources").append(
+                    "<li><b>" + source_name + "</b> (<a href='" + source_url + "' target='_blank'>" + source_id + "</a>)</li>"
+                );
+            }
         }
     }
 
@@ -202,8 +209,13 @@ function render_adduct_chart_and_table(adducts, ionisation, type) {
                 title: 'Relative Intensity (%)'
             },
             autosize: false,
-            width: 500,
-            height: 350,
+            margin : {
+                l : 50,
+                r : 50,
+                b : 50,
+                t : 50,
+                pad: 4
+            },
             bargap: 0.99
         };
 
@@ -249,7 +261,15 @@ function render_metabolite_view(metabolite_id) {
         $('#view_smiles').modal('toggle');
     });
 
+    $("#map_pathway").click(function () {
+        var kegg_id = $(this).attr("name");
+        $("#pv_name").html(kegg_dict[kegg_id]);
+        var iframe_url = "http://www.genome.jp/kegg-bin/show_pathway?"+kegg_id+"+"+metabolite["sources"]["kegg_id"];
+
+        $("#pathway_iframe").attr('src', iframe_url);
+
+        $("#view_pathway").modal("toggle");
+    })
+
 
 }
-
-

@@ -39,19 +39,21 @@ function inArr(val) {
 }
 
 function clipboard_hook(id) {
-    get_metabolite(id, function (metabolite) {
-        var m = [id, metabolite["name"], metabolite["sources"]["kegg_id"]];
+    var metabolite = get_metabolite(id);
 
-        if (inArr(m) != 0) {
-            alert("Metabolite already in clipboard");
-        }
-        else {
-            metabolite_array.push(m);
-            populate_clipboard(m);
-            localStorage.setItem("metabolite_array", JSON.stringify(metabolite_array));
-            change_count();
-        }
-    });
+    var clipboard_array = [id, metabolite["name"], metabolite["sources"]["kegg_id"]];
+
+
+    if (inArr(clipboard_array) != 0) {
+        alert("Metabolite already in clipboard");
+    }
+    else {
+        metabolite_array.push(clipboard_array);
+        populate_clipboard(clipboard_array);
+        localStorage.setItem("metabolite_array", JSON.stringify(metabolite_array));
+        change_count();
+    }
+
 }
 
 function populate_clipboard(m) {

@@ -92,7 +92,7 @@
             </div>
             <div id="example-1" class="panel-collapse collapse in">
                 <div class="panel-body">
-                    <pre>{{ url }}api/metabolites/?name__contains=Ganglioside</pre>
+                    <pre>{{ url }}api/metabolites/?where={"name": {"$regex": ".*Ganglioside.*"}}}</pre>
                 </div>
             </div>
         </div>

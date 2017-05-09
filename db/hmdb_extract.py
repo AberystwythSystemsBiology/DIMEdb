@@ -26,8 +26,10 @@ def parse_hmdb(file_name):
         "Drug": "Drug",
         "Food": "Food",
         "Microbial": "Microbial",
+        "Micorbial" : "Microbial",
         "Cosmetic": "Cosmetic",
-        "Endogenous": "Endogenous"
+        "Endogenous": "Endogenous",
+        "Exogenous" : "Exogenous"
     }
 
     with open(file_name, "r") as xml_in:
@@ -102,7 +104,7 @@ if __name__ == "__main__":
         print idx+1,  "/", len(fr)
         processed_data = Parallel(n_jobs=100)(delayed(parse_hmdb)(hmdb_directory+file) for file in files[i:i+500])
         processed_list.extend([x for x in processed_data if x != None])
-        break
+
     dict = {}
 
     for indx, metabolite in enumerate(processed_list):

@@ -4,17 +4,38 @@ MONGO_HOST = os.environ.get('MONGO_HOST', 'localhost')
 MONGO_PORT = os.environ.get('MONGO_PORT', 27017)
 MONGO_DBNAME = os.environ.get('MONGO_DBNAME', 'dimedb')
 MONGO_QUERY_BLACKLIST = ["$where"]
+QUERY_MAX_RESULTS = 1000
+PAGINATION_LIMIT = 500
+PAGINATION_DEFAULT = 500
 XML = False
 
 URL_PREFIX = "api"
 
-adduct = {
+negative_adduct = {
     "schema" : {
         "type" : "string",
         "accurate_mass" : "float",
         "isotopic_distribution" : "list"
     }
 }
+
+positive_adduct = {
+    "schema" : {
+        "type" : "string",
+        "accurate_mass" : "float",
+        "isotopic_distribution" : "list"
+    }
+}
+
+neutral_adduct = {
+    "schema" : {
+        "type" : "string",
+        "accurate_mass" : "float",
+        "isotopic_distribution" : "list"
+    }
+}
+
+
 
 sources = {
     "schema" : {
@@ -31,10 +52,10 @@ metabolites = {
         "name" : {
             "type" : "string"
         },
-        "synonyms" : {
+        "other_names" : {
             "type" : "list"
         },
-        "molecular_formula" : {
+        "chemical_formula" : {
             "type" : "string"
         },
         "accurate_mass" : {
@@ -52,7 +73,7 @@ metabolites = {
         "origins" : {
             "type" : "list"
         },
-        "biofluid_location" : {
+        "biofluid_locations" : {
             "type" : "list"
         },
         "tissue_locations" : {
@@ -70,15 +91,15 @@ metabolites = {
             "schema" : {
                 "positive" : {
                  "type" : "list",
-                 "schema" : adduct
+                 "schema" : positive_adduct
                 },
                 "negative" : {
                  "type" : "list",
-                 "schema" : adduct
+                 "schema" : negative_adduct
                 },
                 "neutral" : {
                  "type" : "list",
-                 "schema" : adduct
+                 "schema" : neutral_adduct
                 }
             }
         }

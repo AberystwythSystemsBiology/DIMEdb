@@ -145,11 +145,14 @@
     </div>
 
 
+    {% include "modals/search/metabolite_card.html" %}
+
 {% endblock %}
 
 
 
 {% block javascript %}
+    <script src="{{ url_for('static', filename='bower_components/plotly/plotly.js') }}"></script>
     <script src="{{ url_for('static', filename='bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.js') }}"></script>
     <script src="{{ url_for('static', filename='js/search.js') }}"></script>
 {% endblock %}

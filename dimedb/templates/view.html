@@ -45,7 +45,7 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    KEGG Pathways <i class="glyphicon glyphicon-glass pull-right"></i>
+                    KEGG Pathways <i class="glyphicon glyphicon-map-marker pull-right"></i>
                 </div>
                 <ul id="kegg_pathways_list" class="list-group">
 
@@ -57,35 +57,35 @@
             <table class="table table-striped">
                 <tbody>
                     <tr>
-                        <th width="25%">Synonyms:</th>
+                        <th width="35%">Other Names:</th>
                         <td><div id="synonyms" class="comment more"></div></td>
                     </tr>
                     <tr>
-                        <th width="25%">Molecular Formula:</th>
+                        <th width="35%">Molecular Formula:</th>
                         <td id="molecular_formula"></td>
                     </tr>
                     <tr>
-                        <th width="25%">Number of Atoms:</th>
+                        <th width="35%">Number of Atoms:</th>
                         <td id="num_atoms"></td>
                     </tr>
                     <tr>
-                        <th width="25%">Accurate Mass (m/z):</th>
+                        <th width="35%">Accurate Mass (m/z):</th>
                         <td id="accurate_mass"></td>
                     </tr>
                     <tr>
-                        <th width="25%">Neutral Mass (m/z):</th>
+                        <th width="35%">Neutral Mass (m/z):</th>
                         <td id="neutral_mass"></td>
                     </tr>
                     <tr>
-                        <th width="25%">Origins:</th>
+                        <th width="35%">Origins:</th>
                         <td id="origins"></td>
                     </tr>
                     <tr>
-                        <th width="25%">Biofluid Location:</th>
+                        <th width="35%">Biofluid Location:</th>
                         <td id="biofluids"></td>
                     </tr>
                     <tr>
-                        <th width="25%">Tissue Location:</th>
+                        <th width="35%">Tissue Location:</th>
                         <td id="tissue"></td>
                     </tr>
                 </tbody>
@@ -94,10 +94,8 @@
             <h2>Isotopic Information: <span id="adduct_label"></span></h2>
 
             <div id="row">
-                <div class="col-sm-8">
-                    <div id="isotopic_distribution_chart" style="height:500px; padding:1em;">
+                <div id="isotopic_distribution_chart" class="col-sm-8">
 
-                    </div>
                 </div>
 
                 <div class="col-sm-4">
@@ -151,6 +149,7 @@
 
     {% include "modals/view/inchi.html" %}
     {% include "modals/view/smiles.html" %}
+    {% include "modals/view/pathway_view.html" %}
 
 {% endblock %}
 

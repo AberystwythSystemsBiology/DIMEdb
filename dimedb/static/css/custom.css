@@ -8,7 +8,6 @@ html {
 }
 
 body {
-    background-color: #fcfcfc;
     font-family: 'Open Sans', sans-serif;
     padding-top: 50px;
     line-height: 1.5;
@@ -221,4 +220,8 @@ a.morelink {
 @keyframes spin {
     from { transform: scale(1) rotate(0deg);}
     to { transform: scale(1) rotate(360deg);}
+}
+
+#isotopic_distribution_chart {
+    display:inline-block;
 }

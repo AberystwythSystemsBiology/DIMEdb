@@ -22,6 +22,8 @@ $(document).ready(function () {
         }
     });
 
+
+
     $('#search_text').keypress(function (e) {
         if (e.which == 13) {
             $('#search_button').click();
@@ -74,7 +76,7 @@ $(document).ready(function () {
 });
 
 function generate_homepage_results(query) {
-    var search_query = '?where={"name" : {"$regex": ".*'+query+'.*"}}&projection={"name" : 1, "accurate_mass" : 1, "molecular_formula" : 1}&max_results=1000';
+    var search_query = '?where={"name" : {"$regex": ".*'+query+'.*"}}&projection={"name" : 1, "accurate_mass" : 1, "chemical_formula" : 1}&max_results=1000';
 
     console.log(search_query);
 
@@ -98,10 +100,10 @@ function generate_homepage_results(query) {
                 }
             },
             {
-                "title": "Molecular Formula",
+                "title": "Chemical Formula",
                 "className": "dt-center",
                 "width" : "15%",
-                "data": "molecular_formula",
+                "data": "chemical_formula",
                 "render": function (data, type, row) {
                     return data.replace(/([0-9]+)/g, '<sub>$1</sub>');
                 }
@@ -186,7 +188,6 @@ function generate_card(id) {
             for (j in adducts[ionisation]) {
                 var adduct  = adducts[ionisation][j];
                 var name = ionisation + "," + adduct["type"];
-                //card_negative_adduct
                 $("#card_"+ionisation+"_adduct").append(
                     "<li class='list-group-item'><b>"+ adduct["type"] + ":</b> "+adduct["accurate_mass"].toFixed(4)+ "</li>"
                 )
@@ -198,14 +199,14 @@ function generate_card(id) {
     var metabolite = get_metabolite(id);
 
     console.log(metabolite);
-    $("#card_metabolite_name").html(metabolite["name"]);
-    $("#card_molecular_formula").html(metabolite["molecular_formula"]);
 
+    $("#card_metabolite_name").html(metabolite["name"]);
+    $("#card_molecular_formula").html(metabolite["chemical_formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
     $("#card_accurate_mass").html(metabolite["accurate_mass"].toFixed(6));
     $("#card_neutral_mass").html(metabolite["adducts"]["neutral"][0]["accurate_mass"].toFixed(6));
     $("#card_origins").html(fill_origins(metabolite["origins"]));
-    $("#card_biofluids").html(fill_biofluids(metabolite["biofluid_location"]));
+    $("#card_biofluids").html(fill_biofluids(metabolite["biofluid_locations"]));
     $("#card_tissues").html(fill_tissue_locations(metabolite["tissue_locations"]));
-    $("#metabolite_card").modal("toggle");
     fill_adduct_panels(metabolite["adducts"]);
+    $("#metabolite_card").modal("toggle");
 }
