@@ -105,11 +105,12 @@ if __name__ == "__main__":
         processed_data = Parallel(n_jobs=100)(delayed(parse_hmdb)(hmdb_directory+file) for file in files[i:i+500])
         processed_list.extend([x for x in processed_data if x != None])
 
+
     dict = {}
 
     for indx, metabolite in enumerate(processed_list):
         dict[indx] = metabolite
 
-    with open(os.path.dirname(__file__)+"/output/hmdb.json", "w") as outfile:
+    with open(os.path.dirname(__file__)+"/output/hmdb.json", "wb") as outfile:
         json.dump(dict, outfile, indent=4)
 

@@ -1,5 +1,5 @@
 import json, collections
-from rdkit.Chem import rdMolDescriptors, Fragments
+from rdkit.Chem import rdMolDescriptors, Fragments, rdmolops
 from bioservices import KEGG, KEGGParser
 from pyidick import Molecule
 from bson.json_util import dumps
@@ -29,7 +29,7 @@ def get_adducts(py_mol):
     noh = sum([Fragments.fr_Al_OH(py_mol._rdkmol), Fragments.fr_Ar_OH(py_mol._rdkmol)])
     nnhh = Fragments.fr_NH2(py_mol._rdkmol)
     ncooh = Fragments.fr_COO(py_mol._rdkmol)
-    nch = sum([atom.GetFormalCharge() for atom in py_mol._rdkmol.GetAtoms()])
+    nch = rdmolops.GetFormalCharge(py_mol._rdkmol)
 
     adducts = collections.defaultdict(list)
     adducts["neutral"].append(calculate("[M]", py_mol))
@@ -149,8 +149,11 @@ def process_metabolite(metabolite):
         adducts = get_adducts(py_mol)
 
         if metabolite["sources"]["kegg_id"] != None:
-            kegg_dict = KEGGParser().parse(KEGG().get(metabolite["sources"]["kegg_id"]))
-            pathways = kegg_dict["PATHWAY"].keys()
+            try:
+                kegg_dict = KEGGParser().parse(KEGG().get(metabolite["sources"]["kegg_id"]))
+                pathways = kegg_dict["PATHWAY"].keys()
+            except KeyError:
+                pathways = []
         else:
             pathways = []
 
@@ -174,12 +177,13 @@ def process_metabolite(metabolite):
 
         return collections.OrderedDict(metabolite_tuple)
     except Exception, err:
+        print Exception, err
         return None
 
 if __name__ == "__main__":
     data = load_files()
 
-    lim = 100
+    lim = 700
     keys = data.keys()
     data_length = range(0, len(keys), lim)
 
@@ -188,10 +192,9 @@ if __name__ == "__main__":
     import time
 
     for idx, i in enumerate(data_length):
-
         print idx+1 , "/", len(data_length)
         start = time.clock()
-        processed_data = Parallel(n_jobs=2)(delayed(process_metabolite)(data[id]) for id in keys[i:i+lim])
+        processed_data = Parallel(n_jobs=4)(delayed(process_metabolite)(data[id]) for id in keys[i:i+lim])
         db.extend([x for x in processed_data if x != None])
         end = time.clock()
         print 'Run time of is %4.2fs' % (end - start)
