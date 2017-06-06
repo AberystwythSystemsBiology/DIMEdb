@@ -11,24 +11,8 @@ XML = False
 
 URL_PREFIX = "api"
 
-negative_adduct = {
-    "schema" : {
-        "type" : "string",
-        "accurate_mass" : "float",
-        "isotopic_distribution" : "list"
-    }
-}
-
-positive_adduct = {
-    "schema" : {
-        "type" : "string",
-        "accurate_mass" : "float",
-        "isotopic_distribution" : "list"
-    }
-}
-
-neutral_adduct = {
-    "schema" : {
+adduct = {
+"schema" : {
         "type" : "string",
         "accurate_mass" : "float",
         "isotopic_distribution" : "list"
@@ -91,15 +75,15 @@ metabolites = {
             "schema" : {
                 "positive" : {
                  "type" : "list",
-                 "schema" : positive_adduct
+                 "schema" : adduct
                 },
                 "negative" : {
                  "type" : "list",
-                 "schema" : negative_adduct
+                 "schema" : adduct
                 },
                 "neutral" : {
                  "type" : "list",
-                 "schema" : neutral_adduct
+                 "schema" : adduct
                 }
             }
         }

@@ -106,7 +106,7 @@ function generate_api_url(mass, ionisation) {
 
     function generate_ppm(mass) {
         var ppm_tolerance = $("#ppm_tolerance").val();
-        return (mass / ((1 / ppm_tolerance) * 10000))
+        return mass * ppm_tolerance * 0.0001
     }
 
     function generate_adducts() {
@@ -145,16 +145,7 @@ function generate_api_url(mass, ionisation) {
 
     var api_url = getBaseURL() + "api/metabolites/?where={";
 
-
-    if (ionisation == "positive") {
-        api_url += '"adducts.' + ionisation + '" : {"$elemMatch" : {';
-    }
-
-    else {
-        api_url += '"adducts.' + ionisation + '" : {"$elemMatch" : {"type" : {"$in" : ' + generate_adducts() + '},';
-
-    }
-
+    api_url += '"adducts.' + ionisation + '" : {"$elemMatch" : {"type" : {"$in" : ' + generate_adducts() + '},';
 
 
     var lte = parseFloat(mass) + parseFloat(tolerance);
@@ -232,27 +223,7 @@ $(document).ready(function () {
                 ["[M1-.]1-", 0]
             ],
             "positive": [
-                ["[M+H]1+", 1],
-                ["[M+K]1+", 1],
-                ["[M+Na]1+", 1],
-                ["[M+2K-H]1+", 0],
-                ["[2M+H]1+", 0],
-                ["[2M+K]1+", 0],
-                ["[2M+Na]1+", 0],
-                ["[2M+NH4]1+", 0],
-                ["[2M+3H20+2H]2+", 0],
-                ["[2M+2ACN+2H]2+", 0],
-                ["[M+2Na]2+", 0],
-                ["[M+2ACN+2H]2+", 0],
-                ["[M+H+K]2+", 0],
-                ["[M+H+Na]2+", 0],
-                ["[M+H+NH4]2+", 0],
-                ["[M+2H]2+", 0],
-                ["[M+3Na]3+", 0],
-                ["[M+H+2Na]3+", 0],
-                ["[M+2H+2a]3+", 0],
-                ["[M+3H]3}", 0],
-                ["[M1+.]1+", 0]
+                ["Not available", 0]
             ],
             "neutral": [
                 ["[M]", 1]

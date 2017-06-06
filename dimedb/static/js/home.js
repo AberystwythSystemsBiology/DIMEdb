@@ -76,7 +76,7 @@ $(document).ready(function () {
 });
 
 function generate_homepage_results(query) {
-    var search_query = '?where={"name" : {"$regex": ".*'+query+'.*"}}&projection={"name" : 1, "accurate_mass" : 1, "chemical_formula" : 1}&max_results=1000';
+    var search_query = '?where={"name" : {"$regex": "^(?i)'+query+'.*"}}&projection={"name" : 1, "accurate_mass" : 1, "chemical_formula" : 1}&max_results=1000';
 
     console.log(search_query);
 
