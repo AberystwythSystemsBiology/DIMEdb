@@ -8,159 +8,105 @@
         <h1><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading Metabolite...</h1>
     </div>
     <div id="metabolite_view" style="display:none;">
-    <h1 id="name"></h1>
+        <h1 id="name"></h1>
 
-    <div id="row">
-        <div class="col-sm-3">
-            <div class="panel panel-default">
+        <div id="row">
+            <div class="col-sm-8">
+                <table class="table table-striped">
+                    <tbody>
+                    <tr>
+                        <th width="40%">
+                            Synonyms:
+                        </th>
+                        <td>
+                            <div id="synonyms" class="comment more"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            IUPAC Name:
+                        </th>
+                        <td>
+                            <div id="iupacname"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Molecular Formula:
+                        </th>
+                        <td>
+                            <div id="molform"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            SMILES:
+                        </th>
+                        <td>
+                            <div id="smiles" class="comment more"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            InChI:
+                        </th>
+                        <td>
+                            <div id="inchi" class="comment more"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Physiochemical Properties:
+                        </th>
+                        <td>
+                            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#molecular_properties">
+                                View
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
+            <div class="col-sm-4">
+
+                <div class="panel panel-default">
                 <div class="panel-heading">
-                    Molecular Structure <i class="glyphicon glyphicon-eye-open pull-right"></i>
+                    2D Molecular Structure <i class="glyphicon glyphicon-eye-open pull-right"></i>
                 </div>
                 <div class="panel-body">
                      <img id="structure" src="" style="display:block; margin:0 auto 0; width:100%;">
                 </div>
-                <div class="panel-footer">
-                    <div class="btn-toolbar">
-                        <div id="smiles_view" class="btn btn-sm pull-right">
-                            <i class="glyphicon glyphicon-eye-open"></i> SMILES
-                        </div>
-                        <div id="inchi_view" class="btn btn-sm pull-right">
-                            <i class="glyphicon glyphicon-eye-open"></i> InChI
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
+
+                </div>
+
+
+                <div class="panel panel-default">
+
+                  <div class="panel-heading">Identifiers</div>
+                    <ul class="list-group" id="id_list">
+
+                  </ul>
                 </div>
             </div>
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    Data Sources <i class="glyphicon glyphicon-link pull-right"></i>
-                </div>
-                <div class="panel-body">
-                    <ul id="data_sources">
-
-                    </ul>
-                </div>
-            </div>
-
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    KEGG Pathways <i class="glyphicon glyphicon-map-marker pull-right"></i>
-                </div>
-                <ul id="kegg_pathways_list" class="list-group">
-
-                </ul>
-            </div>
-
-        </div>
-        <div class="col-sm-9">
-            <table class="table table-striped">
-                <tbody>
-                    <tr>
-                        <th width="35%">Other Names:</th>
-                        <td><div id="synonyms" class="comment more"></div></td>
-                    </tr>
-                    <tr>
-                        <th width="35%">Molecular Formula:</th>
-                        <td id="molecular_formula"></td>
-                    </tr>
-                    <tr>
-                        <th width="35%">Number of Atoms:</th>
-                        <td id="num_atoms"></td>
-                    </tr>
-                    <tr>
-                        <th width="35%">Accurate Mass (m/z):</th>
-                        <td id="accurate_mass"></td>
-                    </tr>
-                    <tr>
-                        <th width="35%">Neutral Mass (m/z):</th>
-                        <td id="neutral_mass"></td>
-                    </tr>
-                    <tr>
-                        <th width="35%">Origins:</th>
-                        <td id="origins"></td>
-                    </tr>
-                    <tr>
-                        <th width="35%">Biofluid Location:</th>
-                        <td id="biofluids"></td>
-                    </tr>
-                    <tr>
-                        <th width="35%">Tissue Location:</th>
-                        <td id="tissue"></td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h2>Isotopic Information: <span id="adduct_label"></span></h2>
-
-            <div id="row">
-                <div id="isotopic_distribution_chart" class="col-sm-8">
-
-                </div>
-
-                <div class="col-sm-4">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            Isotopic Distribution Table
-                        </div>
-                        <div class="panel-body">
-                            <table class="table table-striped" id="distribution_table" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th width="50%" class="text-center">Mass (m/z)</th>
-                                        <th width="50%" class="text-center">Intensity (%)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="row">
-                <div class="col-sm-6">
-                    <div class="panel panel-success">
-                        <div class="panel-heading">
-                            Positive <i class="glyphicon glyphicon-plus-sign pull-right"></i>
-                        </div>
-                        <ul id="positive_adducts_list" class="list-group">
-
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="col-sm-6">
-                    <div class="panel panel-danger">
-                        <div class="panel-heading">
-                            Negative <i class="glyphicon glyphicon-minus-sign pull-right"></i>
-                        </div>
-                        <ul id="negative_adducts_list" class="list-group">
-
-                        </ul>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
-</div>
 
-    {% include "modals/view/inchi.html" %}
-    {% include "modals/view/smiles.html" %}
-    {% include "modals/view/pathway_view.html" %}
+    {% include "modals/view/molecular_properties.html" %}
+
 
 {% endblock %}
 
 {% block javascript %}
-<script src="{{ url_for('static', filename='bower_components/plotly/plotly.js') }}"></script>
-<script src="{{ url_for('static', filename='js/view.js') }}"></script>
+    <script src="{{ url_for('static', filename='bower_components/plotly/plotly.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/view.js') }}"></script>
     <script src="{{ url_for('static', filename='js/comment.js') }}"></script>
 
-<script>
-    render_metabolite_view("{{ id }}");
-    $("#loading_divider").fadeOut(10);
-    $("#metabolite_view").fadeIn(500);
-</script>
+    <script>
+        render_metabolite_view("{{ id }}");
+        $("#loading_divider").fadeOut(10);
+        $("#metabolite_view").fadeIn(500);
+    </script>
 {% endblock %}

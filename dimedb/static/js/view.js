@@ -1,69 +1,40 @@
+function array_to_text(a) {
+        if (a.length != 0) {
+            var text = "";
+            for (i = 0; i < a.length; i++) {
+                text += a[i] + "; ";
+            }
+        }
+        else {
+            var text = "None";
+        }
+        return text
+}
+
+function text_to_none(t) {
+    if (t != null) {
+        return t
+    }
+    else {
+        return "None"
+    }
+}
+
 function basic_information(metabolite) {
-    function fill_synonyms(synonyms_array) {
-        if (synonyms_array != null) {
-            var synonyms = "";
-            for (i = 0; i < synonyms_array.length; i++) {
-                synonyms += synonyms_array[i] + "; ";
-            }
-        }
-        else {
-            var synonyms = "Not available";
-        }
-        return synonyms
+    document.title = metabolite["Name"] +" : DIMEdb - Direct Infusion MEtabolite Database";
+    $("#name").html(metabolite["Name"]);
+
+    function fill_info(metabolite) {
+        $("#synonyms").html(array_to_text(metabolite["Synonyms"]));
+        $("#iupacname").html(text_to_none(metabolite["IUPAC Name"]));
+        $("#molform").html(metabolite["Molecular Formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
+        $("#smiles").html(text_to_none(metabolite["Identifiers"]["SMILES"]));
+        $("#inchi").html(text_to_none(metabolite["Identifiers"]["InChI"]));
+
     }
 
+    fill_info(metabolite);
 
-    function fill_origins(origins_array) {
-        if (origins_array.length != 0) {
-            var origins = "";
-            for (i = 0; i < origins_array.length; i++) {
-                origins += origins_array[i] + "; ";
-            }
-        }
-
-        else {
-            var origins = "Not available";
-        }
-
-        return origins;
-    }
-
-    function fill_biofluids(biofluids_array) {
-        if (biofluids_array != null) {
-            var biofluids = "";
-            for (i = 0; i < biofluids_array.length; i++) {
-                biofluids += biofluids_array[i] + "; ";
-            }
-        }
-
-        else {
-            var biofluids = "Not available";
-        }
-
-        return biofluids;
-    }
-
-    function fill_tissue_locations(tissue_locations_array) {
-        if (tissue_locations_array != null) {
-            var tissues = "";
-            for (i = 0; i < tissue_locations_array.length; i++) {
-                tissues += tissue_locations_array[i] + "; ";
-            }
-        }
-        else {
-            var tissues = "Not available";
-        }
-
-        return tissues
-    }
-    $("#synonyms").html(fill_synonyms(metabolite["other_names"]));
-    $("#molecular_formula").html(metabolite["chemical_formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
-    $("#num_atoms").html(metabolite["num_atoms"]);
-    $("#accurate_mass").html(metabolite["accurate_mass"].toFixed(6));
-    $("#neutral_mass").html(metabolite["adducts"]["neutral"][0]["accurate_mass"].toFixed(6));
-    $("#origins").html(fill_origins(metabolite["origins"]));
-    $("#biofluids").html(fill_biofluids(metabolite["biofluid_locations"]));
-    $("#tissue").html(fill_tissue_locations(metabolite["tissue_locations"]))
 }
 
 function sidebar(metabolite) {
@@ -75,201 +46,51 @@ function sidebar(metabolite) {
                 $("#structure").attr("src", "data:image/png;base64," + result);
             }
         });
-    }
+}
 
-    function fill_pathways(pathways) {
+    function fill_identifiers(identifiers) {
+        var ignore = ["SMILES", "InChi"];
+        for (var prop in identifiers) {
+            if ($.inArray(prop, ignore) != 0) {
+                $("#id_list").append("<li class='list-group-item'>"+prop+"</li>");
+                if (identifiers[prop] != null) {
 
-        if (pathways.length > 0) {
-            for (pathway in pathways) {
-                var lgi = "<li class='list-group-item'>";
-                lgi += kegg_dict[pathways[pathway]];
-                lgi += "<div id='map_pathway' name='"+pathways[pathway]+"' class='btn btn-primary btn-sm pull-right'>Map</div>";
-                lgi += "<div class='clearfix'></div>";
-                lgi += "</li>";
-                $("#kegg_pathways_list").append(lgi);
-            }
-        }
-
-        else {
-            $("#kegg_pathways_list").append(
-                    "<li class='list-group-item'>None available.</li>"
-                )
-
-        }
-    }
-
-    function fill_sources(sources) {
-        for (source in sources) {
-
-            if (source == "kegg_id") {
-                var source_url = "http://www.genome.jp/dbget-bin/www_bget?" + sources[source];
-                var source_name = "KEGG";
-                var source_colour = "list-group-item-success";
-            }
-
-            else if (source == "chebi_id") {
-                var source_url = "http://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:" + sources[source];
-                var source_name = "CHEBI";
-                var source_colour = "list-group-item-info";
-            }
-
-            else if (source == "hmdb_id") {
-                var source_url = "http://www.hmdb.ca/metabolites/" + sources[source];
-                var source_name = "HMDB";
-                var source_colour = "list-group-item-warning";
-            }
-
-            else if (source == "pubchem_id") {
-                var source_url = "https://pubchem.ncbi.nlm.nih.gov/compound/" + sources[source];
-                var source_name = "PubChem";
-                var source_colour = "list-group-item-danger";
-            }
-
-            var source_id = sources[source];
-
-            if (source_id != null) {
-
-                $("#data_sources").append(
-                    "<li><b>" + source_name + "</b> (<a href='" + source_url + "' target='_blank'>" + source_id + "</a>)</li>"
-                );
+                }
             }
         }
     }
 
     get_structure(metabolite["_id"]);
-    fill_pathways(metabolite["pathways"]);
-    fill_sources(metabolite["sources"]);
-}
-
-function isotopic_distributions(adducts) {
-    function fill_adduct_panels(adducts) {
-        var ionisations = ["negative", "positive"];
-
-        for (i in ionisations) {
-            var ionisation = ionisations[i];
-            for (j in adducts[ionisation]) {
-                var adduct  = adducts[ionisation][j];
-                var name = ionisation + "," + adduct["type"];
-                var button = "<div class='btn btn-primary btn-sm pull-right' id='view_isotope' name='"+name+"'>View Isotopes <i class='glyphicon glyphicon-signal'></i></div><div class='clearfix'></div>";
-
-                $("#"+ionisation+"_adducts_list").append(
-                    "<li class='list-group-item'><b>"+ adduct["type"] + ":</b> "+adduct["accurate_mass"].toFixed(4)+ button +"</li>"
-                )
-            }
-        }
-
-    }
-
-    fill_adduct_panels(adducts);
+    fill_identifiers(metabolite["Identifiers"])
 
 }
 
-function render_adduct_chart_and_table(adducts, ionisation, type) {
-
-    function render_title(ionisation, type) {
-        $("#adduct_label").html(ionisation + ", " + type );
-        $('#adduct_label').css('textTransform', 'capitalize');
+function modals(metabolite) {
+    function molecular_properties(properties) {
+        $("#hbd").html(text_to_none(properties["Hydrogen Bond Donors"]));
+        $("#hba").html(text_to_none(properties["Hydrogen Bond Acceptors"]));
+        $("#rotbonds").html(text_to_none(properties["Rotatable Bonds"]));
+        $("#formalcharge").html(text_to_none(properties["Formal Charge"]));
+        $("#logp").html(properties["logP"].toFixed(4));
+        $("#polarsurfacearea").html(text_to_none(properties["Polar Surface Area"].toFixed(4)));
+        $("#fractionofsp3").html(properties["Fraction of SP3 Carbon"].toFixed(4))
+        $("#mrvalues").html(properties["MR Values"].toFixed(4))
+        $("#rings").html(text_to_none(properties["Rings"]));
+        $("#aromaticrings").html(text_to_none(properties["Aromatic Rings"]));
+        $("#heavyatoms").html(text_to_none(properties["Heavy Atoms"]));
+        $("#secondaryamines").html(text_to_none(properties["Secondary Amines"]));
+        $("#etheroxygens").html(text_to_none(properties["Ether Oxygens"]));
+        $("#hydrogroups").html(text_to_none(properties["Hydroxy Groups"]));
+        $("#carbacids").html(text_to_none(properties["Carboxylic Acids"]));
     }
 
-    function render_distribution_table(i_d) {
-        $("#distribution_table tbody tr").remove();
-        for (i in i_d) {
-            $("#distribution_table").append("<tr><td class='text-center'>"+i_d[i][0].toFixed(4)+"</td><td class='text-center'>"+i_d[i][1].toFixed(3)+"</td></tr>")
-        }
-    }
-
-
-    function render_chart(distributions) {
-
-        var x_plot = [];
-        var y_plot = [];
-
-        for (i in distributions) {
-            var spectra = distributions[i];
-            x_plot.push(spectra[0]);
-            y_plot.push(spectra[1]);
-        }
-
-        var chart_data = [{
-            x: x_plot,
-            y: y_plot,
-            type: 'bar',
-            marker: {
-                color: 'rgba(0, 0, 0, 1)'
-            }
-        }];
-
-        var layout = {
-            xaxis: {
-                title: 'Mass-to-ion (m/z)',
-                showgrid: false,
-                range: [Math.min.apply(Math, x_plot) - 0.5, Math.max.apply(Math, x_plot) + 1]
-            },
-            yaxis: {
-                title: 'Relative Intensity (%)'
-            },
-            autosize: false,
-            margin : {
-                l : 50,
-                r : 50,
-                b : 50,
-                t : 50,
-                pad: 4
-            },
-            bargap: 0.99
-        };
-
-        Plotly.newPlot("isotopic_distribution_chart", chart_data, layout, {displayModeBar: false});
-    }
-
-    render_title(ionisation, type);
-
-
-    for (i in adducts[ionisation]) {
-        if (adducts[ionisation][i]["type"] == type) {
-            var adduct = adducts[ionisation][i];
-            render_distribution_table(adduct["isotopic_distribution"])
-            render_chart(adduct["isotopic_distribution"])
-        }
-    }
+    molecular_properties(metabolite["Properties"]);
 }
 
 function render_metabolite_view(metabolite_id) {
     var metabolite = get_metabolite(metabolite_id);
 
-    document.title = metabolite["name"] +" : DIMEdb - Direct Infusion MEtabolite Database";
-    $("#name").html(metabolite["name"]);
-
     basic_information(metabolite);
     sidebar(metabolite);
-    render_adduct_chart_and_table(metabolite["adducts"], "neutral", "[M]");
-    isotopic_distributions(metabolite["adducts"]);
-
-
-    $('[id="view_isotope"]').click(function () {
-        var i_array = $(this).attr("name").split(",");
-        render_adduct_chart_and_table(metabolite["adducts"], i_array[0], i_array[1])
-    });
-
-    $("#inchi_view").click(function () {
-        $("#inchi_key").html(metabolite["inchi"]);
-        $('#view_inchi').modal('toggle');
-    });
-
-    $("#smiles_view").click(function () {
-        $("#smiles").html(metabolite["smiles"]);
-        $('#view_smiles').modal('toggle');
-    });
-
-    $("#map_pathway").click(function () {
-        var kegg_id = $(this).attr("name");
-        $("#pv_name").html(kegg_dict[kegg_id]);
-        var iframe_url = "http://www.genome.jp/kegg-bin/show_pathway?"+kegg_id+"+"+metabolite["sources"]["kegg_id"];
-
-        $("#pathway_iframe").attr('src', iframe_url);
-
-        $("#view_pathway").modal("toggle");
-    })
-
-
+    modals(metabolite)
 }

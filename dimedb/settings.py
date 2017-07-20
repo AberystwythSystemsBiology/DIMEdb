@@ -4,15 +4,14 @@ MONGO_HOST = os.environ.get('MONGO_HOST', 'localhost')
 MONGO_PORT = os.environ.get('MONGO_PORT', 27017)
 MONGO_DBNAME = os.environ.get('MONGO_DBNAME', 'dimedb')
 MONGO_QUERY_BLACKLIST = ["$where"]
-QUERY_MAX_RESULTS = 1000
-PAGINATION_LIMIT = 500
+HATEOAS = False
 PAGINATION_DEFAULT = 500
 XML = False
 
 URL_PREFIX = "api"
 
-adduct = {
-"schema" : {
+positive_adduct = {
+    "schema" : {
         "type" : "string",
         "accurate_mass" : "float",
         "isotopic_distribution" : "list"
@@ -20,71 +19,85 @@ adduct = {
 }
 
 
-
-sources = {
+negative_adduct = {
     "schema" : {
-        "kegg_id" : "string",
-        "hmdb_id" : "string",
-        "chebi_id" : "string",
-        "pubchem_id" : "string"
+        "type" : "string",
+        "accurate_mass" : "float",
+        "isotopic_distribution" : "list"
+    }
+}
+
+neutral_adduct = {
+    "schema" : {
+        "type" : "string",
+        "accurate_mass" : "float",
+        "isotopic_distribution" : "list"
     }
 }
 
 metabolites = {
     'resource_methods': ["GET"],
     "schema" : {
-        "name" : {
+        "Name" : {
             "type" : "string"
         },
-        "other_names" : {
+        "Synonyms" : {
             "type" : "list"
         },
-        "chemical_formula" : {
+        "IUPAC Name" : {
             "type" : "string"
         },
-        "accurate_mass" : {
-            "type" : "float"
-        },
-        "num_atoms" : {
-            "type" : "integer"
-        },
-        "inchi" : {
-            "type" : "string"
-         },
-        "smiles" : {
+        "Molecular Formula" : {
             "type" : "string"
         },
-        "origins" : {
-            "type" : "list"
-        },
-        "biofluid_locations" : {
-            "type" : "list"
-        },
-        "tissue_locations" : {
-            "type" : "list"
-        },
-        "pathways" : {
-            "type" : "list"
-        },
-        "sources" : {
-          "type" : "dict",
-            "schema" : sources
-        },
-        "adducts" : {
+        "Adducts" : {
             "type" : "dict",
             "schema" : {
-                "positive" : {
-                 "type" : "list",
-                 "schema" : adduct
+                "Negative" : {
+                    "type" : "list",
+                    "schema" : negative_adduct
                 },
-                "negative" : {
-                 "type" : "list",
-                 "schema" : adduct
+                "Neutral" : {
+                    "type" : "list",
+                    "schema" : neutral_adduct
                 },
-                "neutral" : {
-                 "type" : "list",
-                 "schema" : adduct
+                "Positive" : {
+                    "type" : "list",
+                    "schema" : positive_adduct
                 }
+            }
+        },
+        "Identifiers" : {
+            "type" : "list",
+            "schema" : {
+                "SMILES" : "string",
+                "CAS" : "string",
+                "PubChem-compound" : "string",
+                "KEGG Compound" : "string",
+                "HMDB" : "string",
+                "InChI" : "string",
+                "Wikidata" : "string",
+                "Chemspider" : "string",
+                "ChEBI": "string"
+            }
+        },
+        "Properties" : {
+            "type" : "list",
+            "schema" : {
+                "Secondary Amines" : "float",
+                "Ether Oxygens" : "float",
+                "Heavy Atoms" : "float",
+                "Rings" : "float",
+                "Hydrogen Bond Acceptors" : "float",
+                "Aromatic Rings": "float",
+                "Fraction of SP3 Carbon": "float",
+                "Carboxylic Acids" : "float",
+                "Polar Surface Area" : "float",
+                "Rotatable Bonds": "float",
+                "logP" : "float",
+                "Hydroxy Groups": "float",
+                "Formal Charge": "float",
+                "Hydrogen Bond Donors" : "float"
             }
         }
     }

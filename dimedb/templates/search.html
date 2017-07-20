@@ -15,16 +15,24 @@
                 </div>
                 <div class="panel-body">
                     <div class="form-group">
-                        <label for="masses">Masses (m/z): </label>
-                        <input id="masses" type="text" value="300" data-role="tagsinput"/>
+                        <label for="masses">Precusor Masses (m/z): </label>
+                        <input id="masses" type="text" value="652.60" data-role="tagsinput"/>
                         <p class="small pull-right"> <i class="glyphicon glyphicon-exclamation-sign"></i> Seperate masses using ","</p>
                     </div>
                     <div class="form-group">
-                        <label for="tolerance">Tolerance (&#177;):</label>
-                        <div class="input-group">
-                                <input id="ppm_tolerance" type="number" class="form-control" min="1" max="20" value="5"
-                                       aria-describedby="ppm_label">
-                                <span class="input-group-addon" id="ppm_label">ppm</span>
+                        <label for="tolerance">Tolerance:</label>
+                        <div class="form-group">
+                            <select class="form-control" id="search_tolerance">
+                                <option value="1">(&#177;) 1.0 m/z</option>
+                                <option value="0.5" selected="selected">(&#177;) 0.5 m/z</option>
+                                <option value="0.2">(&#177;) 0.2 m/z</option>
+                                <option value="0.1">(&#177;) 0.1 m/z</option>
+                                <option value="0.05">(&#177;) 0.05 m/z</option>
+                                <option value="0.01">(&#177;) 0.01 m/z</option>
+                                <option value="0.005">(&#177;) 0.005 m/z</option>
+                                <option value="0.001">(&#177;) 0.001 m/z</option>
+                                <option value="0.0005">(&#177;) 0.0005 m/z</option>
+                            </select>
                         </div>
                     </div>
                     <div class="row">
@@ -32,102 +40,24 @@
                             <div class="form-group">
                                 <label for="ionisation">Ionisation: </label>
                                 <div id="ionisation" class="radio">
-                                        <label><input type="radio" name="ionisation" value="neutral" checked>Neutral</label>
+                                        <label><input type="radio" name="ionisation" value="Neutral" checked>Neutral</label>
                                     </div>
                                     <div class="radio">
-                                        <label><input type="radio" name="ionisation" value="positive">Positive (+)</label>
+                                        <label><input type="radio" name="ionisation" value="Positive">Positive (+)</label>
                                     </div>
                                     <div class="radio">
-                                        <label><input type="radio" name="ionisation" value="negative">Negative (-)</label>
+                                        <label><input type="radio" name="ionisation" value="Negative">Negative (-)</label>
                                     </div>
                             </div>
                         </div>
                         <div class="col-sm-6">
-                            <label for="ionisation">Adducts: </label>
+                            <label for="ionisation">Ion Type: </label>
                             <select multiple class="form-control" id="ionisation_adducts">
                                 <option selected>[M]</option>
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="origins">Origins: </label>
-                        <div id="origins" class="form-check form-check-inline">
-                            <label class="checkbox-inline">
-                                <input type="checkbox" value="Microbial">
-                                Microbial
-                            </label>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" value="Endogenous">
-                                Endogenous
-                            </label>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" value="Food">
-                                Food
-                            </label>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" value="Drug">
-                                Drug
-                            </label>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" value="Cosmetic">
-                                Cosmetic
-                            </label>
-                            <label class="checkbox-inline">
-                                <input type="checkbox" value="Plant">
-                                Plant
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="biofluids">Biofluids: </label>
-                            <div id="biofluid_location" class="form-check form-check-inline">
-                                <label class="checkbox-inline">
-                                <input type="checkbox" value="Blood">
-                                Blood
-                                </label>
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" value="Feces">
-                                    Feces
-                                </label>
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" value="Saliva">
-                                    Saliva
-                                </label>
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" value="Urine">
-                                    Urine
-                                </label>
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" value="CSF">
-                                    CSF
-                                </label>
-                            </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="tissue">Tissue: </label>
-                            <div id="tissue_location" class="form-check form-check-inline">
-                                <label class="checkbox-inline">
-                                <input type="checkbox" value="Brain">
-                                    Brain
-                                </label>
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" value="Prostate">
-                                    Prostate
-                                </label>
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" id="tissue_location" value="Skin">
-                                    Skin
-                                </label>
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" value="All">
-                                    All
-                                </label>
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" value="Lung">
-                                    Lung
-                                </label>
-                            </div>
-                    </div>
+
                 </div>
                 <div class="panel-footer">
                     <div id="search_button" class="btn btn-primary pull-right">
