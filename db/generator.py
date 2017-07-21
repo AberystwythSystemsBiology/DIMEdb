@@ -1,4 +1,6 @@
-import json, pubchempy
+import json, pubchempy, urllib2
+from rdkit.Chem import rdMolDescriptors, MolFromSmiles, MolSurf, Fragments, rdmolops
+from bioservices import KEGG, KEGGParser
 
 directory = "/home/keo7/.data/dimedb/"
 
@@ -11,40 +13,110 @@ combined = load_json(directory + "/combined_data.json")
 chebi = load_json(directory + "stripped_chebi.json")
 hmdb = load_json(directory + "stripped_hmdb.json")
 
-def naming(inchikey):
-    naming_info = {
+def identification_info(inchikey):
+    import pybel
+
+    id_info = {
         "Name" : None,
+        "Synonyms": [],
         "IUPAC Name" : None,
         "Systematic Name" : None,
-        "Synonyms" : []
+        "InChI" : None,
+        "SMILES" : None,
+        "Molecular Formula" : None
     }
 
 
+    id_info["InChI"] = str(combined[inchikey]["InChI"])
+
+    id_info["SMILES"] = pybel.readstring("inchi", id_info["InChI"]).write("smi")
+
+    rdkit_mol = MolFromSmiles(id_info["SMILES"])
+
+    id_info["Molecular Formula"] = rdMolDescriptors.CalcMolFormula(rdkit_mol)
+
     if combined[inchikey]["HMDB Accession"] != None:
-        naming_info["Name"] = hmdb[inchikey]["Name"]
-        naming_info["Synonyms"] = hmdb[inchikey]["Synonyms"]
+        id_info["Name"] = hmdb[inchikey]["Name"]
+        id_info["Synonyms"] = hmdb[inchikey]["Synonyms"]
 
     if combined[inchikey]["ChEBI ID"] != None:
-        if naming_info["Name"] == None:
-            naming_info["Name"] = chebi[inchikey]["Name"]
-        if naming_info["IUPAC Name"] == None:
-            naming_info["IUPAC Name"] = chebi[inchikey]["IUPAC Name"]
-        if naming_info["Synonyms"] == []:
-            naming_info["Synonyms"] = chebi[inchikey]["Synonyms"]
+        if id_info["Name"] == None:
+            id_info["Name"] = chebi[inchikey]["Name"]
+        if id_info["IUPAC Name"] == None:
+            id_info["IUPAC Name"] = chebi[inchikey]["IUPAC Name"]
+        if id_info["Synonyms"] == []:
+            id_info["Synonyms"] = chebi[inchikey]["Synonyms"]
 
     if combined[inchikey]["PubChem ID"] != None:
         compound = pubchempy.get_compounds(combined[inchikey]["PubChem ID"])[0]
-        if naming_info["Name"] == None:
-            naming_info["Name"] = compound.synonyms[0]
-        if naming_info["Synonyms"] == []:
-            naming_info["Synonyms"] = compound.synonyms[1:]
-        if naming_info["IUPAC Name"] == None:
-            naming_info["IUPAC Name"] = compound.iupac_name
+        if id_info["Name"] == None:
+            id_info["Name"] = compound.synonyms[0]
+        if id_info["Synonyms"] == []:
+            id_info["Synonyms"] = compound.synonyms[1:]
+        if id_info["IUPAC Name"] == None:
+            id_info["IUPAC Name"] = compound.iupac_name
 
-    return naming_info
+    return id_info, rdkit_mol
+
+def taxonomic_properties(inchikey):
+    properties = {
+        "HMDB" : {
+            "Origins" : [],
+            "Biofluid Locations" : [],
+            "Tissue Locations" : []
+        }
+    }
+    if combined[inchikey]["HMDB Accession"] != None:
+        properties["HMDB"] = hmdb[inchikey]["Sources"]
+
+    return properties
+
+def generate_sources(inchikey):
+    sources = {
+        "Wikidata": None,
+        "CAS": None,
+        "KEGG Compound": None,
+        "Chemspider": None
+    }
+
+
+    response = urllib2.urlopen("http://webservice.bridgedb.org/Human/xrefs/Ik/" + inchikey)
+    for line in response.read().splitlines():
+        resource = line.split("\t")
+        if resource[1] in sources.keys():
+            sources[resource[1]] = resource[0]
+
+    sources.update({
+        "ChEBI ID" : combined[inchikey]["ChEBI ID"],
+        "PubChem ID" : combined[inchikey]["PubChem ID"],
+        "HMDB Accession": combined[inchikey]["HMDB Accession"]
+    })
+
+    return sources
+
+
+def generate_pathways(inchikey, sources):
+    pathways = {
+        "KEGG" : [],
+        "SMPDB" : []
+    }
+    if sources["HMDB Accession"] != None:
+        pathways["SMPDB"] = hmdb[inchikey]["SMPDB Pathways"]
+
+    if sources["KEGG Compound"] != None:
+        try:
+            kegg_dict = KEGGParser().parse(KEGG().get(sources["KEGG Compound"]))
+            pathways["KEGG"] = kegg_dict["PATHWAY"].keys()
+        except KeyError:
+            pass
+    return pathways
 
 if __name__ == "__main__":
     for inchikey in combined.keys():
-        naming_info = naming(inchikey)
-
+        inchikey = "CZMRCDWAGMRECN-UGDNZRGBSA-N"
+        id_info, rdkit_mol = identification_info(inchikey)
+        #t_properties = taxonomic_properties(inchikey)
+        #sources = generate_sources(inchikey)
+        #pathway_info = generate_pathways(inchikey, sources)
         break
+
