@@ -111,10 +111,33 @@ def generate_pathways(inchikey, sources):
             pass
     return pathways
 
+def physiochemical(rdkit_mol):
+    clogP, mr_values = rdMolDescriptors.CalcCrippenDescriptors(rdkit_mol)
+
+    return {
+        "Molecular Weight" : rdMolDescriptors.CalcExactMolWt(rdkit_mol),
+        "Ether Oxygens": Fragments.fr_ether(rdkit_mol),
+        "Hydroxy Groups": Fragments.fr_Al_OH(rdkit_mol),
+        "Carboxylic Acids": Fragments.fr_Al_COO(rdkit_mol),
+        "Secondary Amines": Fragments.fr_NH2(rdkit_mol),
+        "Formal Charge": rdmolops.GetFormalCharge(rdkit_mol),
+        "clogP": clogP,
+        "MR Values": mr_values,
+        "Fraction of SP3 Carbon": rdMolDescriptors.CalcFractionCSP3(rdkit_mol),
+        "Aromatic Rings": rdMolDescriptors.CalcNumAromaticRings(rdkit_mol),
+        "Rotatable Bonds": rdMolDescriptors.CalcNumRotatableBonds(rdkit_mol),
+        "Hydrogen Bond Acceptors": rdMolDescriptors.CalcNumHBA(rdkit_mol),
+        "Hydrogen Bond Donors": rdMolDescriptors.CalcNumHBD(rdkit_mol),
+        "Rings": rdMolDescriptors.CalcNumRings(rdkit_mol),
+        "Heavy Atoms": rdkit_mol.GetNumHeavyAtoms(),
+        "Polar Surface Area": sum(MolSurf._pyTPSAContribs(rdkit_mol))
+    }
+
 if __name__ == "__main__":
     for inchikey in combined.keys():
         inchikey = "CZMRCDWAGMRECN-UGDNZRGBSA-N"
-        id_info, rdkit_mol = identification_info(inchikey)
+        #id_info, rdkit_mol = identification_info(inchikey)
+        #p_properties = physiochemical(rdkit_mol)
         #t_properties = taxonomic_properties(inchikey)
         #sources = generate_sources(inchikey)
         #pathway_info = generate_pathways(inchikey, sources)
