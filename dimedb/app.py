@@ -13,12 +13,15 @@ app.config.update(
 
 @app.route("/")
 def homepage():
-    return render_template("main.html")
+    return render_template("home.html")
 
-@app.route("/search/")
-def search():
-    return render_template("search.html")
+@app.route("/search/mass")
+def mass_search():
+    return render_template("search/mass.html")
 
+@app.route("/search/text")
+def text_search():
+    return render_template("search/text.html")
 
 @app.route("/help/")
 def help():
@@ -26,10 +29,8 @@ def help():
 
 @app.route("/view/<string:_id>/")
 def view(_id):
-    try:
-        return render_template("view.html" , id=_id)
-    except Exception, err:
-        abort(403)
+        return render_template("view/view.html" , id=_id)
+
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -44,7 +45,7 @@ def smiles_to_2d(_id):
         from rdkit import Chem
         from rdkit.Chem import Draw
         import StringIO
-        smiles = metabolite["Identifiers"]["SMILES"]
+        smiles = metabolite["Identification Information"]["SMILES"]
         smiles_image = StringIO.StringIO()
         mol = Chem.MolFromSmiles(smiles)
         Draw.MolToFile(mol, fileName=smiles_image, imageType="png", size=(300, 300))

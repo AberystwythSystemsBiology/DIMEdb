@@ -2,164 +2,46 @@
 
 {% block title %}Help{% endblock %}
 
+{% block abovebody %}
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Help Centre</h1>
+      </div>
+    </div>
+{% endblock %}
+
 {% block body %}
 
-    <h1>Help Centre</h1>
+    <p>This page contains information about how to interact with DIMEdb’s web application and
+        web service.</p>
 
-    <p>This website contains information about how to interact with DIMEdb’s web application and
-        API. Please ensure that
-        you read it and check the FAQ’s before writing an email.</p>
+<h2 class="page-header">Frequently Asked Questions</h2>
+    <h3>What databases does DIMEdb use to collate its data from?</h3>
 
+    <p>HMDB, PUBMED, CHEBI and KEGG.</p>
 
-    <div class="alert alert-danger"><strong><span class="glyphicon glyphicon-warning-sign"></span>
-        Warning!</strong> This service is currently in early alpha stages, and thus we cannot
-        guarentee that it is completely error/bug free. Please report any errors/bugs you may encounter to
-        <a href="mailto:keo7@aber.ac.uk">keo7@aber.ac.uk</a>.
-    </div>
+    <h3>Can I download DIMEdb?</h3>
 
+    <p>Sure thing, just send us an email and we’ll get back to you as soon as
+        we can(!)</p>
 
-    <h2>Frequently Asked Questions</h2>
+    <h3>How can I cite DIMEdb?</h3>
 
-    <div class="panel-group" id="faqaccordion">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#faqaccordion" href="#faq1">
-                        Can I download all of DIMEdb?</a>
-                </h4>
-            </div>
-            <div id="faq1" class="panel-collapse collapse in">
-                <div class="panel-body">Sure thing, just send us an email and we’ll get back to you as soon as we
-                    can(!)
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#faqaccordion" href="#faq2">
-                        How can I cite DIMEdb?</a>
-                </h4>
-            </div>
-            <div id="faq2" class="panel-collapse collapse">
-                <div class="panel-body">Publication Pending</div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#faqaccordion" href="#faq3">
-                        What databases does DIMEdb use to collate its data from?</a>
-                </h4>
-            </div>
-            <div id="faq3" class="panel-collapse collapse">
-                <div class="panel-body">
-                    HMDB, PUBMED, CHEBI and KEGG.
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#faqaccordion" href="#faq4">
-                        The query I got is really large, how can I best view it?</a>
-                </h4>
-            </div>
-            <div id="faq4" class="panel-collapse collapse">
-                <div class="panel-body">
-                    If the output is a little large (> 200mb), it's probably not a good idea to open it all at once. The
-                    authors suggest using glogg to open up extremely large files.
-                </div>
-            </div>
-        </div>
-    </div>
+    <p>Publication Pending</p>
 
-    <h2>API</h2>
+    <h2 class="page-header">DIMEdb Web Service/API</h2>
 
-    <p>DIMEdb features a application programming interface (API) which enables anyone to extract data without the need
-        of the web application. The API is built with ease-of-use in mind, allowing you to download relevant information
-        without having to download the entirety of the database.</p>
+    <p>DIMEdb features a application programming interface (API) which enables anyone to extract data without
+        the need of the web application. The API is built with ease-of-use in mind, allowing you to download
+        relevant information without having to download the entirety of the database.</p>
 
-    <h3>Examples</h3>
+    <h3>Data Documentation</h3>
 
-    <div class="panel-group" id="examples-accordion">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#examples-accordion" href="#example-1">
-                        Return all metabolites whose name contains <i>"Ganglioside"</i></a>
-                </h4>
-            </div>
-            <div id="example-1" class="panel-collapse collapse in">
-                <div class="panel-body">
-                    <pre>{{ url }}api/metabolites/?where={"name": {"$regex": ".*Ganglioside.*"}}}</pre>
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#examples-accordion" href="#example-2">
-                        Return all metabolites of which are found in <i>"Food"</i></a>
-                </h4>
-            </div>
-            <div id="example-2" class="panel-collapse collapse">
-                <div class="panel-body">
-                    <pre>{{ url }}api/metabolites/?origins__contains=Food</pre>
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#examples-accordion" href="#example-3">
-                        Return all metabolites that contain <i>"Gangli"</i> and are found in <i>"Food"</i></a>
-                </h4>
-            </div>
-            <div id="example-3" class="panel-collapse collapse">
-                <div class="panel-body">
-                    <pre>{{ url }}api/metabolites/?origins__contains=Food&name__contains=Gangli</pre>
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#examples-accordion" href="#example-4">
-                        Return all neutrally charged metabolites (M) that fall within a 10ppm range of 130m/z</a>
-                </h4>
-            </div>
-            <div id="example-4" class="panel-collapse collapse">
-                <div class="panel-body">
-                    <pre>{{ url }}api/adducts/?adducts__pi_ppm=neutral,130,10</pre>
-                </div>
-            </div>
-        </div>
+    <table>
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#examples-accordion" href="#example-5">
-                        Return all negatively charged metabolites that can potentially be putatively ionised within a
-                        20ppm range of 140/mz.</a></h4>
-            </div>
-            <div id="example-5" class="panel-collapse collapse">
-                <div class="panel-body">
-                    <pre>{{ url }}api/adducts/?adducts__pi_ppm=negative,140,20</pre>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <table id="advanced_search_results" class="table table-striped table-responsive display" width="100%">
-        <thead>
-        <tr>
-        </tr>
-        </thead>
-</table>
+    </table>
 
 {% endblock %}
 
 {% block javascript %}
-    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 {% endblock %}

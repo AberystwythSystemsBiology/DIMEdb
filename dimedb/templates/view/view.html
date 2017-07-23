@@ -1,0 +1,213 @@
+{% extends "template.html" %}
+
+{% block title %}Loading{% endblock %}
+
+{% block abovebody %}
+    <div class="jumbotron">
+      <div class="container">
+          <h1 id="name"></h1>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+
+    <div id="loading_divider">
+        <h1><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading Metabolite...</h1>
+    </div>
+    <div id="metabolite_view" style="display:none;">
+        <div class="row">
+            <div class="col-md-8">
+                <h4>Identification Information</h4>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <th width="30%">
+                                    Synonyms:
+                                </th>
+                                <td>
+                                    <span id="synonyms" class="comment more"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Systematic Name:
+                                </th>
+                                <td>
+                                    <span id="systematic_name"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    IUPAC Name:
+                                </th>
+                                <td>
+                                    <span id="iupac_name"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    InChI:
+                                </th>
+                                <td>
+                                    <span id="inchi" class="comment more"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    InChI Key:
+                                </th>
+                                <td>
+                                    <span id="inchi_key"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    SMILES:
+                                </th>
+                                <td>
+                                    <span id="smiles" class="comment more"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    Molecular Formula:
+                                </th>
+                                <td>
+                                    <span id="molecular_formula"></span>
+                                    <span class="btn btn-primary btn-sm pull-right">
+                                        <i class="glyphicon glyphicon-search"></i> Search
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                <h4>
+                    Physiochemical Information
+                    <button class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#physiochemical_modal">
+                        View All Properties
+                    </button>
+                </h4>
+
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <th width="40%">
+                                Molecular Weight:
+                            </th>
+                            <td>
+                                <span id="main_molecular_weight"></span> g/mol
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Hydrogen Bond Donors:
+                            </th>
+                            <td>
+                                <span id="main_hbd"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Hydrogen Bond Acceptors:
+                            </th>
+                            <td>
+                                <span id="main_hba"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                Formal Charge:
+                            </th>
+                            <td>
+                                <span id="main_formal_charge"></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+            </div>
+            <div class="col-md-4">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        2D Molecular Structure <i class="glyphicon glyphicon-eye-open pull-right"></i>
+                    </div>
+                    <div class="panel-body">
+                         <img id="structure" src="" style="display:block; margin:0 auto 0; width:100%;">
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        External Sources <i class="glyphicon glyphicon-link pull-right"></i>
+                    </div>
+                    <ul class="list-group" id="external_sources_list">
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <h4>Adduct Information</h4>
+
+        <div class="input-group">
+            <label for="ionisation_title">Ionisation: </label>
+            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Neutral" checked>Neutral</label>
+            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Positive">Positive</label>
+            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Negative">Negative</label>
+        </div>
+
+
+        <div id="row">
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span id="ionisation_title"></span> Adducts (<span id="len_adducts"></span> available)
+                    </div>
+                    <ul class="list-group" id="adduct_list">
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4">
+                Adduct Chart
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Isotopic Distribution Table : <span id="id_adduct_name"></span>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table table-striped" id="distribution_table" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th width="50%" class="text-center">Mass (m/z)</th>
+                                        <th width="50%" class="text-center">Intensity (%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% include "view/modals/physiochemical_modal.html" %}
+
+{% block javascript %}
+    <script src="{{ url_for('static', filename='bower_components/plotly/plotly.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/view.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/comment.js') }}"></script>
+
+    <script>
+        render_metabolite_view("{{ id }}");
+        $("#loading_divider").fadeOut(10);
+        $("#metabolite_view").fadeIn(500);
+    </script>
+{% endblock %}

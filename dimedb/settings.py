@@ -10,96 +10,94 @@ XML = False
 
 URL_PREFIX = "api"
 
-positive_adduct = {
+identification_information = {
     "schema" : {
-        "type" : "string",
-        "accurate_mass" : "float",
-        "isotopic_distribution" : "list"
+        "Name" : "string",
+        "SMILES" : "string",
+        "Synonyms" : "list",
+        "Systematic Name" : "string",
+        "IUPAC Name" : "string",
+        "InChI" : "string",
+        "Molecular Formula" : "string"
     }
 }
 
-
-negative_adduct = {
+physiochemical_properties = {
     "schema" : {
-        "type" : "string",
-        "accurate_mass" : "float",
-        "isotopic_distribution" : "list"
+        "Secondary Amines" : "float",
+        "Ether Oxygens" : "float",
+        "Heavy Atoms" : "float",
+        "Rings" : "float",
+        "Hydrogen Bond Acceptors" : "float",
+        "Aromatic Rings": "float",
+        "Fraction of SP3 Carbon": "float",
+        "Carboxylic Acids" : "float",
+        "Polar Surface Area" : "float",
+        "Rotatable Bonds": "float",
+        "clogP" : "float",
+        "Hydroxy Groups": "float",
+        "Formal Charge": "float",
+        "Hydrogen Bond Donors" : "float"
     }
 }
 
-neutral_adduct = {
+adduct = {
     "schema" : {
-        "type" : "string",
-        "accurate_mass" : "float",
-        "isotopic_distribution" : "list"
+        "Type" : "string",
+        "Accurate Mass" : "float",
+        "Isotopic Distribution" : "list"
     }
 }
+
+adducts = {
+    "type" : "dict",
+    "schema" : {
+        "Negative" : {
+            "type" : "list",
+            "schema" : adduct
+        },
+        "Neutral" : {
+            "type" : "list",
+            "schema" : adduct
+        },
+        "Positive" : {
+            "type" : "list",
+            "schema" : adduct
+        }
+    }
+}
+
+external_sources = {
+    "schema" : {
+        "ChEBI ID" : "string",
+        "PubChem ID" :"string",
+        "HMDB Accession" : "string",
+        "CAS" :  "string",
+        "Wikidata" : "string",
+        "Chemspider" : "string"
+    }
+}
+
+pathways = {
+    "schema" : {
+        "KEGG" : "list",
+        "SMPDB" : "list"
+    }
+}
+
+taxonomic_properties = {
+
+}
+
+
 
 metabolites = {
-    'resource_methods': ["GET"],
+    "resource_methods": ["GET"],
     "schema" : {
-        "Name" : {
-            "type" : "string"
-        },
-        "Synonyms" : {
-            "type" : "list"
-        },
-        "IUPAC Name" : {
-            "type" : "string"
-        },
-        "Molecular Formula" : {
-            "type" : "string"
-        },
-        "Adducts" : {
-            "type" : "dict",
-            "schema" : {
-                "Negative" : {
-                    "type" : "list",
-                    "schema" : negative_adduct
-                },
-                "Neutral" : {
-                    "type" : "list",
-                    "schema" : neutral_adduct
-                },
-                "Positive" : {
-                    "type" : "list",
-                    "schema" : positive_adduct
-                }
-            }
-        },
-        "Identifiers" : {
-            "type" : "list",
-            "schema" : {
-                "SMILES" : "string",
-                "CAS" : "string",
-                "PubChem-compound" : "string",
-                "KEGG Compound" : "string",
-                "HMDB" : "string",
-                "InChI" : "string",
-                "Wikidata" : "string",
-                "Chemspider" : "string",
-                "ChEBI": "string"
-            }
-        },
-        "Properties" : {
-            "type" : "list",
-            "schema" : {
-                "Secondary Amines" : "float",
-                "Ether Oxygens" : "float",
-                "Heavy Atoms" : "float",
-                "Rings" : "float",
-                "Hydrogen Bond Acceptors" : "float",
-                "Aromatic Rings": "float",
-                "Fraction of SP3 Carbon": "float",
-                "Carboxylic Acids" : "float",
-                "Polar Surface Area" : "float",
-                "Rotatable Bonds": "float",
-                "logP" : "float",
-                "Hydroxy Groups": "float",
-                "Formal Charge": "float",
-                "Hydrogen Bond Donors" : "float"
-            }
-        }
+        "Identification Information" : identification_information,
+        "Physiochemical Properties" : physiochemical_properties,
+        "External Sources" : external_sources,
+        "Adducts" : adducts
     }
 }
 

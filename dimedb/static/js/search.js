@@ -26,7 +26,7 @@ function generate_table(mass, ionisation, api_url, tolerance) {
                 {
                     "title": "Metabolite Name",
                     "width": "40%",
-                    "data": "Name",
+                    "data": "Identification Information.Name",
                     "render": function (data, type, row) {
                         return "<a href='" + getBaseURL() + "view/" + row._id + "' target='_blank'>" + data + "</a>"
                     }
@@ -35,9 +35,9 @@ function generate_table(mass, ionisation, api_url, tolerance) {
                     "title": "Molecular Formula",
                     "width": "10%",
                     "className": "dt-center",
-                    "data": "Molecular Formula",
+                    "data": "Identification Information.Molecular Formula",
                     "render": function (data, type, row) {
-                        return data;
+                        return data.replace(/([0-9]+)/g, '<sub>$1</sub>');
                     }
                 },
                 {
@@ -46,7 +46,7 @@ function generate_table(mass, ionisation, api_url, tolerance) {
                     "className": "dt-center",
                     "width": "10%",
                     "render": function (data, type, row) {
-                        return data[ionisation][0]["accurate_mass"].toFixed(3);
+                        return data[ionisation][0]["Accurate Mass"].toFixed(3);
                     }
                 },
                 {
@@ -55,7 +55,7 @@ function generate_table(mass, ionisation, api_url, tolerance) {
                     "className": "dt-center",
                     "width": "10%",
                     "render": function (data, type, row) {
-                        return data[ionisation][0]["type"];
+                        return data[ionisation][0]["Type"];
                     }
                 },
                 {
@@ -64,7 +64,7 @@ function generate_table(mass, ionisation, api_url, tolerance) {
                     "className": "dt-center",
                     "width": "10%",
                     "render": function (data, type, row) {
-                        return (data[ionisation][0]["accurate_mass"] - mass).toFixed(3);
+                        return (data[ionisation][0]["Accurate Mass"] - mass).toFixed(3);
                     }
                 }
             ],
@@ -93,17 +93,17 @@ function generate_api_url(mass, ionisation) {
 
     var api_url = getBaseURL() + "api/metabolites/?where={";
 
-    api_url += '"Adducts.' + ionisation + '" : {"$elemMatch" : {"type" : {"$in" : ' + generate_adducts() + '},';
+    api_url += '"Adducts.' + ionisation + '" : {"$elemMatch" : {"Type" : {"$in" : ' + generate_adducts() + '},';
 
 
     var lte = parseFloat(mass) + parseFloat(tolerance);
     var gte = parseFloat(mass) - parseFloat(tolerance);
 
 
-    api_url += '"accurate_mass" : {"$lte" : ' + lte + ', "$gte" : ' + gte + '}}}';
+    api_url += '"Accurate Mass" : {"$lte" : ' + lte + ', "$gte" : ' + gte + '}}}';
 
 
-    api_url += '}&projection={"Name" : 1, "Molecular Formula" : 1, "Adducts.' + ionisation + '.$":1}&max_results=1000}';
+    api_url += '}&projection={"Identification Information.Name" : 1, "Identification Information.Molecular Formula" : 1, "Adducts.' + ionisation + '.$":1}&max_results=1000}';
 
     console.log(api_url);
 

@@ -32,6 +32,14 @@ h1, h2, h3, h4, h5, h6 {
     margin: 20px 0;
 }
 
+.footer .text-muted {
+    color:#fff;
+}
+
+.footer a {
+    color:#fff;
+}
+
 .footer {
     z-index: 1000;
     position: absolute;
@@ -39,7 +47,8 @@ h1, h2, h3, h4, h5, h6 {
     width: 100%;
     /* Set the fixed height of the footer here */
     height: 60px;
-    background-color: #f5f5f5;
+    background-color: #2e6da4;
+    color:#fff;
 }
 
 .navbar-inverse {
@@ -69,6 +78,32 @@ h1, h2, h3, h4, h5, h6 {
     height: 100%;
     padding: 8px;
     width: auto;
+}
+
+.jumbotron {
+    background-color: #2e6da4;
+    color:#fff;
+}
+
+#homepage_jumbotron {
+
+}
+
+#homepage_jumbotron img {
+    width:100%;
+    max-width: 600px;
+}
+
+#homepage_jumbotron .btn {
+    width:100%;
+    padding-top:10px;
+    margin-top:10px;
+}
+
+#title_jumbotron {
+    max-height: 250px;
+    padding:10px;
+    margin-bottom: -10px;
 }
 
 #metabolite_view {

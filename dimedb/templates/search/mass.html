@@ -1,10 +1,17 @@
 {% extends "template.html" %}
 
-{% block title %}Advanced Search{% endblock %}
+{% block title %}Mass Search{% endblock %}
+
+{% block abovebody %}
+    <div class="jumbotron">
+      <div class="container">
+          <h1>Mass Search</h1>
+        </div>
+      </div>
+    </div>
+{% endblock %}
 
 {% block body %}
-
-    <h1>Advanced Search</h1>
 
     <div class="row">
 
@@ -16,7 +23,9 @@
                 <div class="panel-body">
                     <div class="form-group">
                         <label for="masses">Precusor Masses (m/z): </label>
-                        <input id="masses" type="text" value="652.60" data-role="tagsinput"/>
+
+
+                        <input id="masses" type="text" value="496.47, 652.60" data-role="tagsinput"/>
                         <p class="small pull-right"> <i class="glyphicon glyphicon-exclamation-sign"></i> Seperate masses using ","</p>
                     </div>
                     <div class="form-group">
@@ -74,8 +83,6 @@
 
     </div>
 
-
-    {% include "modals/search/metabolite_card.html" %}
 
 {% endblock %}
 

@@ -29,13 +29,22 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{{ url_for('homepage')}}"><img src="{{ url_for('static', filename='imgs/dimedb-nav.png')}}"></a>
+            <a class="navbar-brand" href="{{ url_for('homepage')}}"><img src="{{ url_for('static', filename='imgs/dimedb-nav.svg')}}"></a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="{{ url_for('search')}}">
-                    <i class="glyphicon glyphicon-search"></i> Advanced Search
+                <li><a href="{{ url_for('homepage')}}">
+                    <i class="glyphicon glyphicon-home"></i> Home
                 </a></li>
+                <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    <i class="glyphicon glyphicon-search"></i> Search <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="{{ url_for('text_search') }}">Text Search</a></li>
+                  <li><a href="{{ url_for('mass_search')}}">Mass Search</a></li>
+                </ul>
+                </li>
                 <li><a href="{{ url_for('help')}}">
                     <i class="glyphicon glyphicon-question-sign"></i> Help
                 </a></li>
@@ -44,6 +53,9 @@
     </div>
 </nav>
 
+{% block abovebody %}
+
+{% endblock %}
 
 <div class="container">
 {% block body %}
@@ -58,8 +70,6 @@
     </div>
 </footer>
 
-{% include "modals/clipboard.html" %}
-
 </body>
 
 <!-- Javascript Imports -->
@@ -69,8 +79,6 @@
 <script src="{{ url_for('static', filename='bower_components/datatables/media/js/dataTables.bootstrap.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/global.js') }}"></script>
-<script src="{{ url_for('static', filename='js/clipboard.js') }}"></script>
-
 
 {% block javascript %}
 {% endblock %}

@@ -1,0 +1,86 @@
+{% extends "template.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block abovebody %}
+    <div id="homepage_jumbotron" class="jumbotron">
+      <div class="container">
+        <div class="row">
+            <div class="col-md-7">
+                <img src="{{ url_for('static', filename='imgs/dimedb-light.svg')}}">
+                <h3>A database of biologically relevant metabolite structures and annotations</h3>
+                <h4>DIMEdb...</h4>
+            </div>
+            <div class="col-md-5">
+                <a href="{{ url_for('mass_search') }}">
+                    <div class="btn btn-primary btn-lg">
+                        <i class="glyphicon glyphicon-search"></i> Mass Search
+                    </div>
+                </a>
+                <div class="clearfix"></div>
+                <a href="{{ url_for('text_search') }}">
+                    <div class="btn btn-primary btn-lg">
+                        <i class="glyphicon glyphicon-search"></i> Text Search
+                    </div>
+                </a>
+                <div class="clearfix"></div>
+                <div class="btn btn-primary btn-lg">
+                    <i class="glyphicon glyphicon-wrench"></i> DIMEdb Web Service
+                </div>
+                <div class="clearfix"></div>
+                <a href="{{ url_for('help') }}">
+                    <div class="btn btn-primary btn-lg">
+                        <i class="glyphicon glyphicon-question-sign"></i> Help Centre
+                    </div>
+                </a>
+            </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+        <div class="alert alert-danger"><strong><span class="glyphicon glyphicon-warning-sign"></span>
+        Warning!</strong> This service is currently in early beta stages, and thus we cannot
+        guarentee that it is completely error/bug free. Please report any errors/bugs you may encounter to
+        <a href="mailto:keo7@aber.ac.uk">keo7@aber.ac.uk</a>.
+    </div>
+
+    <div class="row">
+        <div class="col-sm-8">
+            <h1>Mass/Text Search</h1>
+            <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+                Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero
+                sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque
+                sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae,
+                ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis
+                tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque
+                id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat.
+                Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
+        </div>
+        <div class="col-sm-4">
+            img
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-4">
+            img
+        </div>
+        <div class="col-sm-8">
+            <h1>Metabolite Information</h1>
+            <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+                Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero
+                sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque
+                sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae,
+                ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis
+                tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque
+                id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat.
+                Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+{% endblock %}
