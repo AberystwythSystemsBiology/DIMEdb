@@ -85,6 +85,34 @@
                     </table>
 
                 <h4>Adduct Information</h4>
+
+                <table class="table table-striped">
+                    <tr>
+                        <th width="30%">
+                            Ionisation:
+                        </th>
+                        <td>
+                            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Neutral" checked>Neutral</label>
+                            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Positive">Positive</label>
+                            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Negative">Negative</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Adduct:
+                        </th>
+                        <td>
+                            <select id="adduct_selector">
+
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+
+                <button class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#isotopic_distribution_modal">
+                    Isotopic Distribution Table
+                </button>
+
             </div>
             <div class="col-sm-4">
 
@@ -124,55 +152,13 @@
                 </div>
             </div>
         </div>
-        <h4>Adduct Information</h4>
-
-        <div class="input-group">
-            <label for="ionisation_title">Ionisation: </label>
-            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Neutral" checked>Neutral</label>
-            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Positive">Positive</label>
-            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Negative">Negative</label>
-        </div>
-
-
-        <div id="row">
-            <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <span id="ionisation_title"></span> Adducts (<span id="len_adducts"></span> available)
-                    </div>
-                    <ul class="list-group" id="adduct_list">
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-4">
-                Adduct Chart
-            </div>
-            <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        Isotopic Distribution Table : <span id="id_adduct_name"></span>
-                    </div>
-                    <div class="panel-body">
-                        <table class="table table-striped" id="distribution_table" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th width="50%" class="text-center">Mass (m/z)</th>
-                                        <th width="50%" class="text-center">Intensity (%)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                    </div>
-                </div>
-            </div>
-        </div>
 
     </div>
 
 {% endblock %}
 
 {% include "view/modals/physiochemical_modal.html" %}
+{% include "view/modals/isotopic_distribution_modal.html" %}
 
 {% block javascript %}
     <script src="{{ url_for('static', filename='bower_components/plotly/plotly.js') }}"></script>

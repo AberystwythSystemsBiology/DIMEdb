@@ -97,28 +97,26 @@ function fill_isotopic_distribution_table(adduct_info) {
 
 function fill_adducts_information(ionisation, adduct_information) {
     $("#ionisation_title").html(ionisation);
-    $("#len_adducts").html(adduct_information.length);
 
+    $("#adduct_selector").empty();
 
-    $("#adduct_list").empty();
     for (var adduct_index in adduct_information) {
         var adduct = adduct_information[adduct_index];
-        var adduct_html = "<li class='list-group-item' id='adduct_select'";
-        adduct_html += "name='"+adduct_index+"'";
-        adduct_html +="><b>";
-        adduct_html += adduct["Type"] +":</b> ";
+        var adduct_html = "<option ";
+        adduct_html += "value='"+adduct_index+"'>";
+        adduct_html += adduct["Type"] +": ";
         adduct_html += adduct["Accurate Mass"].toFixed(3);
-        adduct_html += "</li>";
-        $("#adduct_list").append(adduct_html);
+        adduct_html += "</option>";
+        $("#adduct_selector").append(adduct_html);
     }
 
 
-    console.log(adduct_information);
-
+    /*
     $('#adduct_list').on('click', "#adduct_select", function() {
         var adduct_index = $(this).attr("name");
         fill_isotopic_distribution_table(adduct_information[adduct_index]);
     });
+    */
 }
 
 
