@@ -24,9 +24,11 @@
                     </div>
                 </a>
                 <div class="clearfix"></div>
+                <a href="{{ url_for('help') }}#api">
                 <div class="btn btn-primary btn-lg">
                     <i class="glyphicon glyphicon-wrench"></i> DIMEdb Web Service
                 </div>
+                </a>
                 <div class="clearfix"></div>
                 <a href="{{ url_for('help') }}">
                     <div class="btn btn-primary btn-lg">
@@ -42,7 +44,7 @@
 {% block body %}
         <div class="alert alert-danger"><strong><span class="glyphicon glyphicon-warning-sign"></span>
         Warning!</strong> This service is currently in early beta stages, and thus we cannot
-        guarentee that it is completely error/bug free. Please report any errors/bugs you may encounter to
+        guarantee that it is completely error/bug free. Please report any problems or inaccuracies you encounter to
         <a href="mailto:keo7@aber.ac.uk">keo7@aber.ac.uk</a>.
     </div>
 
@@ -50,8 +52,8 @@
         <div class="row">
             <div class="col-sm-4">
                 <h1><i class="glyphicon glyphicon-search"></i></h1>
-                <h2>Metabolite Search</h2>
-
+                <h2>Web Search</h2>
+                <p>DIMEdb features both textual and mass metabolite search facilities.</p>
             </div>
             <div class="col-sm-4">
                 <h1><i class="glyphicon glyphicon-wrench"></i></h1>
@@ -62,6 +64,7 @@
             <div class="col-sm-4">
                 <h1><i class="glyphicon glyphicon-tree-deciduous"></i></h1>
                 <h2>Open Source</h2>
+                <p>DIMEdb is a open source project, all contributions are welcome!</p>
             </div>
     </div>
     </div>

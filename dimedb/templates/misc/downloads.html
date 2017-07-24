@@ -1,0 +1,33 @@
+{% extends "template.html" %}
+
+{% block title %}Downloads Centre{% endblock %}
+
+{% block abovebody %}
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Downloads Centre</h1>
+      </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+
+    <table class="table table-striped">
+        <tr>
+            <th width="70%">File Name</th>
+            <th width="30">File Size</th>
+        </tr>
+        {% for f in files %}
+            <tr>
+                <td><a href="{{ url_for('get_file', fn=f[0]) }}">
+                    {{ f[0] }}</a></td>
+                <td>{{ f[1] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+
+
+
+
+{% endblock %}

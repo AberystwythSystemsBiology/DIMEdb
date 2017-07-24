@@ -4,10 +4,10 @@
 
 {% block abovebody %}
     <div class="jumbotron">
-      <div class="container">
-          <h1 id="name"></h1>
+        <div class="container">
+            <h1 id="name"></h1>
         </div>
-      </div>
+    </div>
     </div>
 {% endblock %}
 
@@ -20,69 +20,69 @@
         <div class="row">
             <div class="col-sm-8">
                 <h4>Identification Information</h4>
-                    <table class="table table-striped">
-                        <tbody>
-                            <tr>
-                                <th width="30%">
-                                    Synonyms:
-                                </th>
-                                <td>
-                                    <span id="synonyms" class="comment more"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>
-                                    Systematic Name:
-                                </th>
-                                <td>
-                                    <span id="systematic_name"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>
-                                    IUPAC Name:
-                                </th>
-                                <td>
-                                    <span id="iupac_name"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>
-                                    InChI:
-                                </th>
-                                <td>
-                                    <span id="inchi" class="comment more"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>
-                                    InChI Key:
-                                </th>
-                                <td>
-                                    <span id="inchi_key"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>
-                                    SMILES:
-                                </th>
-                                <td>
-                                    <span id="smiles" class="comment more"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>
-                                    Molecular Formula:
-                                </th>
-                                <td>
-                                    <span id="molecular_formula"></span>
-                                    <span id="formula_search_button" class="btn btn-primary btn-sm pull-right">
+                <table class="table table-striped">
+                    <tbody>
+                    <tr>
+                        <th width="30%">
+                            Synonyms:
+                        </th>
+                        <td>
+                            <span id="synonyms" class="comment more"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Systematic Name:
+                        </th>
+                        <td>
+                            <span id="systematic_name"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            IUPAC Name:
+                        </th>
+                        <td>
+                            <span id="iupac_name"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            InChI:
+                        </th>
+                        <td>
+                            <span id="inchi" class="comment more"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            InChI Key:
+                        </th>
+                        <td>
+                            <span id="inchi_key"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            SMILES:
+                        </th>
+                        <td>
+                            <span id="smiles" class="comment more"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Molecular Formula:
+                        </th>
+                        <td>
+                            <span id="molecular_formula"></span>
+                            <span id="formula_search_button" class="btn btn-primary btn-sm pull-right">
                                         <i class="glyphicon glyphicon-search"></i> Search
                                     </span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
 
                 <hr>
 
@@ -94,9 +94,12 @@
                             Ionisation:
                         </th>
                         <td>
-                            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Neutral" checked> Neutral</label>
-                            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Positive"> Positive</label>
-                            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Negative"> Negative</label>
+                            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Neutral"
+                                                                  checked> Neutral</label>
+                            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Positive">
+                                Positive</label>
+                            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Negative">
+                                Negative</label>
                         </td>
                     </tr>
                     <tr>
@@ -112,10 +115,30 @@
                 <div class="isotopic_distribution_chart">
                     <canvas id="myChart"></canvas>
                 </div>
-                <div class="clearfix"></div>
 
-                <div class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#isotopic_distribution_modal">
-                    Isotopic Distribution Table
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Isotopic Distribution Table
+                        <a data-toggle="collapse" href="#dist_table">
+                            <div class="pull-right">
+                                <i class="glyphicon glyphicon-chevron-down"></i>
+                            </div>
+                        </a>
+                    </div>
+                    <div id="dist_table" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <table class="table table-striped" id="distribution_table" width="100%">
+                                <thead>
+                                <tr>
+                                    <th width="50%" class="text-center">Mass-to-ion(m/z)</th>
+                                    <th width="50%" class="text-center">Relative Intensity (%)</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="clearfix"></div>
@@ -130,7 +153,8 @@
                             KEGG:
                         </th>
                         <td>
-                            <span id="kegg_pcount"></span> Available <div class="btn btn-sm btn-primary pull-right">View</div>
+                            <span id="kegg_pcount"></span> Available
+                            <div class="btn btn-sm btn-primary pull-right">View</div>
                         </td>
                     </tr>
                     <tr>
@@ -138,7 +162,8 @@
                             SMPDB:
                         </th>
                         <td>
-                            <span id="smpdb_pcount"></span> Available <div class="btn btn-sm btn-primary pull-right">View</div>
+                            <span id="smpdb_pcount"></span> Available
+                            <div class="btn btn-sm btn-primary pull-right">View</div>
                         </td>
                     </tr>
                 </table>
@@ -151,7 +176,7 @@
                         2D Molecular Structure <i class="glyphicon glyphicon-eye-open pull-right"></i>
                     </div>
                     <div class="panel-body">
-                         <img id="structure" src="" style="display:block; margin:0 auto 0; width:100%;">
+                        <img id="structure" src="" style="display:block; margin:0 auto 0; width:100%;">
                     </div>
                 </div>
 
@@ -168,13 +193,15 @@
                         Physiochemical Information
                     </div>
                     <ul class="list-group">
-                        <li class="list-group-item">Molecular Weight: <span id="main_molecular_weight"></span> g/mol</li>
-                        <li class="list-group-item">Hydrogen Bond Acceptors: <span id="main_hba"></span> </li>
+                        <li class="list-group-item">Molecular Weight: <span id="main_molecular_weight"></span> g/mol
+                        </li>
+                        <li class="list-group-item">Hydrogen Bond Acceptors: <span id="main_hba"></span></li>
                         <li class="list-group-item">Hydrogen Bond Donors: <span id="main_hbd"></span></li>
                         <li class="list-group-item">Formal Charge: <span id="main_formal_charge"></span></li>
                     </ul>
                     <div class="panel-footer">
-                        <button class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#physiochemical_modal">
+                        <button class="btn btn-primary btn-sm pull-right" data-toggle="modal"
+                                data-target="#physiochemical_modal">
                             View All Properties
                         </button>
                         <div class="clearfix"></div>
@@ -188,7 +215,6 @@
 {% endblock %}
 
 {% include "view/modals/physiochemical_modal.html" %}
-{% include "view/modals/isotopic_distribution_modal.html" %}
 {% include "view/modals/formula_search_modal.html" %}
 
 {% block javascript %}

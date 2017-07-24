@@ -1,8 +1,8 @@
 from eve import Eve
 
-from flask import render_template, abort, request, jsonify, url_for, request
-
-import urllib, json
+from flask import render_template, abort, request, send_from_directory
+from hurry.filesize import size, si
+import urllib, json, os
 
 app = Eve(__name__)
 app.config.update(
@@ -26,6 +26,17 @@ def text_search():
 @app.route("/help/")
 def help():
     return render_template("help.html", url = request.url_root)
+
+@app.route("/help/downloads")
+def downloads_centre():
+    d = os.path.expanduser("~/.data/dimedb/downloads/")
+    files = [[f, size(os.stat(d+f).st_size, system=si), os.stat(d+f).st_ctime] for f in os.listdir(d)]
+    return render_template("misc/downloads.html", url = request.url_root, files = files)
+
+@app.route("/help/downloads/<string:fn>")
+def get_file(fn):
+    d = os.path.expanduser("~/.data/dimedb/downloads/")
+    return send_from_directory(d, fn)
 
 @app.route("/view/<string:_id>/")
 def view(_id):
