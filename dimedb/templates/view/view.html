@@ -84,50 +84,7 @@
                         </tbody>
                     </table>
 
-                <h4>
-                    Physiochemical Information
-                    <button class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#physiochemical_modal">
-                        View All Properties
-                    </button>
-                </h4>
-
-                <table class="table table-striped">
-                    <tbody>
-                        <tr>
-                            <th width="40%">
-                                Molecular Weight:
-                            </th>
-                            <td>
-                                <span id="main_molecular_weight"></span> g/mol
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                Hydrogen Bond Donors:
-                            </th>
-                            <td>
-                                <span id="main_hbd"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                Hydrogen Bond Acceptors:
-                            </th>
-                            <td>
-                                <span id="main_hba"></span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                Formal Charge:
-                            </th>
-                            <td>
-                                <span id="main_formal_charge"></span>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-
+                <h4>Adduct Information</h4>
             </div>
             <div class="col-sm-4">
 
@@ -146,6 +103,24 @@
                     </div>
                     <ul class="list-group" id="external_sources_list">
                     </ul>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Physiochemical Information
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item">Molecular Weight: <span id="main_molecular_weight"></span> g/mol</li>
+                        <li class="list-group-item">Hydrogen Bond Acceptors: <span id="main_hba"></span> </li>
+                        <li class="list-group-item">Hydrogen Bond Donors: <span id="main_hbd"></span></li>
+                        <li class="list-group-item">Formal Charge: <span id="main_formal_charge"></span></li>
+                    </ul>
+                    <div class="panel-footer">
+                        <button class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#physiochemical_modal">
+                            View All Properties
+                        </button>
+                        <div class="clearfix"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -188,7 +163,6 @@
                                 <tbody>
                                 </tbody>
                             </table>
-
                     </div>
                 </div>
             </div>

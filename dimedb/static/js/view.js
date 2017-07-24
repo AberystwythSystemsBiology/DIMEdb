@@ -6,7 +6,7 @@ function array_to_text(a) {
             }
         }
         else {
-            var text = "N/A";
+            var text = "<i>Not available.</i>";
         }
         return text
 }
@@ -16,7 +16,7 @@ function text_to_none(t) {
         return t
     }
     else {
-        return "N/A"
+        return "<i>Not available.</i>"
     }
 }
 
