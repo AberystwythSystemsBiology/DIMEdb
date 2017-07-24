@@ -275,7 +275,7 @@ def process_compound(inchikey):
 if __name__ == "__main__":
     db = []
 
-    test_keys = combined.keys()[:10]
+    test_keys = combined.keys()[:1000]
 
     for inchikey in test_keys:
         dimedb_compound = process_compound(inchikey)

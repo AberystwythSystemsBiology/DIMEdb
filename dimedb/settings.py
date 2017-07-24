@@ -97,7 +97,8 @@ metabolites = {
         "Identification Information" : identification_information,
         "Physiochemical Properties" : physiochemical_properties,
         "External Sources" : external_sources,
-        "Adducts" : adducts
+        "Adducts" : adducts,
+        "Pathways" : pathways
     }
 }
 
