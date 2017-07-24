@@ -107,7 +107,7 @@ function chart_distribution(distribution_array) {
         intensities.append(distribution_array[i][0]);
     }
 
-    
+
 }
 
 function fill_adducts_information(ionisation, adduct_information) {
