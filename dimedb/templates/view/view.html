@@ -94,9 +94,9 @@
                             Ionisation:
                         </th>
                         <td>
-                            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Neutral" checked>Neutral</label>
-                            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Positive">Positive</label>
-                            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Negative">Negative</label>
+                            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Neutral" checked> Neutral</label>
+                            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Positive"> Positive</label>
+                            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Negative"> Negative</label>
                         </td>
                     </tr>
                     <tr>
@@ -104,9 +104,7 @@
                             Adduct:
                         </th>
                         <td>
-                            <select id="adduct_selector">
-
-                            </select>
+                            <select id="adduct_selector"></select>
                         </td>
                     </tr>
                 </table>
@@ -118,6 +116,25 @@
                 <hr>
 
                 <h4>Pathways</h4>
+
+                <table class="table table-striped">
+                    <tr>
+                        <th width="30%">
+                            KEGG:
+                        </th>
+                        <td>
+                            <span id="kegg_pcount"></span> Available <div class="btn btn-sm btn-primary pull-right">View</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="30%">
+                            SMPDB:
+                        </th>
+                        <td>
+                            <span id="smpdb_pcount"></span> Available <div class="btn btn-sm btn-primary pull-right">View</div>
+                        </td>
+                    </tr>
+                </table>
 
             </div>
             <div class="col-sm-4">

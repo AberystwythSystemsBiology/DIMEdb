@@ -33,8 +33,10 @@ def identification_info(inchikey):
     id_info["SMILES"] = pybel.readstring("inchi", id_info["InChI"]).write("smi").rstrip()
 
     rdkit_mol = MolFromSmiles(id_info["SMILES"])
-
-    id_info["Molecular Formula"] = rdMolDescriptors.CalcMolFormula(rdkit_mol)
+    try:
+        id_info["Molecular Formula"] = rdMolDescriptors.CalcMolFormula(rdkit_mol)
+    except Exception:
+        print "Exception caught"
 
     if combined[inchikey]["HMDB Accession"] != None:
         id_info["Name"] = hmdb[inchikey]["Name"]
@@ -106,8 +108,10 @@ def generate_pathways(inchikey, sources):
 
     if sources["KEGG Compound"] != None:
         try:
-            kegg_dict = KEGGParser().parse(KEGG().get(sources["KEGG Compound"]))
-            pathways["KEGG"] = kegg_dict["PATHWAY"].keys()
+            kegg = KEGG().get(sources["KEGG Compound"])
+            if kegg != 404:
+                kegg_dict = KEGGParser().parse(kegg)
+                pathways["KEGG"] = kegg_dict["PATHWAY"].keys()
         except KeyError, AttributeError:
             pass
     return pathways
@@ -254,32 +258,39 @@ def adduct_information(smiles, properties):
 
 def process_compound(inchikey):
     id_info, rdkit_mol = identification_info(inchikey)
-    p_properties = physiochemical(rdkit_mol)
-    t_properties = taxonomic_properties(inchikey)
-    sources = generate_sources(inchikey)
-    pathway_info = generate_pathways(inchikey, sources)
-    adducts = adduct_information(id_info["SMILES"], p_properties)
 
-    dimedb_compound = [
-        ["_id", inchikey],
-        ["Identification Information", id_info],
-        ["Physiochemical Properties", p_properties],
-        ["Taxonomic Properties", t_properties],
-        ["External Sources", sources],
-        ["Pathways", pathway_info],
-        ["Adducts", adducts]
-    ]
+    if id_info["Molecular Formula"] != None:
+        p_properties = physiochemical(rdkit_mol)
+        t_properties = taxonomic_properties(inchikey)
+        sources = generate_sources(inchikey)
+        pathway_info = generate_pathways(inchikey, sources)
+        adducts = adduct_information(id_info["SMILES"], p_properties)
 
-    return collections.OrderedDict(dimedb_compound)
+        dimedb_compound = [
+            ["_id", inchikey],
+            ["Identification Information", id_info],
+            ["Physiochemical Properties", p_properties],
+            ["Taxonomic Properties", t_properties],
+            ["External Sources", sources],
+            ["Pathways", pathway_info],
+            ["Adducts", adducts]
+        ]
+
+        return collections.OrderedDict(dimedb_compound)
+
+    else:
+        return None
 
 if __name__ == "__main__":
     db = []
 
-    test_keys = combined.keys()[:1000]
+    test_keys = combined.keys()[:100]
 
-    for inchikey in test_keys:
+    for index, inchikey in enumerate(test_keys):
+        print index, "/", len(test_keys)
         dimedb_compound = process_compound(inchikey)
-        db.extend([dimedb_compound])
+        if dimedb_compound != None:
+            db.extend([dimedb_compound])
 
     mongodb_file = json.loads(bson_dumps(db), object_pairs_hook=collections.OrderedDict)
 

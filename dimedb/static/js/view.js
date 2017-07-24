@@ -60,7 +60,11 @@ function fill_physiochemical_properties(physiochemical_properties) {
 function fill_external_sources(sources) {
     var url_hash = {
         "HMDB Accession" : "http://www.hmdb.ca/metabolites/",
-        "PubChem ID" : "https://pubchem.ncbi.nlm.nih.gov/compound/"
+        "PubChem ID" : "https://pubchem.ncbi.nlm.nih.gov/compound/",
+        "CAS" : "http://www.molbase.com/en/cas-",
+        "KEGG Compound" : "http://www.genome.jp/dbget-bin/www_bget?",
+        "Wikidata" : "https://www.wikidata.org/wiki/",
+        "Chemspider" : "http://www.chemspider.com/Chemical-Structure."
     };
 
     for (var source in sources) {
@@ -93,6 +97,17 @@ function fill_isotopic_distribution_table(adduct_info) {
         $("#distribution_table").append("<tr><td class='text-center'>"+distribution[0].toFixed(3)+"</td><td class='text-center'>"+distribution[1].toFixed(2)+"</td></tr>")
     }
 
+}
+
+function chart_distribution(distribution_array) {
+    var masses = [];
+    var intensities = [];
+    for (i in distribution_array) {
+        masses.append(distribution_array[i][0]);
+        intensities.append(distribution_array[i][0]);
+    }
+
+    
 }
 
 function fill_adducts_information(ionisation, adduct_information) {
@@ -155,6 +170,12 @@ function generate_chemical_formula_search_table(api_url) {
         });
 }
 
+function fill_pathway_data(pathways) {
+    $("#kegg_pcount").html(pathways["KEGG"].length);
+    $("#smpdb_pcount").html(pathways["SMPDB"].length);
+
+}
+
 function render_metabolite_view(metabolite_id) {
     var metabolite = get_metabolite(metabolite_id);
     fill_identification_infomation(metabolite["Identification Information"], metabolite_id);
@@ -164,6 +185,9 @@ function render_metabolite_view(metabolite_id) {
 
     fill_adducts_information("Neutral", metabolite["Adducts"]["Neutral"]);
     fill_isotopic_distribution_table(metabolite["Adducts"]["Neutral"][0]);
+
+    fill_pathway_data(metabolite["Pathways"]);
+
     $("input[type=radio][name=ionisation]").change(function () {
         fill_adducts_information(this.value, metabolite["Adducts"][this.value]);
     });
@@ -172,6 +196,7 @@ function render_metabolite_view(metabolite_id) {
         var adduct_index = this.value;
         var ionisation = $("input[name=ionisation]:checked").val();
         fill_isotopic_distribution_table(metabolite["Adducts"][ionisation][adduct_index]);
+        chart_distribution(metabolite["Adducts"][ionisation][adduct_index]["Isotopic Distribution"]);
     });
 
     $("#formula_search_button").click(function () {
