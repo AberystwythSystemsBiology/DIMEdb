@@ -100,13 +100,51 @@ function fill_isotopic_distribution_table(adduct_info) {
 }
 
 function chart_distribution(distribution_array) {
+    console.log(distribution_array);
     var masses = [];
     var intensities = [];
     for (i in distribution_array) {
-        masses.append(distribution_array[i][0]);
-        intensities.append(distribution_array[i][0]);
+        masses.push(distribution_array[i][0]);
+        intensities.push(distribution_array[i][1]);
     }
 
+    console.log(masses);
+    console.log(intensities);
+
+    var ctx = $("#myChart");
+
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels : masses,
+            datasets : [{
+                data : intensities
+            }]
+        },
+        options: {
+            responsive : true,
+            maintainAspectRatio: false,
+            legend : {
+                display : false
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Mass-to-ion (m/z)"
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: "Relative Intensity (%)"
+                    }
+                }]
+            }
+        }
+    });
 
 }
 
@@ -185,7 +223,7 @@ function render_metabolite_view(metabolite_id) {
 
     fill_adducts_information("Neutral", metabolite["Adducts"]["Neutral"]);
     fill_isotopic_distribution_table(metabolite["Adducts"]["Neutral"][0]);
-
+    chart_distribution(metabolite["Adducts"]["Neutral"][0]["Isotopic Distribution"]);
     fill_pathway_data(metabolite["Pathways"]);
 
     $("input[type=radio][name=ionisation]").change(function () {

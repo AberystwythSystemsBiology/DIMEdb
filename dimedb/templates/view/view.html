@@ -108,9 +108,16 @@
                         </td>
                     </tr>
                 </table>
-                <button class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#isotopic_distribution_modal">
+
+                <div class="isotopic_distribution_chart">
+                    <canvas id="myChart"></canvas>
+                </div>
+                <div class="clearfix"></div>
+
+                <div class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#isotopic_distribution_modal">
                     Isotopic Distribution Table
-                </button>
+                </div>
+
                 <div class="clearfix"></div>
 
                 <hr>
@@ -185,7 +192,7 @@
 {% include "view/modals/formula_search_modal.html" %}
 
 {% block javascript %}
-    <script src="{{ url_for('static', filename='bower_components/plotly/plotly.js') }}"></script>
+    <script src="{{ url_for('static', filename='bower_components/chartjs/dist/Chart.bundle.js') }}"></script>
     <script src="{{ url_for('static', filename='js/view.js') }}"></script>
     <script src="{{ url_for('static', filename='js/comment.js') }}"></script>
 
