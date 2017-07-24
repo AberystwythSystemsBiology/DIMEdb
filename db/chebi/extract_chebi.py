@@ -1,4 +1,4 @@
-import openbabel, csv, json, collections, os
+import openbabel, csv, json, collections, os, gzip
 from tqdm import tqdm
 
 def inchi_to_inchikey(inchi):
@@ -31,7 +31,7 @@ def read_inchi_tsv(file_name):
 
 def read_inich_names(file_name):
     names = collections.defaultdict(list)
-    with open(file_name) as chebi_inchi_file:
+    with gzip.open(file_name) as chebi_inchi_file:
         tsv_reader = csv.reader(chebi_inchi_file, delimiter="\t")
         next(tsv_reader)  # SKIP HEADER
         for row in tqdm(tsv_reader):
@@ -58,7 +58,7 @@ if __name__ == "__main__":
         with open(directory+"chebi/chebi_names.json", "rb") as name_file:
             names = json.load(name_file)
     else:
-        names = read_inich_names(directory+"chebi/names.tsv")
+        names = read_inich_names(directory+"chebi/names.tsv.gz")
         with open(directory+"chebi/chebi_names.json", "wb") as outfile:
             json.dump(names, outfile, indent=4)
 

@@ -1,4 +1,4 @@
-import os, xmltodict, json
+import os, xmltodict, json, gzip
 
 def get_data(compound):
     cpd = xmltodict.parse(compound)["PC-Compound"]
@@ -6,9 +6,6 @@ def get_data(compound):
     id = cpd["PC-Compound_id"]["PC-CompoundType"]["PC-CompoundType_id"]["PC-CompoundType_id_cid"]
 
     cpd_properties = cpd["PC-Compound_props"]["PC-InfoData"]
-
-    print json.dumps(cpd_properties, indent=4)
-    exit(0)
 
     for p in cpd_properties:
         check = p["PC-InfoData_urn"]["PC-Urn"]
@@ -45,7 +42,7 @@ if __name__ == "__main__":
     keep_going = False
 
     for file in os.listdir(directory+"pubchem/"):
-        hmdb_xml = open(directory+"pubchem/"+file , "r")
+        hmdb_xml = gzip.open(directory+"pubchem/"+file , "rb")
 
         for line in hmdb_xml:
             if line.strip() == "<PC-Compound>":
