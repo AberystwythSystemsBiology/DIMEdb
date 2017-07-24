@@ -76,7 +76,7 @@
                                 </th>
                                 <td>
                                     <span id="molecular_formula"></span>
-                                    <span class="btn btn-primary btn-sm pull-right">
+                                    <span id="formula_search_button" class="btn btn-primary btn-sm pull-right">
                                         <i class="glyphicon glyphicon-search"></i> Search
                                     </span>
                                 </td>
@@ -159,6 +159,7 @@
 
 {% include "view/modals/physiochemical_modal.html" %}
 {% include "view/modals/isotopic_distribution_modal.html" %}
+{% include "view/modals/formula_search_modal.html" %}
 
 {% block javascript %}
     <script src="{{ url_for('static', filename='bower_components/plotly/plotly.js') }}"></script>

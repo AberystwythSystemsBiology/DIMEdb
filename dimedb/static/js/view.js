@@ -105,20 +105,55 @@ function fill_adducts_information(ionisation, adduct_information) {
         var adduct_html = "<option ";
         adduct_html += "value='"+adduct_index+"'>";
         adduct_html += adduct["Type"] +": ";
-        adduct_html += adduct["Accurate Mass"].toFixed(3);
+        adduct_html += adduct["Accurate Mass"].toFixed(3) + " m/z";
         adduct_html += "</option>";
         $("#adduct_selector").append(adduct_html);
     }
 
 
-    /*
-    $('#adduct_list').on('click', "#adduct_select", function() {
-        var adduct_index = $(this).attr("name");
-        fill_isotopic_distribution_table(adduct_information[adduct_index]);
-    });
-    */
 }
 
+
+function generate_chemical_formula_search_table(api_url) {
+    $('#molecular_search_table').DataTable({
+            "destroy": true,
+            "searching": false,
+            "lengthChange": false,
+            "pageLength": 5,
+            "ajax": {
+                "url": encodeURI(api_url),
+                "dataSrc": "_items"
+            },
+            "columns": [
+                {
+                    "title": "Metabolite Name",
+                    "width": "40%",
+                    "data": "Identification Information.Name",
+                    "render": function (data, type, row) {
+                        return "<a href='" + getBaseURL() + "view/" + row._id + "' target='_blank'>" + data + "</a>"
+                    }
+                },
+                {
+                    "title": "Molecular Formula",
+                    "width": "10%",
+                    "className": "dt-center",
+                    "data": "Identification Information.Molecular Formula",
+                    "render": function (data, type, row) {
+                        return data.replace(/([0-9]+)/g, '<sub>$1</sub>');
+                    }
+                },
+                {
+                    "title": "Molecular Weight (g/mol)",
+                    "data": "Physiochemical Properties",
+                    "className": "dt-center",
+                    "width": "10%",
+                    "render": function (data, type, row) {
+                        return data["Molecular Weight"].toFixed(3);
+                    }
+                }
+            ],
+        });
+}
 
 function render_metabolite_view(metabolite_id) {
     var metabolite = get_metabolite(metabolite_id);
@@ -130,11 +165,27 @@ function render_metabolite_view(metabolite_id) {
     fill_adducts_information("Neutral", metabolite["Adducts"]["Neutral"]);
     fill_isotopic_distribution_table(metabolite["Adducts"]["Neutral"][0]);
     $("input[type=radio][name=ionisation]").change(function () {
-        fill_adducts_information(this.value, metabolite["Adducts"][this.value])
+        fill_adducts_information(this.value, metabolite["Adducts"][this.value]);
+    });
+
+    $("#adduct_selector").on("change", function () {
+        var adduct_index = this.value;
+        var ionisation = $("input[name=ionisation]:checked").val();
+        fill_isotopic_distribution_table(metabolite["Adducts"][ionisation][adduct_index]);
+    });
+
+    $("#formula_search_button").click(function () {
+        var api_url = getBaseURL() + "api/metabolites/?where={";
+        api_url += '"Identification Information.Molecular Formula" : "';
+        api_url += metabolite["Identification Information"]["Molecular Formula"] + '"}';
+        api_url += '&projection={"Identification Information.Name" : 1, ';
+        api_url += '"Identification Information.Molecular Formula" : 1, "Physiochemical Properties.Molecular Weight" : 1}&max_results=1000}';
+        generate_chemical_formula_search_table(api_url);
+        $('#formula_search_modal').modal('toggle');
     });
 
 
-
 }
+
 
 
