@@ -86,7 +86,15 @@ pathways = {
 }
 
 taxonomic_properties = {
-
+    "schema" : {
+        "HMDB" : {
+            "schema" : {
+                "Origins" : "list",
+                "Tissue Locations" : "list",
+                "Biofluid Locations" : "list"
+            }
+        }
+    }
 }
 
 
@@ -98,7 +106,8 @@ metabolites = {
         "Physiochemical Properties" : physiochemical_properties,
         "External Sources" : external_sources,
         "Adducts" : adducts,
-        "Pathways" : pathways
+        "Pathways" : pathways,
+        "Taxonomic Properties" : taxonomic_properties
     }
 }
 

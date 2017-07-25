@@ -80,12 +80,8 @@ function fill_external_sources(sources) {
 }
 
 function supply_image(metabolite_id) {
-    $.ajax({
-        url: getBaseURL() + "gen_structure/" + metabolite_id,
-        success: function (result) {
-            $("#structure").attr("src", "data:image/png;base64," + result);
-        }
-    });
+    $("#structure").attr("src", getBaseURL()+"view/structure/"+metabolite_id);
+
 }
 
 
@@ -226,8 +222,16 @@ function fill_pathway_data(pathways) {
             $("#keggpathway_ul").append(pathway_html);
         }
     }
+}
+
+function fill_tproperties_information(properties) {
+    /// HMDB
+    $("#hmdb_origins").html(array_to_text(properties["HMDB"]["Origins"]));
+    $("#hmdb_bioloc").html(array_to_text(properties["HMDB"]["Biofluid Locations"]));
+    $("#hmdb_tisloc").html(array_to_text(properties["HMDB"]["Tissue Locations"]));
 
 }
+
 
 function render_metabolite_view(metabolite_id) {
     var metabolite = get_metabolite(metabolite_id);
@@ -240,6 +244,7 @@ function render_metabolite_view(metabolite_id) {
     fill_isotopic_distribution_table(metabolite["Adducts"]["Neutral"][0]);
     chart_distribution(metabolite["Adducts"]["Neutral"][0]["Isotopic Distribution"]);
     fill_pathway_data(metabolite["Pathways"]);
+    fill_tproperties_information(metabolite["Taxonomic Properties"]);
 
     $("input[type=radio][name=ionisation]").change(function () {
         fill_adducts_information(this.value, metabolite["Adducts"][this.value]);

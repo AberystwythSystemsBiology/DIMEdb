@@ -42,25 +42,11 @@ def get_file(fn):
 def view(_id):
         return render_template("view/view.html" , id=_id)
 
+@app.route("/view/structure/<string:id>")
+def get_structures_image(id):
+    d = os.path.expanduser("~/.data/dimedb/structures/")
+    return send_from_directory(d, id+".svg")
 
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("./misc/404.html"), 404
-
-# Temporary until I find a better solution.
-@app.route("/gen_structure/<string:_id>/")
-def smiles_to_2d(_id):
-    metabolite = app.data.driver.db['metabolites'].find_one({'_id': _id})
-
-    if metabolite:
-        from rdkit import Chem
-        from rdkit.Chem import Draw
-        import StringIO
-        smiles = metabolite["Identification Information"]["SMILES"]
-        smiles_image = StringIO.StringIO()
-        mol = Chem.MolFromSmiles(smiles)
-        Draw.MolToFile(mol, fileName=smiles_image, imageType="png", size=(300, 300))
-        return smiles_image.getvalue().encode("base64")
-    else:
-        abort(404)
-

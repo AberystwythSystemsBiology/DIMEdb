@@ -279,3 +279,27 @@ a.morelink {
 #isotopic_distribution_chart {
     display:inline-block;
 }
+
+p.tquote {
+    font-style: italic;
+    text-align: left;
+}
+
+p.tname {
+    font-weight: bold;
+    text-align: right;
+    margin:0px;
+}
+
+p.taffiliation {
+    font-weight: lighter;
+    text-align: right;
+    padding:0px;
+    font-size: 0.8em;
+}
+
+img.tpicture{
+    max-width: 200px;
+    max-height:200px;
+    padding-right:10px;
+}

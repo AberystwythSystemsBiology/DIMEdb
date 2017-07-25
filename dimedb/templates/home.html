@@ -4,45 +4,45 @@
 
 {% block abovebody %}
     <div id="homepage_jumbotron" class="jumbotron">
-      <div class="container">
-        <div class="row">
-            <div class="col-sm-7">
-                <img src="{{ url_for('static', filename='imgs/dimedb-light.svg')}}">
-                <h3>A database of biologically relevant metabolite structures and annotations</h3>
-                <h4>DIMEdb...</h4>
-            </div>
-            <div class="col-sm-5">
-                <a href="{{ url_for('mass_search') }}">
-                    <div class="btn btn-primary btn-lg">
-                        <i class="glyphicon glyphicon-search"></i> Mass Search
-                    </div>
-                </a>
-                <div class="clearfix"></div>
-                <a href="{{ url_for('text_search') }}">
-                    <div class="btn btn-primary btn-lg">
-                        <i class="glyphicon glyphicon-search"></i> Text Search
-                    </div>
-                </a>
-                <div class="clearfix"></div>
-                <a href="{{ url_for('help') }}#api">
-                <div class="btn btn-primary btn-lg">
-                    <i class="glyphicon glyphicon-wrench"></i> DIMEdb Web Service
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-7">
+                    <img src="{{ url_for('static', filename='imgs/dimedb-light.svg') }}">
+                    <h3>A database of biologically relevant metabolite structures and annotations</h3>
+                    <h4>DIMEdb...</h4>
                 </div>
-                </a>
-                <div class="clearfix"></div>
-                <a href="{{ url_for('help') }}">
-                    <div class="btn btn-primary btn-lg">
-                        <i class="glyphicon glyphicon-question-sign"></i> Help Centre
-                    </div>
-                </a>
+                <div class="col-sm-5">
+                    <a href="{{ url_for('mass_search') }}">
+                        <div class="btn btn-primary btn-lg">
+                            <i class="glyphicon glyphicon-search"></i> Mass Search
+                        </div>
+                    </a>
+                    <div class="clearfix"></div>
+                    <a href="{{ url_for('text_search') }}">
+                        <div class="btn btn-primary btn-lg">
+                            <i class="glyphicon glyphicon-search"></i> Text Search
+                        </div>
+                    </a>
+                    <div class="clearfix"></div>
+                    <a href="{{ url_for('help') }}#api">
+                        <div class="btn btn-primary btn-lg">
+                            <i class="glyphicon glyphicon-wrench"></i> DIMEdb Web Service
+                        </div>
+                    </a>
+                    <div class="clearfix"></div>
+                    <a href="{{ url_for('help') }}">
+                        <div class="btn btn-primary btn-lg">
+                            <i class="glyphicon glyphicon-question-sign"></i> Help Centre
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
-      </div>
     </div>
 {% endblock %}
 
 {% block body %}
-        <div class="alert alert-danger"><strong><span class="glyphicon glyphicon-warning-sign"></span>
+    <div class="alert alert-danger"><strong><span class="glyphicon glyphicon-warning-sign"></span>
         Warning!</strong> This service is currently in early beta stages, and thus we cannot
         guarantee that it is completely error/bug free. Please report any problems or inaccuracies you encounter to
         <a href="mailto:keo7@aber.ac.uk">keo7@aber.ac.uk</a>.
@@ -66,8 +66,46 @@
                 <h2>Open Source</h2>
                 <p>DIMEdb is a open source project, all contributions are welcome!</p>
             </div>
+        </div>
+
+
+        <hr>
+
+        <h2>Testimonials</h2>
+
+        <div class="media">
+            <div class="media-left media-top">
+                <img class="media-object img-circle tpicture" src="https://www.aber.ac.uk/staff-profile-assets/img/lum.jpg" alt="...">
+            </div>
+            <div class="media-body">
+                <p class="tquote">"Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante
+                    sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra
+                    turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue
+                    felis in faucibus."</p>
+                <p class="tname">Professor Luis AJ Mur</p>
+                <p class="taffiliation">Aberystwyth University</p>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="media">
+            <div class="media-left media-top">
+                <img class="media-object img-circle tpicture" src="http://postdoc.aa.ufl.edu/media/postdocaaufledu/postdocprofile/images/biswapriya-misra-180x183.jpg" alt="...">
+            </div>
+            <div class="media-body">
+                <p class="tquote">"Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante
+                    sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra
+                    turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue
+                    felis in faucibus."</p>
+                <p class="tname">Dr Biswapriya Misra</p>
+                <p class="taffiliation">University of Florida</p>
+            </div>
+        </div>
+
+
     </div>
-    </div>
+
 {% endblock %}
 
 {% block javascript %}
