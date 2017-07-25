@@ -1,5 +1,5 @@
 import json, pubchempy, urllib2, collections, pyidick
-from rdkit.Chem import rdMolDescriptors, MolFromSmiles, MolSurf, Fragments, rdmolops
+from rdkit.Chem import rdMolDescriptors, MolFromSmiles, MolSurf, Fragments, rdmolops, Draw
 from bioservices import KEGG, KEGGParser
 from bson.json_util import dumps as bson_dumps
 import pybel
@@ -82,7 +82,7 @@ def generate_sources(inchikey):
         "Chemspider": None
     }
 
-
+    print "http://webservice.bridgedb.org/Human/xrefs/Ik/" + inchikey
     response = urllib2.urlopen("http://webservice.bridgedb.org/Human/xrefs/Ik/" + inchikey)
     for line in response.read().splitlines():
         resource = line.split("\t")
@@ -262,8 +262,8 @@ def process_compound(inchikey):
     if id_info["Molecular Formula"] != None:
         p_properties = physiochemical(rdkit_mol)
         t_properties = taxonomic_properties(inchikey)
-        sources = generate_sources(inchikey)
-        pathway_info = generate_pathways(inchikey, sources)
+        #sources = generate_sources(inchikey)
+        #pathway_info = generate_pathways(inchikey, sources)
         adducts = adduct_information(id_info["SMILES"], p_properties)
 
         dimedb_compound = [
@@ -271,15 +271,18 @@ def process_compound(inchikey):
             ["Identification Information", id_info],
             ["Physiochemical Properties", p_properties],
             ["Taxonomic Properties", t_properties],
-            ["External Sources", sources],
-            ["Pathways", pathway_info],
+            #["External Sources", sources],
+            #["Pathways", pathway_info],
             ["Adducts", adducts]
         ]
 
-        return collections.OrderedDict(dimedb_compound)
+        return collections.OrderedDict(dimedb_compound), rdkit_mol
 
     else:
-        return None
+        return None, None
+
+def generate_image(mol, inchikey):
+    Draw.MolToFile(mol, fileName=directory+"structures/"+inchikey+".svg", imageType="svg", size=(300, 300))
 
 if __name__ == "__main__":
     db = []
@@ -288,9 +291,10 @@ if __name__ == "__main__":
 
     for index, inchikey in enumerate(test_keys):
         print index, "/", len(test_keys)
-        dimedb_compound = process_compound(inchikey)
+        dimedb_compound, rdkit_mol = process_compound(inchikey)
         if dimedb_compound != None:
             db.extend([dimedb_compound])
+            generate_image(rdkit_mol,dimedb_compound["_id"])
 
     mongodb_file = json.loads(bson_dumps(db), object_pairs_hook=collections.OrderedDict)
 

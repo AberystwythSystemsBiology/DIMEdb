@@ -117,13 +117,8 @@
                 </div>
 
                 <div class="panel panel-default">
-                    <div class="panel-heading">
+                    <div class="panel-heading" data-toggle="collapse" href="#dist_table">
                         Isotopic Distribution Table
-                        <a data-toggle="collapse" href="#dist_table">
-                            <div class="pull-right">
-                                <i class="glyphicon glyphicon-chevron-down"></i>
-                            </div>
-                        </a>
                     </div>
                     <div id="dist_table" class="panel-collapse collapse">
                         <div class="panel-body">
@@ -147,26 +142,23 @@
 
                 <h4>Pathways</h4>
 
-                <table class="table table-striped">
-                    <tr>
-                        <th width="30%">
-                            KEGG:
-                        </th>
-                        <td>
-                            <span id="kegg_pcount"></span> Available
-                            <div class="btn btn-sm btn-primary pull-right">View</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th width="30%">
-                            SMPDB:
-                        </th>
-                        <td>
-                            <span id="smpdb_pcount"></span> Available
-                            <div class="btn btn-sm btn-primary pull-right">View</div>
-                        </td>
-                    </tr>
-                </table>
+                <div class="panel panel-default">
+                    <div class="panel-heading" data-toggle="collapse" href="#keggpathway_ul">
+                        KEGG (<span id="keggpathway_pcount"></span>)
+                    </div>
+                    <ul class="list-group" id="keggpathway_ul" class="panel-collapse collapse">
+                        <li class="list-group-item">None available.</li>
+                    </ul>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        SMPDB (<span id="smpdb_pcount"></span>)
+                    </div>
+                    <ul class="list-group" id="smpdb_ul">
+                        <li class="list-group-item">None available.</li>
+                    </ul>
+                </div>
 
             </div>
             <div class="col-sm-4">
@@ -216,10 +208,12 @@
 
 {% include "view/modals/physiochemical_modal.html" %}
 {% include "view/modals/formula_search_modal.html" %}
+{% include "view/modals/pathway_view.html" %}
 
 {% block javascript %}
     <script src="{{ url_for('static', filename='bower_components/chartjs/dist/Chart.bundle.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/view.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/view/pathway_information.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/view/view.js') }}"></script>
     <script src="{{ url_for('static', filename='js/comment.js') }}"></script>
 
     <script>

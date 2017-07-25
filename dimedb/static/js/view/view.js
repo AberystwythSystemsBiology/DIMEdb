@@ -209,8 +209,23 @@ function generate_chemical_formula_search_table(api_url) {
 }
 
 function fill_pathway_data(pathways) {
-    $("#kegg_pcount").html(pathways["KEGG"].length);
+    $("#keggpathway_pcount").html(pathways["KEGG"].length);
     $("#smpdb_pcount").html(pathways["SMPDB"].length);
+
+    if (pathways["KEGG"].length > 0) {
+        $("#keggpathway_ul").empty();
+        for (pathway in pathways["KEGG"]) {
+            var p = pathways["KEGG"][pathway]
+            pathway_html = "<li class='list-group-item'>";
+            pathway_html += kegg_pathway_naming[p];
+            pathway_html += "<div class='btn btn-sm btn-primary pull-right' name='k_pathwayview'>";
+            pathway_html += p;
+            pathway_html += "</div>";
+            pathway_html += "<div class='clearfix'></div>"
+            pathway_html += "</li>";
+            $("#keggpathway_ul").append(pathway_html);
+        }
+    }
 
 }
 
@@ -246,6 +261,10 @@ function render_metabolite_view(metabolite_id) {
         generate_chemical_formula_search_table(api_url);
         $('#formula_search_modal').modal('toggle');
     });
+
+    $("[name='k_pathwayview']").click(function () {
+        // TODO:
+    })
 
 
 }
