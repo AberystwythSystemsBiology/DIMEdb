@@ -23,6 +23,10 @@ def mass_search():
 def text_search():
     return render_template("search/text.html")
 
+@app.route("/test")
+def test_page():
+    return render_template("misc/test.html")
+
 @app.route("/help/")
 def help():
     return render_template("help.html", url = request.url_root)

@@ -1,70 +1,3 @@
-var metabolite_array = load_metabolites();
-
-$(document).ready(function () {
-    change_count();
-
-    $('#metabolite_clipboard_panel').on('click', "#clear_clipboard", function () {
-        $("#clipboard_list_group li").remove();
-        localStorage.clear("metabolite_array");
-    });
-
-    $("#metabolite_clipboard_panel").on("click", "#clipboard_to_kegg", function () {
-        kegg_map_url = "http://www.genome.jp/kegg-bin/show_pathway?map01100+";
-        metabolite_array.forEach(function (metabolite, index) {
-            if (metabolite[2] != null) {
-                $("#pathway_mapper_h_buttons").append(
-                    "<a href='http://www.genome.jp/dbget-bin/www_bget?compound+" + metabolite[2] + "' target='_blank'>" +
-                    "<button class='btn btn-default'>" + metabolite[2] + "</button></a>"
-                );
-                kegg_map_url += metabolite[2] + "+";
-            }
-        });
-        kegg_map_url = kegg_map_url.slice(0, -1);
-        $("#mapped_pathway_iframe").attr("src", kegg_map_url);
-        $("#view_mapped_pathway").modal("toggle");
-    });
-
-});
-
-function change_count() {
-    $("#clipboard_count").html(metabolite_array.length)
-}
-
-function inArr(val) {
-    val = JSON.stringify(val);
-    return metabolite_array.filter(function (el) {
-            return JSON.stringify(el) == val
-        }
-    ).length;
-}
-
-function clipboard_hook(id) {
-    var metabolite = get_metabolite(id);
-
-    var clipboard_array = [id, metabolite["name"], metabolite["sources"]["kegg_id"]];
-
-
-    if (inArr(clipboard_array) != 0) {
-        alert("Metabolite already in clipboard");
-    }
-    else {
-        metabolite_array.push(clipboard_array);
-        populate_clipboard(clipboard_array);
-        localStorage.setItem("metabolite_array", JSON.stringify(metabolite_array));
-        change_count();
-    }
-
-}
-
-function populate_clipboard(m) {
-    $("#clipboard_list_group").append(
-        "<li id='" + m[0] + "' class='list-group-item'>" + m[1] + "<a href='" + getBaseURL() + "view/" + m[0] + "'>" +
-        "<button class='btn btn-success btn-sm pull-right'>" +
-        "<i class='glyphicon glyphicon-link'></i> View" +
-        "</button></a><div class='clearfix'></div></li>"
-    );
-}
-
 
 
 function load_metabolites() {
@@ -78,3 +11,46 @@ function load_metabolites() {
     }
     return metabolite_array
 }
+
+function change_count() {
+}
+
+function inArr(val) {
+    val = JSON.stringify(val);
+    return metabolite_array.filter(function (el) {
+            return JSON.stringify(el) == val
+        }
+    ).length;
+}
+
+function metabolite_to_clipboard(id) {
+    var clipboard_array = [id, metabolite["name"], metabolite["sources"]["kegg_id"]];
+
+    if (inArr(clipboard_array) != 0) {
+        alert("Metabolite already in clipboard");
+    }
+    else {
+        metabolite_array.push(clipboard_array);
+        populate_clipboard(clipboard_array);
+        localStorage.setItem("metabolite_array", JSON.stringify(metabolite_array));
+        change_count();
+    }
+}
+
+function populate_clipboard(m) {
+    console.log(m);
+}
+
+$(document).ready(function () {
+    var metabolite_array = load_metabolites();
+    $("#mc_count").html(metabolite_array.length)
+});
+
+$('#metabolite_clipboard_panel').on('click', "#clear_clipboard", function () {
+    $("#clipboard_list_group li").remove();
+    localStorage.clear("metabolite_array");
+});
+
+
+
+

@@ -2,47 +2,272 @@
 
 {% block title %}Help{% endblock %}
 
+{% block head %}
+    <link href="{{ url_for('static', filename='bower_components/prismjs/themes/prism.css') }}" rel="stylesheet">
+{% endblock %}
+
 {% block abovebody %}
     <div class="jumbotron">
-      <div class="container">
-        <h1>Help Centre</h1>
-      </div>
+        <div class="container">
+            <h1>Help Centre</h1>
+        </div>
     </div>
 {% endblock %}
 
 {% block body %}
 
-    <p>This page contains information about how to interact with DIMEdb’s web application and
-        web service.</p>
+    <p>This page contains information about how to interact with DIMEdb’s web application and web service.</p>
 
-    <a name="#faq"><h2 class="page-header">Frequently Asked Questions</h2></a>
-    <h3>What databases does DIMEdb use to collate its data from?</h3>
+    <a name="#faq"><h1 class="page-header">Frequently Asked Questions</h1></a>
+    <h2>What databases does DIMEdb use to collate its data from?</h2>
 
-    <p>HMDB, PubChem, CHEBI, and KEGG.</p>
+    <p><a href="http://www.hmdb.ca/" target="_blank">HMDB</a>,
+        <a href="https://pubchem.ncbi.nlm.nih.gov/" target="_blank">PubChem</a>,
+        <a href="https://www.ebi.ac.uk/chebi/" target="_blank">CHEBI</a>, and
+        <a href="http://www.genome.jp/kegg/" target="_blank">KEGG</a>.</p>
 
-    <h3>Where can I download DIMEdb?</h3>
+    <h2>Where can I download DIMEdb?</h2>
 
     <p>Visit the <a href="{{ url_for('downloads_centre') }}">download centre</a> for more information.</p>
 
-    <h3>How can I cite DIMEdb?</h3>
+    <h2>How can I cite DIMEdb?</h2>
 
     <p>Publication Pending.</p>
 
-    <a name="#api"><h2 class="page-header">DIMEdb Web Service/API</h2></a>
+    <h2>How are isotopic distributions calcuated?</h2>
+
+    <p>Distributions are calculated using the open-source pyIDICk python package, <a
+            href="http://www.github.com/KeironO/pyidick">available here</a>.</p>
+
+    <a name="#api"><h1 class="page-header">DIMEdb Web Service/API</h1></a>
 
     <p>DIMEdb features a application programming interface (API) which enables anyone to extract data without
         the need of the web application. The API is built with ease-of-use in mind, allowing you to download
         relevant information without having to download the entirety of the database.</p>
 
-    <h3>Queries</h3>
+    <p>The metabolites collection is available as a RESTful persistent identifier:</p>
 
-    <h3>Data Documentation</h3>
+    <pre class="language-bash"><code class="language-bash">$ curl -i {{ url }}api/metabolites</code></pre>
 
-    <table>
+    <p>Will return the following payload:</p>
 
+    <pre class="language-javascript"><code class="language-javascript">
+{
+  "_items": [
+    {
+      "_updated": "Thu, 01 Jan 1970 00:00:00 GMT",
+      "Adducts": {
+	...
+      },
+      "External Sources": {
+        ...
+      },
+      "Physiochemical Properties": {
+
+        ...
+      },
+      "Taxonomic Properties": {
+        ...
+      },
+      "Pathways": {
+        ...
+      },
+      "_created": "Thu, 01 Jan 1970 00:00:00 GMT",
+      "_id": "DOUMFZQKYFQNTF-WUTVXBCWSA-N",
+      "_etag": "f150abf5bb4cea99aed46186e25642ea8ca5006d",
+      "Identification Information": {
+        ...
+      }
+    }
+  ],
+  "_meta": {
+    "max_results": 50,
+    "total": 1,
+    "page": 1
+  }
+}
+    </code></pre>
+
+    <p>Endpoints support the use of standard MongoDB and Python queries to retrieve
+        metabolite information. In the following example, we are requesting for all metabolites whose
+        identification name is "Rosmarinic acid": </p>
+
+    <pre class="language-bash"><code class="language-bash">$ curl -i {{ url }}api/metabolites?where={"Identification Information.Name" : "Rosmarinic acid"}</code></pre>
+
+    <h3>Conditional Operators</h3>
+
+    <p>Our API also allows for the use of conditional operaters, which are useful for searching. For example,
+        if you wanted to return all metabolites with a molecular weight &ge; 360.05 and
+        &le; 380.05 g/mol, then you can use the following:</p>
+
+    <pre class="language-bash"><code class="language-bash">$ curl -i {{ url }}api/metabolites?where={"Physiochemical Properties.Molecular Weight" : {"$gte" : 360.05, "$lte" : 380.05}}</code></pre>
+
+    <h3>Projections</h3>
+
+    <p>If you would like to create dynamic views of metabolites, you can use a MongoDB projection.
+
+    <h2>Data Documentation</h2>
+
+    <table class="table table-striped">
+        <tr>
+            <th width="20%">Property Name</th>
+            <th width="45%">Property Description</th>
+            <th>Data Type</th>
+            <th width="25%">Data Source</th>
+        </tr>
+        <tr>
+            <td>_id</td>
+            <td>The unique InChIKey of the metabolite.</td>
+            <td>String</td>
+            <td>Generated from InChI.</td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <span class="text_bold">Identification Information</span>
+            </td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>The canonical name of the metabolite.</td>
+            <td>String</td>
+            <td>PubChem, HMDB, and CheBI.</td>
+        </tr>
+        <tr>
+            <td>Synonyms</td>
+            <td>Alternative names for the metabolite.</td>
+            <td>List</td>
+            <td>PubChem, HMDB, and CheBI.</td>
+        </tr>
+        <tr>
+            <td>Systematic Name</td>
+            <td>The systematic name for the metabolite.</td>
+            <td>String</td>
+            <td>Generated from InChI.</td>
+        </tr>
+        <tr>
+            <td>SMILES</td>
+            <td>SMILES of the metabolites structure.</td>
+            <td>String</td>
+            <td>Generated from InChI.</td>
+        </tr>
+        <tr>
+            <td>Molecular Formula</td>
+            <td>Textual description of the elemental composition of the metabolite.</td>
+            <td>String</td>
+            <td>Generated from SMILES.</td>
+        </tr>
+        <tr>
+            <td>InChI</td>
+            <td>Unique InChI identifier of the metabolite.</td>
+            <td>String</td>
+            <td>PubChem, HMDB, and CheBI.</td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <span class="text_bold">Physiochemical Properties</span>
+            </td>
+        </tr>
+        <tr>
+            <td>clogP</td>
+            <td></td>
+            <td>Float</td>
+            <td>Generated from SMILES.</td>
+        </tr>
+        <tr>
+            <td>Polar Surface Area</td>
+            <td></td>
+            <td>Float</td>
+            <td>Generated from SMILES.</td>
+        </tr>
+        <tr>
+            <td>Secondary Amines</td>
+            <td></td>
+            <td>Integer</td>
+            <td>Generated from SMILES.</td>
+        </tr>
+        <tr>
+            <td>Ether Oxygens</td>
+            <td></td>
+            <td>Integer</td>
+            <td>Generated from SMILES.</td>
+        </tr>
+        <tr>
+            <td>Hydroxy Groups</td>
+            <td></td>
+            <td>Integer</td>
+            <td>Generated from SMILES.</td>
+        </tr>
+        <tr>
+            <td>Heavy Atoms</td>
+            <td></td>
+            <td>Integer</td>
+            <td>Generated from SMILES.</td>
+        </tr>
+        <tr>
+            <td>Rings</td>
+            <td></td>
+            <td>Integer</td>
+            <td>Generated from SMILES.</td>
+        </tr>
+        <tr>
+            <td>Hydrogen Bond Acceptors</td>
+            <td></td>
+            <td>Integer</td>
+            <td>Generated from SMILES.</td>
+        </tr>
+        <tr>
+            <td>Hydrogen Bond Donors</td>
+            <td></td>
+            <td>Integer</td>
+            <td>Generated from SMILES.</td>
+        </tr>
+        <tr>
+            <td>Aromotic Rings</td>
+            <td></td>
+            <td>Integer</td>
+            <td>Generated from SMILES.</td>
+        </tr>
+        <tr>
+            <td>Formal Charge</td>
+            <td></td>
+            <td>Integer</td>
+            <td>Generated from SMILES.</td>
+        </tr>
+        <tr>
+            <td>MR Values</td>
+            <td></td>
+            <td>Float</td>
+            <td>Generated from SMILES.</td>
+        </tr>
+        <tr>
+            <td>Fraction of SP3 Carbon</td>
+            <td></td>
+            <td>Float</td>
+            <td>Generated from SMILES.</td>
+        </tr>
+        <tr>
+            <td>Carboxylic Acids</td>
+            <td></td>
+            <td>Integer</td>
+            <td>Generated from SMILES.</td>
+        </tr>
+        <tr>
+            <td>Molecular Weight</td>
+            <td></td>
+            <td>Float</td>
+            <td>Generated from SMILES.</td>
+        </tr>
+        <tr>
+            <td>Rotatable Bonds</td>
+            <td></td>
+            <td>Integer</td>
+            <td>Generated from SMILES.</td>
+        </tr>
     </table>
 
 {% endblock %}
 
 {% block javascript %}
+    <script src="{{ url_for('static', filename='bower_components/prismjs/prism.js') }}"></script>
+
 {% endblock %}

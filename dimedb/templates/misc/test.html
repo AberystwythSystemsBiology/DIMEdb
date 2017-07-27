@@ -1,0 +1,19 @@
+{% extends "template.html" %}
+
+{% block title %}Test Bench{% endblock %}
+
+{% block body %}
+
+<div id="metabolite_clipboard">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Metabolite Clipboard (<span id="mc_count"></span>)
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+    <script src="{{ url_for('static', filename='js/clipboard.js') }}"></script>
+{% endblock %}
