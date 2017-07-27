@@ -46,7 +46,7 @@ function check_if_comma(s) {
 }
 
 function generate_api_url(values) {
-    var api_url = getBaseURL()+'api/metabolites/?where={ "$or" : [';
+    var api_url = getBaseURL()+'api/metabolites/?where={ "$and" : [';
     /*
     if (values["Name"] != null) {
         console.log(values["Name"]);
@@ -103,7 +103,6 @@ function generate_api_url(values) {
 
     api_url += "]}";
 
-    alert(api_url);
     return api_url;
 
 }
