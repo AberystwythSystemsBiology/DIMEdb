@@ -80,6 +80,14 @@ function generate_api_url(values) {
         api_url += '}';
     }
 
+    if (values["External Source"] != null) {
+        var source_name = $("#source_name").val();
+        api_url = check_if_comma(api_url);
+        api_url += '{"External Sources.'+source_name+'" : "';
+        api_url += values["External Source"] + '"}';
+
+    }
+
     if (values["InChI"] != null) {
         api_url = check_if_comma(api_url)
         api_url += '{"Identification Information.InChI" : ';
@@ -102,6 +110,8 @@ function generate_api_url(values) {
     }
 
     api_url += "]}";
+
+    alert(api_url);
 
     return api_url;
 
