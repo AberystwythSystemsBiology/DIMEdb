@@ -19,7 +19,11 @@ function get_values() {
     }
 }
 
-function generate_regex(s) {
+function contains_regex(s) {
+    return '{"$regex":"'+s+'.*"}';
+}
+
+function is_equals_to(s) {
     return '{"$regex":"^(?i)'+s+'.*"}';
 }
 
@@ -31,8 +35,18 @@ function checkProperties(obj) {
     return true;
 }
 
+function check_if_comma(s) {
+    if (s.slice(-1) != "}") {
+        return s;
+    }
+    else {
+        s += ",";
+        return s;
+    }
+}
+
 function generate_api_url(values) {
-    var api_url = getBaseURL()+'api/metabolites/?where={';
+    var api_url = getBaseURL()+'api/metabolites/?where={ "$or" : [';
     /*
     if (values["Name"] != null) {
         console.log(values["Name"]);
@@ -50,13 +64,46 @@ function generate_api_url(values) {
     */
 
     if (values["Molecular Formula"] != null) {
-        api_url += '"Identification Information.Molecular Formula" : ';
-        api_url += generate_regex(values["Molecular Formula"]);
+        api_url = check_if_comma(api_url);
+        api_url += '{"Identification Information.Molecular Formula" : ';
+        api_url += is_equals_to(values["Molecular Formula"]);
+        api_url += '}';
     }
 
-    api_url += "}";
+    if (values["Molecular Weight"] != null) {
+        var tolerance = parseFloat($("#search_tolerance").val());
+        var lte = parseFloat(values["Molecular Weight"]) + tolerance;
+        var gte = parseFloat(values["Molecular Weight"]) - tolerance;
+        api_url = check_if_comma(api_url);
+        api_url += '{"Physiochemical Properties.Molecular Weight" : ';
+        api_url += '{"$lte" : ' + lte + ', "$gte" : ' + gte + '}';
+        api_url += '}';
+    }
 
-    console.log(api_url);
+    if (values["InChI"] != null) {
+        api_url = check_if_comma(api_url)
+        api_url += '{"Identification Information.InChI" : ';
+        api_url += is_equals_to(values["InChI"]);
+        api_url += '}';
+    }
+
+    if (values["InChI Key"] != null) {
+        api_url = check_if_comma(api_url)
+        api_url += '{"_id" : ';
+        api_url += is_equals_to(values["InChI Key"]);
+        api_url += '}';
+    }
+
+    if (values["SMILES"] != null) {
+        api_url = check_if_comma(api_url)
+        api_url += '{"Identification Information.SMILES" : ';
+        api_url += is_equals_to(values["SMILES"]);
+        api_url += '}';
+    }
+
+    api_url += "]}";
+
+    alert(api_url);
     return api_url;
 
 }
