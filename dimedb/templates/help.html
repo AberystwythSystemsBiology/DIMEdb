@@ -32,7 +32,7 @@
 
     <h2>How can I cite DIMEdb?</h2>
 
-    <p>Publication Pending.</p>
+    <p>Publication pending...</p>
 
     <h2>How are isotopic distributions calcuated?</h2>
 
@@ -41,15 +41,15 @@
 
     <a name="#api"><h1 class="page-header">DIMEdb Web Service/API</h1></a>
 
-    <p>DIMEdb features a application programming interface (API) which enables anyone to extract data without
-        the need of the web application. The API is built with ease-of-use in mind, allowing you to download
-        relevant information without having to download the entirety of the database.</p>
+    <p>DIMEdb features a application programming interface (API) which enables users to extract information from the
+        integrated metabolite database freely. The API is built with ease-of-use in mind, providing access to relevant
+        metabolite information without the need of downloading the entirety of the database.</p>
 
-    <p>The metabolites collection is available as a RESTful persistent identifier:</p>
+    <p>The metabolites collection is available as a RESTful persistent identifier, found here:</p>
 
-    <pre class="language-bash"><code class="language-bash">$ curl -i {{ url }}api/metabolites</code></pre>
+    <pre class="language-bash"><code class="language-bash">{{ url }}api/metabolites</code></pre>
 
-    <p>Will return the following payload:</p>
+    <p>Querying the above URL will return a payload similar to this:</p>
 
     <pre class="language-javascript"><code class="language-javascript">
 {
@@ -88,23 +88,40 @@
 }
     </code></pre>
 
-    <p>Endpoints support the use of standard MongoDB and Python queries to retrieve
-        metabolite information. In the following example, we are requesting for all metabolites whose
-        identification name is "Rosmarinic acid": </p>
+    <div class="alert alert-danger">Note: The <code>_items</code> list contains the requested metabolite information.
+        For queries
+        that return a large number of results, pagination information can be found inside the <code>_meta</code> field.
+    </div>
 
-    <pre class="language-bash"><code class="language-bash">$ curl -i {{ url }}api/metabolites?where={"Identification Information.Name" : "Rosmarinic acid"}</code></pre>
+    <h3>Basic Filtering</h3>
+
+    <p>To return filtered metabolites, you can use both native MongoDB queries, and standard Python conditional
+        expressions.
+        For example, here we are requesting for all metabolites whose molecular formula is C12H22O11:</p>
+
+    <pre class="language-bash"><code class="language-bash">{{ url }}api/metabolites?where={"Identification Information.Molecular Formula" : “C12H22O11”}</code></pre>
+
+    <p>Additionally, both query methods allow for logical and/or operators:</p>
+
+    <pre class="language-bash"><code class="language-bash">{{ url }}api/metabolites?where={“$or” : [{“Identification Information.Molecular Formula : “C12H22O11”}, {“Physiochemical Properties.Hydrogen Bond Acceptors” : 2}]}</code></pre>
 
     <h3>Conditional Operators</h3>
 
-    <p>Our API also allows for the use of conditional operaters, which are useful for searching. For example,
+    <p>For more advanced searching, you can also use conditional operators. For example,
         if you wanted to return all metabolites with a molecular weight &ge; 360.05 and
-        &le; 380.05 g/mol, then you can use the following:</p>
+        &le; 380.05 g/mol, then you can use the following query.:</p>
 
-    <pre class="language-bash"><code class="language-bash">$ curl -i {{ url }}api/metabolites?where={"Physiochemical Properties.Molecular Weight" : {"$gte" : 360.05, "$lte" : 380.05}}</code></pre>
+    <pre class="language-bash"><code class="language-bash">{{ url }}api/metabolites?where={"Physiochemical Properties.Molecular Weight" : {"$gte" : 360.05, "$lte" : 380.05}}</code></pre>
 
     <h3>Projections</h3>
 
-    <p>If you would like to create dynamic views of metabolites, you can use a MongoDB projection.
+    <p>If you would like to create a dynamic view of all returned metabolites, DIMEdb supports the use of a projection.
+        Projections act like conditional queries, where the request dictates what fields should be returned for a given
+        query. For example if you’re only interested in returning the names of matching metabolites, then you can use
+        the following query:</p>
+
+    <pre class="language-bash"><code class="language-bash">{{ url }}api/metabolites?where={"Identification Information.Molecular Formula" : “C12H22O11”}&projection={“Identification Information.Name” : 1}</code></pre>
+
 
     <h2>Data Documentation</h2>
 
@@ -117,7 +134,7 @@
         </tr>
         <tr>
             <td>_id</td>
-            <td>The unique InChIKey of the metabolite.</td>
+            <td>Compiled InChIKey</td>
             <td>String</td>
             <td>Generated from InChI.</td>
         </tr>
@@ -128,37 +145,43 @@
         </tr>
         <tr>
             <td>Name</td>
-            <td>The canonical name of the metabolite.</td>
+            <td>Common name</td>
             <td>String</td>
             <td>PubChem, HMDB, and CheBI.</td>
         </tr>
         <tr>
             <td>Synonyms</td>
-            <td>Alternative names for the metabolite.</td>
+            <td>Alternative names</td>
             <td>List</td>
             <td>PubChem, HMDB, and CheBI.</td>
         </tr>
         <tr>
+            <td>IUPAC Name</td>
+            <td>Standard chemical name</td>
+            <td>String</td>
+            <td>PubChem, HMDB, and CheBI.</td>
+        </tr>
+        <tr>
             <td>Systematic Name</td>
-            <td>The systematic name for the metabolite.</td>
+            <td>Systematically generated name</td>
             <td>String</td>
             <td>Generated from InChI.</td>
         </tr>
         <tr>
             <td>SMILES</td>
-            <td>SMILES of the metabolites structure.</td>
+            <td>Isometric SMILES</td>
             <td>String</td>
             <td>Generated from InChI.</td>
         </tr>
         <tr>
             <td>Molecular Formula</td>
-            <td>Textual description of the elemental composition of the metabolite.</td>
+            <td>Textual description of elemental composition</td>
             <td>String</td>
             <td>Generated from SMILES.</td>
         </tr>
         <tr>
             <td>InChI</td>
-            <td>Unique InChI identifier of the metabolite.</td>
+            <td>Unique InChI identifier</td>
             <td>String</td>
             <td>PubChem, HMDB, and CheBI.</td>
         </tr>
@@ -262,6 +285,93 @@
             <td></td>
             <td>Integer</td>
             <td>Generated from SMILES.</td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <span class="text_bold">External Sources</span>
+            </td>
+        </tr>
+        <tr>
+            <td>ChEBI ID</td>
+            <td></td>
+            <td>String</td>
+            <td>BridgeDb, or source.</td>
+        </tr>
+        <tr>
+            <td>HMDB Accession</td>
+            <td></td>
+            <td>String</td>
+            <td>BridgeDb, or source.</td>
+        </tr>
+        <tr>
+            <td>PubChem ID</td>
+            <td></td>
+            <td>String</td>
+            <td>BridgeDb, or source.</td>
+        </tr>
+        <tr>
+            <td>KEGG Compound</td>
+            <td></td>
+            <td>String</td>
+            <td>BridgeDb, or source.</td>
+        </tr>
+        <tr>
+            <td>CAS</td>
+            <td></td>
+            <td>String</td>
+            <td>BridgeDb, or source.</td>
+        </tr>
+        <tr>
+            <td>Wikidata</td>
+            <td></td>
+            <td>String</td>
+            <td>BridgeDb, or source.</td>
+        </tr>
+        <tr>
+            <td>Chemspider</td>
+            <td></td>
+            <td>String</td>
+            <td>BridgeDb, or source.</td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <span class="text_bold">Pathways</span>
+            </td>
+        </tr>
+        <tr>
+            <td>SMPDB</td>
+            <td></td>
+            <td>List</td>
+            <td>HMDB.</td>
+        </tr>
+        <tr>
+            <td>KEGG</td>
+            <td></td>
+            <td>List</td>
+            <td>KEGG.</td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <span class="text_bold">Adducts (Positive/Negative/Neutral)</span>
+            </td>
+        </tr>
+        <tr>
+            <td>Accurate Mass</td>
+            <td></td>
+            <td>Float</td>
+            <td>pyIDICk.</td>
+        </tr>
+        <tr>
+            <td>Type</td>
+            <td></td>
+            <td>Float</td>
+            <td>pyIDICk.</td>
+        </tr>
+        <tr>
+            <td>Isotopic Distribution</td>
+            <td></td>
+            <td>List</td>
+            <td>pyIDICk.</td>
         </tr>
     </table>
 

@@ -299,3 +299,26 @@ footer {
 .text_bold {
     font-weight: bold;
 }
+
+#spooky_skeleton {
+    display:none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 100;
+    height: 400px;
+    margin-top: -200px;
+    width: 60%;
+    margin-left: -300px;
+}
+
+#spooky_skeleton img {
+    display:block;
+    margin:0 auto 0;
+    width:400px;
+}
+
+#spooky_skeleton h1 {
+    text-align: center;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+}

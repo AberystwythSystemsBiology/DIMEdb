@@ -82,7 +82,6 @@ def generate_sources(inchikey):
         "Chemspider": None
     }
 
-    print "http://webservice.bridgedb.org/Human/xrefs/Ik/" + inchikey
     response = urllib2.urlopen("http://webservice.bridgedb.org/Human/xrefs/Ik/" + inchikey)
     for line in response.read().splitlines():
         resource = line.split("\t")
@@ -252,7 +251,7 @@ def adduct_information(smiles, properties):
                     calculate("[M+3H]3+", mol, {"add": {"H": 3}, "remove": {}}, charge=3, electrons=-3))
                 adducts["Positive"].append(
                     calculate("[M+2H+2a]3+", mol, {"add": {"H": 2, "Na": 1}, "remove": {}}, charge=3, electrons=-3))
-    except IndexError:
+    except Exception:
         adducts = {"Positive" : [], "Negative" : [], "Neutral" : []}
     return adducts
 
@@ -261,18 +260,19 @@ def process_compound(inchikey):
 
     if id_info["Molecular Formula"] != None:
         p_properties = physiochemical(rdkit_mol)
-        t_properties = taxonomic_properties(inchikey)
-        #sources = generate_sources(inchikey)
-        #pathway_info = generate_pathways(inchikey, sources)
         adducts = adduct_information(id_info["SMILES"], p_properties)
+
+        t_properties = taxonomic_properties(inchikey)
+        sources = generate_sources(inchikey)
+        pathway_info = generate_pathways(inchikey, sources)
 
         dimedb_compound = [
             ["_id", inchikey],
             ["Identification Information", id_info],
             ["Physiochemical Properties", p_properties],
             ["Taxonomic Properties", t_properties],
-            #["External Sources", sources],
-            #["Pathways", pathway_info],
+            ["External Sources", sources],
+            ["Pathways", pathway_info],
             ["Adducts", adducts]
         ]
 
@@ -287,10 +287,9 @@ def generate_image(mol, inchikey):
 if __name__ == "__main__":
     db = []
 
-    test_keys = combined.keys()[:100]
+    test_keys = combined.keys()[:500]
 
     for index, inchikey in enumerate(test_keys):
-        print index, "/", len(test_keys)
         dimedb_compound, rdkit_mol = process_compound(inchikey)
         if dimedb_compound != None:
             db.extend([dimedb_compound])

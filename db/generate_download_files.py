@@ -54,13 +54,39 @@ def generate_structures():
             zipf.write(os.path.join(root, file), arcname=file)
     zipf.close()
 
-def pathways(dimedb):
-    pass
+def generate_pathways(dimedb):
+    pw_l = []
+    pw_l.append(["InChIKey", "Pathway", "ID"])
+    for metabolite in dimedb:
+        id = metabolite["_id"]
+        for kegg_id in metabolite["Pathways"]["KEGG"]:
+            pw_l.append([id, "KEGG", kegg_id])
+        for smpdb_id in metabolite["Pathways"]["SMPDB"]:
+            pw_l.append([id, "SMPDB", smpdb_id])
+
+    with open(directory+"downloads/dimedb_pathways.tsv", "wb") as names_file:
+        writer = csv.writer(names_file, delimiter="\t")
+        for line in pw_l:
+            writer.writerow(line)
+
+def generate_sources(dimedb):
+    sources_l = []
+    sources_l.append(["InChIKey", "Source", "ID"])
+    for metabolite in dimedb:
+        id = metabolite["_id"]
+        for source, sid in metabolite["External Sources"].items():
+            if sid != None:
+                sources_l.append([id, source, sid])
+
+    with open(directory+"downloads/dimedb_sources.tsv", "wb") as names_file:
+        writer = csv.writer(names_file, delimiter="\t")
+        for line in sources_l:
+            writer.writerow(line)
 
 if __name__ == "__main__":
     dimedb = load_file(directory+"dimedb.json")
-    generate_id_tsv(dimedb)
-    generate_physiochemical_properties(dimedb)
+    #generate_id_tsv(dimedb)
+    #generate_physiochemical_properties(dimedb)
     #generate_structures()
-
-    pathways(dimedb)
+    #generate_pathways(dimedb)
+    generate_sources(dimedb)

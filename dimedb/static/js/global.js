@@ -22,6 +22,23 @@ function get_metabolite(id) {
     return json["_items"][0]
 }
 
+function get_metabolites(api_url) {
+    var json = (function () {
+        var json = null;
+        $.ajax({
+            'async': false,
+            'global': false,
+            'url': api_url,
+            'dataType': "json",
+            'success': function (data) {
+                json = data;
+            }
+        });
+        return json;
+    })();
+    return json["_items"]
+}
+
 $(document).on('click', '.panel-heading span.clickable', function(e){
     var $this = $(this);
 	if(!$this.hasClass('panel-collapsed')) {

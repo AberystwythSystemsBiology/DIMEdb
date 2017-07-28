@@ -227,10 +227,25 @@
                         <div class="clearfix"></div>
                     </div>
                 </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span id="spooky">Skeleton</span> Matches
+                    </div>
+                    <ul id="skeleton_list" class="list-group">
+
+                    </ul>
+                </div>
+
             </div>
         </div>
-
     </div>
+
+    <div id="spooky_skeleton">
+        <img src="{{ url_for('static', filename='imgs/spookyskeleton.gif') }}">
+        <h1><span id="spooky_quote"></span></h1>
+    </div>
+
 
 {% endblock %}
 

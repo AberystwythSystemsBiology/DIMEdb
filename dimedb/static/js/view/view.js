@@ -96,7 +96,6 @@ function fill_isotopic_distribution_table(adduct_info) {
 }
 
 function chart_distribution(distribution_array) {
-    console.log(distribution_array);
     var masses = [];
     var intensities = [];
     for (i in distribution_array) {
@@ -104,8 +103,6 @@ function chart_distribution(distribution_array) {
         intensities.push(distribution_array[i][1]);
     }
 
-    console.log(masses);
-    console.log(intensities);
 
     var ctx = $("#myChart");
 
@@ -233,6 +230,22 @@ function fill_tproperties_information(properties) {
 }
 
 
+function skeletons(inchikey) {
+    var api_url = getBaseURL() + "api/metabolites/?where={";
+    api_url += '"_id" : { "$regex" : "^' + inchikey.split("-")[0] +'"}}';
+    api_url += '&projection={"Identification Information.Name" : 1}';
+
+    var metabolites = get_metabolites(api_url);
+
+    for (index in metabolites) {
+        var m = metabolites[index];
+        $("#skeleton_list").append("<li class='list-group-item'>" +
+            "<a href='" + getBaseURL() +"view/" + m["_id"] + "' target='_blank'>" +m["Identification Information"]["Name"] + "</a></li>")
+
+    }
+}
+
+
 function render_metabolite_view(metabolite_id) {
     var metabolite = get_metabolite(metabolite_id);
     fill_identification_infomation(metabolite["Identification Information"], metabolite_id);
@@ -245,6 +258,8 @@ function render_metabolite_view(metabolite_id) {
     chart_distribution(metabolite["Adducts"]["Neutral"][0]["Isotopic Distribution"]);
     fill_pathway_data(metabolite["Pathways"]);
     fill_tproperties_information(metabolite["Taxonomic Properties"]);
+
+    skeletons(metabolite["_id"]);
 
     $("input[type=radio][name=ionisation]").change(function () {
         fill_adducts_information(this.value, metabolite["Adducts"][this.value]);
@@ -270,9 +285,17 @@ function render_metabolite_view(metabolite_id) {
     $("[name='k_pathwayview']").click(function () {
         // TODO:
     })
-
-
 }
 
+$("#spooky").click(function () {
+    var spooky_array = [
+        "thank mr skelator",
+        "updoot 4 healthy bones",
+        "spooky scary skeletons",
+        "send shivers down your spine!"
+    ];
+    $("#spooky_quote").html(spooky_array[Math.floor(Math.random() * spooky_array.length)]);
+    $("#spooky_skeleton").fadeIn(500).delay(1000).fadeOut(500);
+});
 
 
