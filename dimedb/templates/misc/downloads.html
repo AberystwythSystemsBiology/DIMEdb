@@ -30,6 +30,24 @@
 
     <h2>Software</h2>
 
+    <h3>dimedbpy: Python wrapper for the DIMEdb REST API.</h3>
+
+    <p>dimedbyp provides a way to interact with the DIMEdb web service in Python. It
+    provides metabolite queries by name, structure, and adduct information.</p>
+
+    <P>Here's a quick example, showing how to retrieve metabolites by id (InChIKey):</P>
+
+    <pre class="code langugage-python"><code class="code language-python">from dimedbpy import get_metabolites
+
+metabolites = get_metabolites("DOUMFZQKYFQNTF-WUTVXBCWSA-N")
+
+for metabolite in metabolites:
+    print metabolite.name</code></pre>
+
+    <p>dimedbpy is licensed under the MIT licence, and is freely available <a href="https://github.com/KeironO/dimedbpy"
+                                                                              target="_blank">here</a>.</p>
+
+    <h3>pyIDICk: Python Isotopic Distribution Calculator</h3>
 
 
 

@@ -299,3 +299,7 @@ $("#spooky").click(function () {
 });
 
 
+$("#structure").on('click', function() {
+    $('.enlargeImageModalSource').attr('src', $(this).attr('src'));
+	$('#enlargeImageModal').modal('show');
+});

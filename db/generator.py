@@ -26,7 +26,8 @@ def identification_info(inchikey):
         "SMILES" : None,
         "Molecular Formula" : None
     }
-
+    print id_info
+    exit(0)
 
     id_info["InChI"] = str(combined[inchikey]["InChI"])
 
@@ -53,9 +54,11 @@ def identification_info(inchikey):
     if combined[inchikey]["PubChem ID"] != None:
         compound = pubchempy.get_compounds(combined[inchikey]["PubChem ID"])[0]
         if id_info["Name"] == None:
-            id_info["Name"] = compound.synonyms[0]
+            if len(compound.synonyms) > 0:
+                id_info["Name"] = compound.synonyms[0]
         if id_info["Synonyms"] == []:
-            id_info["Synonyms"] = compound.synonyms[1:]
+            if len(compound.synonyms) > 1:
+                id_info["Synonyms"] = compound.synonyms[1:]
         if id_info["IUPAC Name"] == None:
             id_info["IUPAC Name"] = compound.iupac_name
 
@@ -287,13 +290,14 @@ def generate_image(mol, inchikey):
 if __name__ == "__main__":
     db = []
 
-    test_keys = combined.keys()[:500]
+    test_keys = combined.keys()[:10000]
 
     for index, inchikey in enumerate(test_keys):
         dimedb_compound, rdkit_mol = process_compound(inchikey)
         if dimedb_compound != None:
             db.extend([dimedb_compound])
             generate_image(rdkit_mol,dimedb_compound["_id"])
+            break
 
     mongodb_file = json.loads(bson_dumps(db), object_pairs_hook=collections.OrderedDict)
 

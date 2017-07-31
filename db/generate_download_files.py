@@ -85,8 +85,8 @@ def generate_sources(dimedb):
 
 if __name__ == "__main__":
     dimedb = load_file(directory+"dimedb.json")
-    #generate_id_tsv(dimedb)
-    #generate_physiochemical_properties(dimedb)
-    #generate_structures()
-    #generate_pathways(dimedb)
+    generate_id_tsv(dimedb)
+    generate_physiochemical_properties(dimedb)
+    generate_structures()
+    generate_pathways(dimedb)
     generate_sources(dimedb)
