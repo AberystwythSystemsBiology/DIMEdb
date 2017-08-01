@@ -305,6 +305,8 @@ footer {
     cursor: zoom-in;
 }
 
+
+
 #spooky_skeleton {
     display:none;
     position: fixed;
@@ -326,4 +328,16 @@ footer {
 #spooky_skeleton h1 {
     text-align: center;
     font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+#biocyc_pathways {
+    display:none;
+}
+
+#smpdb_pathways {
+    display: none;
+}
+
+#kegg_pathways {
+    display:none;
 }

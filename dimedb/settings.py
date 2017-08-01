@@ -74,14 +74,16 @@ external_sources = {
         "HMDB Accession" : "string",
         "CAS" :  "string",
         "Wikidata" : "string",
-        "Chemspider" : "string"
+        "Chemspider" : "string",
+        "BioCyc" : "string"
     }
 }
 
 pathways = {
     "schema" : {
         "KEGG" : "list",
-        "SMPDB" : "list"
+        "SMPDB" : "list",
+        "BioCyc" : "list"
     }
 }
 
@@ -103,7 +105,7 @@ metabolites = {
     "resource_methods": ["GET"],
     "schema" : {
         "Identification Information" : identification_information,
-        "Physiochemical Properties" : physiochemical_properties,
+        "Physicochemical Properties" : physiochemical_properties,
         "External Sources" : external_sources,
         "Adducts" : adducts,
         "Pathways" : pathways,

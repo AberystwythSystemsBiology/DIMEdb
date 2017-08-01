@@ -111,8 +111,6 @@ function generate_api_url(values) {
 
     api_url += "]}";
 
-    alert(api_url);
-
     return api_url;
 
 }
@@ -147,7 +145,7 @@ function results_table(api_url) {
                 },
                 {
                     "title": "Molecular Weight (g/mol)",
-                    "data": "Physiochemical Properties",
+                    "data": "Physicochemical Properties",
                     "className": "dt-center",
                     "width": "10%",
                     "render": function (data, type, row) {

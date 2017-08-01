@@ -32,28 +32,28 @@ function fill_identification_infomation(identification_infomation, metabolite_id
     $("#molecular_formula").html(identification_infomation["Molecular Formula"].replace(/([0-9]+)/g, '<sub>$1</sub>'));
 }
 
-function fill_physiochemical_properties(physiochemical_properties) {
-    $("#molecular_weight").html(physiochemical_properties["Molecular Weight"].toFixed(3));
-    $("#hbd").html(physiochemical_properties["Hydrogen Bond Donors"]);
-    $("#hba").html(physiochemical_properties["Hydrogen Bond Acceptors"]);
-    $("#rotatable_bonds").html(physiochemical_properties["Rotatable Bonds"]);
-    $("#formal_charge").html(physiochemical_properties["Formal Charge"]);
-    $("#fraction_of_sp3").html(physiochemical_properties["Fraction of SP3 Carbon"].toFixed(4));
-    $("#clogp").html(physiochemical_properties["clogP"].toFixed(4));
-    $("#polar_surface_area").html(physiochemical_properties["Polar Surface Area"].toFixed(4));
-    $("#mr_values").html(physiochemical_properties["MR Values"].toFixed(4));
-    $("#rings").html(physiochemical_properties["Rings"]);
-    $("#aromatic_rings").html(physiochemical_properties["Aromatic Rings"]);
-    $("#heavy_atoms").html(physiochemical_properties["Heavy Atoms"]);
-    $("#secondary_amines").html(physiochemical_properties["Secondary Amines"]);
-    $("#ether_oxygens").html(physiochemical_properties["Ether Oxygens"]);
-    $("#hydroxy_groups").html(physiochemical_properties["Hydroxy Groups"]);
-    $("#carboxylic_acids").html(physiochemical_properties["Carboxylic Acids"]);
+function fill_physicochemical_properties(physicochemical_properties) {
+    $("#molecular_weight").html(physicochemical_properties["Molecular Weight"].toFixed(3));
+    $("#hbd").html(physicochemical_properties["Hydrogen Bond Donors"]);
+    $("#hba").html(physicochemical_properties["Hydrogen Bond Acceptors"]);
+    $("#rotatable_bonds").html(physicochemical_properties["Rotatable Bonds"]);
+    $("#formal_charge").html(physicochemical_properties["Formal Charge"]);
+    $("#fraction_of_sp3").html(physicochemical_properties["Fraction of SP3 Carbon"].toFixed(4));
+    $("#clogp").html(physicochemical_properties["clogP"].toFixed(4));
+    $("#polar_surface_area").html(physicochemical_properties["Polar Surface Area"].toFixed(4));
+    $("#mr_values").html(physicochemical_properties["MR Values"].toFixed(4));
+    $("#rings").html(physicochemical_properties["Rings"]);
+    $("#aromatic_rings").html(physicochemical_properties["Aromatic Rings"]);
+    $("#heavy_atoms").html(physicochemical_properties["Heavy Atoms"]);
+    $("#secondary_amines").html(physicochemical_properties["Secondary Amines"]);
+    $("#ether_oxygens").html(physicochemical_properties["Ether Oxygens"]);
+    $("#hydroxy_groups").html(physicochemical_properties["Hydroxy Groups"]);
+    $("#carboxylic_acids").html(physicochemical_properties["Carboxylic Acids"]);
 
-    $("#main_molecular_weight").html(physiochemical_properties["Molecular Weight"].toFixed(3));
-    $("#main_hbd").html(physiochemical_properties["Hydrogen Bond Donors"]);
-    $("#main_hba").html(physiochemical_properties["Hydrogen Bond Acceptors"]);
-    $("#main_formal_charge").html(physiochemical_properties["Formal Charge"]);
+    $("#main_molecular_weight").html(physicochemical_properties["Molecular Weight"].toFixed(3));
+    $("#main_hbd").html(physicochemical_properties["Hydrogen Bond Donors"]);
+    $("#main_hba").html(physicochemical_properties["Hydrogen Bond Acceptors"]);
+    $("#main_formal_charge").html(physicochemical_properties["Formal Charge"]);
 
 }
 
@@ -64,7 +64,8 @@ function fill_external_sources(sources) {
         "CAS" : "http://www.molbase.com/en/cas-",
         "KEGG Compound" : "http://www.genome.jp/dbget-bin/www_bget?",
         "Wikidata" : "https://www.wikidata.org/wiki/",
-        "Chemspider" : "http://www.chemspider.com/Chemical-Structure."
+        "Chemspider" : "http://www.chemspider.com/Chemical-Structure.",
+        "BioCyc" : "http://www.biocyc.org/META/new-image?object="
     };
 
     for (var source in sources) {
@@ -190,7 +191,7 @@ function generate_chemical_formula_search_table(api_url) {
                 },
                 {
                     "title": "Molecular Weight (g/mol)",
-                    "data": "Physiochemical Properties",
+                    "data": "Physicochemical Properties",
                     "className": "dt-center",
                     "width": "10%",
                     "render": function (data, type, row) {
@@ -201,32 +202,69 @@ function generate_chemical_formula_search_table(api_url) {
         });
 }
 
-function fill_pathway_data(pathways) {
-    $("#keggpathway_pcount").html(pathways["KEGG"].length);
-    $("#smpdb_pcount").html(pathways["SMPDB"].length);
 
-    if (pathways["KEGG"].length > 0) {
-        $("#keggpathway_ul").empty();
-        for (pathway in pathways["KEGG"]) {
-            var p = pathways["KEGG"][pathway]
-            pathway_html = "<li class='list-group-item'>";
-            pathway_html += kegg_pathway_naming[p];
-            pathway_html += "<div class='btn btn-sm btn-primary pull-right' name='k_pathwayview'>";
-            pathway_html += p;
-            pathway_html += "</div>";
-            pathway_html += "<div class='clearfix'></div>"
-            pathway_html += "</li>";
-            $("#keggpathway_ul").append(pathway_html);
+function fill_pathway_data(pathways) {
+
+
+
+    function append_generator(pid, identifier) {
+        var pathway_urls = {
+            "KEGG" : "http://www.genome.jp/dbget-bin/www_bget?",
+            "SMPDB" : "http://www.smpdb.ca/view/",
+            "BioCyc" : "https://biocyc.org/META/NEW-IMAGE?type=PATHWAY&object="
+        }
+
+        var list_item = "<a href='"+pathway_urls[identifier]+pid+"'>";
+        list_item += "<li class='list-group-item'>";
+        if (identifier == "KEGG") {
+            list_item += kegg_pathway_naming[pid];
+        }
+
+        else if (identifier == "SMPDB") {
+            list_item += smpdb_pathway_naming[pid];
+        }
+        list_item += "</li></a>";
+        return list_item
+    }
+    var kegg_pathways = pathways["KEGG"];
+    var smpdb_pathways = pathways["SMPDB"];
+    var biocyc_pathways = pathways["BioCyc"];
+
+    if (kegg_pathways.length > 0) {
+        $("#no_pathways").fadeOut(0);
+        $(".kegg_pcount").text(kegg_pathways.length);
+        $("#kegg_pathways").fadeIn(0);
+
+        for (k_idx in kegg_pathways) {
+            $("#kegg_list_group").append(append_generator(kegg_pathways[k_idx], "KEGG"))
+        }
+    }
+
+    if (smpdb_pathways.length > 0) {
+        $("#no_pathways").fadeOut(0);
+        $(".smpdb_pcount").text(smpdb_pathways.length);
+        $("#smpdb_pathways").fadeIn(0);
+
+        for (smpdb_idx in smpdb_pathways) {
+            $("#smpdb_list_group").append(append_generator(smpdb_pathways[smpdb_idx], "SMPDB"))
+        }
+    }
+
+    if (biocyc_pathways.length > 0) {
+        $("#no_pathways").fadeOut(0);
+        $(".biocyc_pcount").text(biocyc_pathways.length);
+        $("#biocyc_pathways").fadeIn(0);
+
+        for (biocyc_idx in biocyc_pathways) {
+            $("#biocyc_list_group").append(append_generator(biocyc_pathways[biocyc_idx], "BioCyc"))
         }
     }
 }
 
 function fill_tproperties_information(properties) {
-    /// HMDB
     $("#hmdb_origins").html(array_to_text(properties["HMDB"]["Origins"]));
     $("#hmdb_bioloc").html(array_to_text(properties["HMDB"]["Biofluid Locations"]));
     $("#hmdb_tisloc").html(array_to_text(properties["HMDB"]["Tissue Locations"]));
-
 }
 
 
@@ -239,8 +277,11 @@ function skeletons(inchikey) {
 
     for (index in metabolites) {
         var m = metabolites[index];
-        $("#skeleton_list").append("<li class='list-group-item'>" +
-            "<a href='" + getBaseURL() +"view/" + m["_id"] + "' target='_blank'>" +m["Identification Information"]["Name"] + "</a></li>")
+        if (m["_id"] != inchikey) {
+           $("#skeleton_list").append("<a href='" + getBaseURL() +"view/" + m["_id"] + "' target='_blank'><li class='list-group-item'>"
+            +m["Identification Information"]["Name"] + "</li></a>")
+        }
+
 
     }
 }
@@ -249,7 +290,7 @@ function skeletons(inchikey) {
 function render_metabolite_view(metabolite_id) {
     var metabolite = get_metabolite(metabolite_id);
     fill_identification_infomation(metabolite["Identification Information"], metabolite_id);
-    fill_physiochemical_properties(metabolite["Physiochemical Properties"]);
+    fill_physicochemical_properties(metabolite["Physicochemical Properties"]);
     fill_external_sources(metabolite["External Sources"]);
     supply_image(metabolite_id);
 
@@ -277,14 +318,10 @@ function render_metabolite_view(metabolite_id) {
         api_url += '"Identification Information.Molecular Formula" : "';
         api_url += metabolite["Identification Information"]["Molecular Formula"] + '"}';
         api_url += '&projection={"Identification Information.Name" : 1, ';
-        api_url += '"Identification Information.Molecular Formula" : 1, "Physiochemical Properties.Molecular Weight" : 1}&max_results=1000}';
+        api_url += '"Identification Information.Molecular Formula" : 1, "Physicochemical Properties.Molecular Weight" : 1}&max_results=1000}';
         generate_chemical_formula_search_table(api_url);
         $('#formula_search_modal').modal('toggle');
     });
-
-    $("[name='k_pathwayview']").click(function () {
-        // TODO:
-    })
 }
 
 $("#spooky").click(function () {

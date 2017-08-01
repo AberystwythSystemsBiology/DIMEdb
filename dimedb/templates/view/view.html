@@ -140,19 +140,34 @@
 
                 <h4>Pathways</h4>
 
-                <div class="panel panel-default">
-                    <div class="panel-heading" data-toggle="collapse" href="#keggpathway_ul">
-                        KEGG (<span id="keggpathway_pcount"></span>)
+                <div id="no_pathways">
+                    <p>No pathway information available.</p>
+                </div>
+
+                <div id="kegg_pathways" class="panel panel-default">
+                    <div class="panel-heading">
+                        KEGG Pathways (<span class="kegg_pcount"></span>)
                     </div>
-                    <ul class="list-group" id="keggpathway_ul" class="panel-collapse collapse">
+                    <ul class="list-group" id="kegg_list_group">
+
                     </ul>
                 </div>
 
-                <div class="panel panel-default">
+                <div id="smpdb_pathways" class="panel panel-default">
                     <div class="panel-heading">
-                        SMPDB (<span id="smpdb_pcount"></span>)
+                        SMPDB Pathways (<span class="smpdb_pcount"></span>)
                     </div>
-                    <ul class="list-group" id="smpdb_ul">
+                    <ul class="list-group" id="smpdb_list_group">
+
+                    </ul>
+                </div>
+
+                <div id="biocyc_pathways" class="panel panel-default">
+                    <div class="panel-heading">
+                        BioCyc Pathways (<span class="biocyc_pcount"></span>)
+                    </div>
+                    <ul class="list-group" id="biocyc_list_group">
+
                     </ul>
                 </div>
 

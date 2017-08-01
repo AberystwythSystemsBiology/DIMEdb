@@ -7,6 +7,7 @@ def get_data(compound):
 
     cpd_properties = cpd["PC-Compound_props"]["PC-InfoData"]
 
+
     for p in cpd_properties:
         check = p["PC-InfoData_urn"]["PC-Urn"]
 

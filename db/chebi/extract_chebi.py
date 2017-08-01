@@ -64,16 +64,18 @@ if __name__ == "__main__":
 
     compounds = read_inchi_tsv(directory+"chebi/chebiId_inchi.tsv")
 
+
     for inchikey in compounds.keys():
         try:
-            name_info = names[compounds[inchikey]["CHEBI_ID"]]
-            compounds[inchikey]["Name"] = name_info["Name"]
-            compounds[inchikey]["IUPAC Name"] = name_info["IUPAC Name"]
-            compounds[inchikey]["Synonyms"] = name_info["Synonyms"]
+            name_information = names[str(compounds[inchikey]["ChEBI ID"])]
+            compounds[inchikey]["Name"] = name_information["Name"]
+            compounds[inchikey]["IUPAC Name"] = name_information["IUPAC Name"]
+            compounds[inchikey]["Synonyms"] = name_information["Synonyms"]
         except KeyError:
             compounds[inchikey]["Name"] = None,
             compounds[inchikey]["IUPAC Name"] = None
             compounds[inchikey]["Synonyms"] = []
+
 
     with open(directory+"stripped_chebi.json", "wb") as outfile:
         json.dump(compounds, outfile, indent=4)

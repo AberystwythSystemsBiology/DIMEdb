@@ -38,7 +38,7 @@ def generate_physiochemical_properties(dimedb):
     pc_p_l.append(["InChIKey", "Property", "Entry"])
     for metabolite in dimedb:
         id = metabolite["_id"]
-        pc_p = metabolite["Physiochemical Properties"]
+        pc_p = metabolite["Physicochemical Properties"]
         for key in pc_p.keys():
             pc_p_l.append([id, key, pc_p[key]])
 
@@ -64,6 +64,9 @@ def generate_pathways(dimedb):
         for smpdb_id in metabolite["Pathways"]["SMPDB"]:
             pw_l.append([id, "SMPDB", smpdb_id])
 
+        for biocyc_id in metabolite["Pathways"]["BioCyc"]:
+            pw_l.append([id, "BioCyc", biocyc_id])
+
     with open(directory+"downloads/dimedb_pathways.tsv", "wb") as names_file:
         writer = csv.writer(names_file, delimiter="\t")
         for line in pw_l:
@@ -85,7 +88,7 @@ def generate_sources(dimedb):
 
 if __name__ == "__main__":
     dimedb = load_file(directory+"dimedb.json")
-    generate_id_tsv(dimedb)
+    #generate_id_tsv(dimedb)
     generate_physiochemical_properties(dimedb)
     generate_structures()
     generate_pathways(dimedb)
