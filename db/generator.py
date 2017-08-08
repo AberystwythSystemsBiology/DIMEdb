@@ -335,7 +335,6 @@ if __name__ == "__main__":
     for inchikey_index in tqdm(slice):
         processed_data = Parallel(n_jobs=32)(delayed(process_compound)(id) for id in inchikeys[inchikey_index:inchikey_index+limiter])
         p_db.extend(processed_data)
-        break
 
     [generate_image(rdkit_mol, compound["_id"]) for compound, rdkit_mol in p_db if compound != None]
 

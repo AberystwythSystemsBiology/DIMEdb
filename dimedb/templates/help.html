@@ -19,7 +19,7 @@
 
     <p>This page contains information about how to interact with DIMEdb’s web application and web service.</p>
 
-    <a name="#faq"><h1 class="page-header">Frequently Asked Questions</h1></a>
+    <a id="faq"><h1 class="page-header">Frequently Asked Questions</h1></a>
     <h2>What databases does DIMEdb use to collate its data from?</h2>
 
     <p><a href="http://www.hmdb.ca/" target="_blank">HMDB</a>,
@@ -54,7 +54,7 @@
     <p>Absolutely! Feel free to take a look at our example Python package <a href="{{ url_for('downloads_centre') }}">dimedbpy</a> for a
     working example of how best to use the web service.</p>
 
-    <a name="#api"><h1 class="page-header">DIMEdb Web Service/API</h1></a>
+    <a id="api"><h1 class="page-header">DIMEdb Web Service/API</h1></a>
 
     <p>DIMEdb features a application programming interface (API) which enables users to extract information from the
         integrated metabolite database freely. The API is built with ease-of-use in mind, providing access to relevant
@@ -77,7 +77,7 @@
       "External Sources": {
         ...
       },
-      "Physiochemical Properties": {
+      "Physicochemical Properties": {
 
         ...
       },
@@ -118,7 +118,7 @@
 
     <p>Additionally, both query methods allow for logical and/or operators:</p>
 
-    <pre class="language-bash"><code class="language-bash">{{ url }}api/metabolites?where={“$or” : [{“Identification Information.Molecular Formula : “C12H22O11”}, {“Physiochemical Properties.Hydrogen Bond Acceptors” : 2}]}</code></pre>
+    <pre class="language-bash"><code class="language-bash">{{ url }}api/metabolites?where={“$or” : [{“Identification Information.Molecular Formula : “C12H22O11”}, {“Physicochemical Properties.Hydrogen Bond Acceptors” : 2}]}</code></pre>
 
     <h3>Conditional Operators</h3>
 
@@ -126,7 +126,7 @@
         if you wanted to return all metabolites with a molecular weight &ge; 360.05 and
         &le; 380.05 g/mol, then you can use the following query.:</p>
 
-    <pre class="language-bash"><code class="language-bash">{{ url }}api/metabolites?where={"Physiochemical Properties.Molecular Weight" : {"$gte" : 360.05, "$lte" : 380.05}}</code></pre>
+    <pre class="language-bash"><code class="language-bash">{{ url }}api/metabolites?where={"Physicochemical Properties.Molecular Weight" : {"$gte" : 360.05, "$lte" : 380.05}}</code></pre>
 
     <h3>Projections</h3>
 

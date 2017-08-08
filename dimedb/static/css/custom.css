@@ -347,3 +347,7 @@ footer p {
 .img-responsive {
     width:100%;
 }
+
+#frontpagemedia {
+    text-align: center;
+}

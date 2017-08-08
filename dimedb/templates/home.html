@@ -52,40 +52,26 @@
         <a href="mailto:keo7@aber.ac.uk">keo7@aber.ac.uk</a>.
     </div>
 
-    <div class="row">
-    <div class="col-sm-8">
-        <h1>Web Application</h1>
-        <h4>DIMEdb provides a simple to use web application that facilitates end users to interrogate the DIMEdb web service using a graphical user interface.</h4>
-    </div>
-    <div class="col-sm-4">
-        <img class="img-responsive" src="{{ url_for('static', filename='imgs/webapp.png') }}">
-    </div>
-    </div>
-
-    <hr>
-
-    <div class="row">
-    <div class="col-sm-4">
-        <img class="img-responsive" src="{{ url_for('static', filename='imgs/webservice.png') }}">
-    </div>
-    <div class="col-sm-8">
-        <h1>Web Service</h1>
-
-        <h4>Using this service, we are able to facilitate allow users to create web service clients that can make use of the integrated metabolomic database for their own applications. </h4>
-    </div>
+    <div id="frontpagemedia" class="row">
+        <div class="col-sm-4">
+            <img class="img-responsive" src="{{ url_for('static', filename='imgs/webapp.png') }}">
+            <h2>Web Application</h2>
+            <p>DIMEdb provides a simple to use web application that facilitates end users to interrogate the DIMEdb web
+            service using a graphical user interface.</p>
+        </div>
+        <div class="col-sm-4">
+            <img class="img-responsive" src="{{ url_for('static', filename='imgs/webservice.png') }}">
+            <h2>Web Service</h2>
+            <p>Using this service, we are able to facilitate allow users to create web service clients that can make use of
+            the integrated metabolomic database for their own applications.</p>
+        </div>
+        <div class="col-sm-4">
+            <img class="img-responsive" src="{{ url_for('static', filename='imgs/opensource.png') }}">
+            <h1>Open Source</h1>
+            <p>All of our software and data is free to use, download, modify and redistribute in its entirety.</p>
+        </div>
     </div>
 
-    <hr>
-
-    <div class="row">
-    <div class="col-sm-8">
-        <h1>Open Source</h1>
-        <h4>All of our software and databases are freely downloadable under open source licenses.</h4>
-    </div>
-    <div class="col-sm-4">
-        <img class="img-responsive" src="{{ url_for('static', filename='imgs/opensource.svg') }}">
-    </div>
-    </div>
 
 
 {% endblock %}

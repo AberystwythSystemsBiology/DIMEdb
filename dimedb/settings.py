@@ -5,6 +5,7 @@ MONGO_PORT = os.environ.get('MONGO_PORT', 27017)
 MONGO_DBNAME = os.environ.get('MONGO_DBNAME', 'dimedb')
 MONGO_QUERY_BLACKLIST = ["$where"]
 HATEOAS = False
+query_objectid_as_string = False
 PAGINATION_DEFAULT = 500
 XML = False
 
