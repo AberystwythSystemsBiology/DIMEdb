@@ -116,16 +116,24 @@ function generate_api_url(values) {
 }
 
 function results_table(api_url) {
-    $('#search_results').DataTable({
+    $('#search_results_table').DataTable({
             "destroy": true,
             "searching": false,
             "lengthChange": false,
-            "pageLength": 5,
+            "pageLength": 10,
             "ajax": {
                 "url": encodeURI(api_url),
                 "dataSrc": "_items"
             },
             "columns": [
+                {
+                    "title" : "Molecular Structure",
+                    "width": "10%",
+                    "data" : "_id",
+                    "render" : function(data,type,row) {
+                        return "<img src='" + getBaseURL() + "view/structure/" + row._id + "' class='img-responsive img-circle'>"
+                    }
+                },
                 {
                     "title": "Metabolite Name",
                     "width": "40%",
@@ -163,9 +171,7 @@ $("#submit_search").click(function () {
     if (checkProperties(values) == false) {
         var api_url = generate_api_url(values);
         results_table(api_url);
+
     }
-});
-
-$(document).ready(function () {
-
+    $("#advanced_search_results").fadeIn(200);
 });

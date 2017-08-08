@@ -214,7 +214,7 @@ function fill_pathway_data(pathways) {
             "BioCyc" : "https://biocyc.org/META/NEW-IMAGE?type=PATHWAY&object="
         }
 
-        var list_item = "<a href='"+pathway_urls[identifier]+pid+"'>";
+        var list_item = "<a href='"+pathway_urls[identifier]+pid+"' target='_blank'>";
         list_item += "<li class='list-group-item'>";
         if (identifier == "KEGG") {
             list_item += kegg_pathway_naming[pid];
@@ -222,6 +222,10 @@ function fill_pathway_data(pathways) {
 
         else if (identifier == "SMPDB") {
             list_item += smpdb_pathway_naming[pid];
+        }
+
+        else if (identifier == "BioCyc") {
+            list_item += biocyc_pathway_naming[pid];
         }
         list_item += "</li></a>";
         return list_item
@@ -275,14 +279,19 @@ function skeletons(inchikey) {
 
     var metabolites = get_metabolites(api_url);
 
+    var any = false;
+
     for (index in metabolites) {
         var m = metabolites[index];
         if (m["_id"] != inchikey) {
            $("#skeleton_list").append("<a href='" + getBaseURL() +"view/" + m["_id"] + "' target='_blank'><li class='list-group-item'>"
-            +m["Identification Information"]["Name"] + "</li></a>")
+            +m["Identification Information"]["Name"] + "</li></a>");
+            any = true;
         }
+    }
 
-
+    if (any == false) {
+        $("#skeleton_list").append("<li class='list-group-item'> None available </li>");
     }
 }
 

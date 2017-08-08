@@ -48,9 +48,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-.container .text-muted {
-    margin: 20px 0;
-}
 
 .navbar-inverse {
     background-image: none;
@@ -84,6 +81,7 @@ h1, h2, h3, h4, h5, h6 {
 .jumbotron {
     background-color: #2e6da4;
     color:#fff;
+    marigin: auto 0 auto;
 }
 
 #homepage_jumbotron {
@@ -107,6 +105,11 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: -10px;
 }
 
+.jumbotron .container {
+    max-width: 1400px;
+    width:95%;
+}
+
 #metabolite_view {
     display:none;
 }
@@ -124,10 +127,6 @@ h1, h2, h3, h4, h5, h6 {
     display:none;
 }
 
-table#search_results {
-    width:80%;
-    margin: 0 auto 0;
-}
 
 .btn-space {
     margin-right: 5px;
@@ -288,12 +287,18 @@ img.tpicture{
 }
 
 footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  background-color: #f5f5f5;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    background-color: #f5f5f5;
+    text-align: center;
+}
+
+footer p {
+    margin: 20px 0;
+    font-size: .9em;
 }
 
 .text_bold {
@@ -320,13 +325,10 @@ footer {
 }
 
 #spooky_skeleton img {
-    display:block;
-    margin:0 auto 0;
     width:400px;
 }
 
 #spooky_skeleton h1 {
-    text-align: center;
     font-family: "Comic Sans MS", cursive, sans-serif;
 }
 
@@ -340,4 +342,8 @@ footer {
 
 #kegg_pathways {
     display:none;
+}
+
+.img-responsive {
+    width:100%;
 }

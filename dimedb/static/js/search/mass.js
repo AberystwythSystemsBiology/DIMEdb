@@ -24,6 +24,13 @@ function generate_table(mass, ionisation, api_url, tolerance) {
             },
             "columns": [
                 {
+                    "title" : "Molecular Structure",
+                    "data" : "_id",
+                    "render" : function(data,type,row) {
+                        return "<img src='" + getBaseURL() + "view/structure/" + row._id + "' class='img-responsive img-circle'>"
+                    }
+                },
+                {
                     "title": "Metabolite Name",
                     "width": "40%",
                     "data": "Identification Information.Name",

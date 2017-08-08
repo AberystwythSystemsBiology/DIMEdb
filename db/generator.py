@@ -1,11 +1,11 @@
-import json, pubchempy, urllib2, collections, pyidick, requests, re
+import json, urllib2, collections, pyidick, requests, re
 from rdkit.Chem import rdMolDescriptors, MolFromSmiles, MolSurf, Fragments, rdmolops, Draw
 from bioservices import KEGG, KEGGParser
 from bson.json_util import dumps as bson_dumps
 from biocyc import biocyc
 import pybel
 from joblib import Parallel, delayed
-
+from tqdm import tqdm
 
 directory = "/home/keo7/.data/dimedb/"
 
@@ -13,9 +13,10 @@ def load_json(fp):
     with open(fp, "r") as hmdb_file:
         return json.load(hmdb_file)
 
-combined = load_json(directory + "/combined_data.json")
+combined = load_json(directory + "combined_data.json")
 chebi = load_json(directory + "stripped_chebi.json")
 hmdb = load_json(directory + "stripped_hmdb.json")
+pubchem = load_json(directory + "stripped_pubchem.json")
 
 def identification_info(inchikey):
     id_info = {
@@ -31,19 +32,21 @@ def identification_info(inchikey):
 
     try:
         if combined[inchikey]["HMDB Accession"] != None:
-            id_info["Name"] = hmdb[inchikey]["Name"].title()
+            id_info["Name"] = hmdb[inchikey]["Name"]
             id_info["Synonyms"].extend(hmdb[inchikey]["Synonyms"])
 
         if combined[inchikey]["PubChem ID"] != None:
-            pcc = pubchempy.get_compounds(combined[inchikey]["PubChem ID"])[0]
-            if len(pcc.synonyms) > 0:
-                id_info["Name"] = pcc.synonyms[0].title()
-            if len(pcc.synonyms) > 1:
-                id_info["Synonyms"].extend(pcc.synonyms[1:])
+            if type(pubchem[inchikey]["Name"]) != list:
+                id_info["Name"] = pubchem[inchikey]["Name"]
+            else:
+                id_info["Name"] = pubchem[inchikey]["Name"][0]
+
+            id_info["Synonyms"].extend(pubchem[inchikey]["Synonyms"])
 
         if combined[inchikey]["ChEBI ID"] != None:
             if chebi[inchikey]["Name"] != None:
-                id_info["Name"] = chebi[inchikey]["Name"].title()
+                if type(chebi[inchikey]["Name"]) != list:
+                    id_info["Name"] = chebi[inchikey]["Name"]
             id_info["Synonyms"].extend(chebi[inchikey]["Synonyms"])
 
         id_info["InChI"] = str(combined[inchikey]["InChI"])
@@ -59,11 +62,17 @@ def identification_info(inchikey):
             except Exception:
                 pass
             if id_info["IUPAC Name"] == None:
-                response = requests.get("http://cactus.nci.nih.gov/chemical/structure/%(smiles)s/iupac_name"  % dict(smiles=id_info["SMILES"]))
-                if response.status_code == 200:
-                    id_info["IUPAC Name"] = response.text
+                try:
+                    response = requests.get("http://cactus.nci.nih.gov/chemical/structure/%(smiles)s/iupac_name"  % dict(smiles=id_info["SMILES"]))
+                    if response.status_code == 200:
+                        id_info["IUPAC Name"] = response.text
+                except Exception:
+                    pass
 
         id_info["Synonyms"] = list(set(id_info["Synonyms"]))
+
+        if id_info["Name"] == None:
+            id_info["Molecular Formula"] = None
 
         return id_info, rdkit_mol
     except KeyError:
@@ -91,11 +100,14 @@ def generate_sources(inchikey):
         "BioCyc" : None
     }
 
-    response = urllib2.urlopen("http://webservice.bridgedb.org/Human/xrefs/Ik/" + inchikey)
-    for line in response.read().splitlines():
-        resource = line.split("\t")
-        if resource[1] in sources.keys():
-            sources[resource[1]] = resource[0]
+    try:
+        response = urllib2.urlopen("http://webservice.bridgedb.org/Human/xrefs/Ik/" + inchikey)
+        for line in response.read().splitlines():
+            resource = line.split("\t")
+            if resource[1] in sources.keys():
+                sources[resource[1]] = resource[0]
+    except Exception:
+        pass
 
     if sources["KEGG Compound"] != None:
         response = requests.get("https://websvc.biocyc.org/META/foreignid?ids=Kegg:" + sources["KEGG Compound"])
@@ -128,7 +140,7 @@ def generate_pathways(inchikey, sources):
         if o != None:
             try:
                 biocyc_pathways = [re.sub('<[^<]+?>', '', r.pathways[0].biocyc_link_html) for r in o.reactions]
-                pathways["BioCyc"] = biocyc_pathways
+                pathways["BioCyc"] = list(set(biocyc_pathways))
             except Exception:
                 pass
 
@@ -167,8 +179,10 @@ def physicochemical(rdkit_mol):
 
 def adduct_information(smiles, properties):
     adducts = collections.defaultdict(list)
-
-    mol = pyidick.Molecule(smiles)
+    try:
+        mol = pyidick.Molecule(smiles)
+    except Exception:
+        mol = None
 
     def calculate(type, mol, rule_dict=None, electrons=0, charge=0):
         iso_dist = mol.isotopic_distribution(rule_dict=rule_dict, electrons=electrons, charge=charge)
@@ -309,17 +323,23 @@ def process_compound(inchikey):
         return None, None
 
 def generate_image(mol, inchikey):
-    Draw.MolToFile(mol, fileName=directory+"structures/"+inchikey+".svg", imageType="svg", size=(300, 300))
+    Draw.MolToFile(mol, fileName=directory+"structures/"+inchikey+".svg", imageType="svg", size=(250, 250))
 
 if __name__ == "__main__":
-    test_keys = combined.keys()[:1000]
+    limiter = 4000
+    inchikeys = combined.keys()
+    slice = range(0, len(inchikeys), limiter)
 
-    p_db = Parallel(n_jobs=10)(delayed(process_compound)(id) for id in test_keys)
+    p_db = []
 
-    db = [compound for compound, rdkit_mol in p_db if compound != None]
+    for inchikey_index in tqdm(slice):
+        processed_data = Parallel(n_jobs=32)(delayed(process_compound)(id) for id in inchikeys[inchikey_index:inchikey_index+limiter])
+        p_db.extend(processed_data)
+        break
 
     [generate_image(rdkit_mol, compound["_id"]) for compound, rdkit_mol in p_db if compound != None]
 
+    db = [compound for compound, rdkit_mol in p_db if compound != None]
 
     mongodb_file = json.loads(bson_dumps(db), object_pairs_hook=collections.OrderedDict)
 

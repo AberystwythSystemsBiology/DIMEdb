@@ -2,6 +2,10 @@
 
 {% block title %}Home{% endblock %}
 
+{% block head %}
+    <meta name="description" content="DIMEdb database of metabolites for Direct Infusion/Injection Metabolomics." />
+{% endblock %}
+
 {% block abovebody %}
     <div id="homepage_jumbotron" class="jumbotron">
         <div class="container">
@@ -9,7 +13,7 @@
                 <div class="col-sm-7">
                     <img src="{{ url_for('static', filename='imgs/dimedb-light.svg') }}">
                     <h3>A database of biologically relevant metabolite structures and annotations</h3>
-                    <h4>DIMEdb...</h4>
+                    <h5><i class="glyphicon glyphicon-stats"></i> {{ count }} Freely Accessible Metabolites</h5>
                 </div>
                 <div class="col-sm-5">
                     <a href="{{ url_for('mass_search') }}">
@@ -48,27 +52,41 @@
         <a href="mailto:keo7@aber.ac.uk">keo7@aber.ac.uk</a>.
     </div>
 
-    <div class="container marketing">
-        <div class="row">
-            <div class="col-sm-4">
-                <h1><i class="glyphicon glyphicon-search"></i></h1>
-                <h2>Web Search</h2>
-                <p>DIMEdb features both textual and mass metabolite search facilities.</p>
-            </div>
-            <div class="col-sm-4">
-                <h1><i class="glyphicon glyphicon-wrench"></i></h1>
-                <h2>Web Service</h2>
-                <p>DIMEdb offers programmatic access to metabolite information,
-                    facilitating the development of bioinformatic tools.</p>
-            </div>
-            <div class="col-sm-4">
-                <h1><i class="glyphicon glyphicon-tree-deciduous"></i></h1>
-                <h2>Open Source</h2>
-                <p>DIMEdb is a open source project, all contributions are welcome!</p>
-            </div>
-        </div>
-
+    <div class="row">
+    <div class="col-sm-8">
+        <h1>Web Application</h1>
+        <h4>DIMEdb provides a simple to use web application that facilitates end users to interrogate the DIMEdb web service using a graphical user interface.</h4>
     </div>
+    <div class="col-sm-4">
+        <img class="img-responsive" src="{{ url_for('static', filename='imgs/webapp.png') }}">
+    </div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+    <div class="col-sm-4">
+        <img class="img-responsive" src="{{ url_for('static', filename='imgs/webservice.png') }}">
+    </div>
+    <div class="col-sm-8">
+        <h1>Web Service</h1>
+
+        <h4>Using this service, we are able to facilitate allow users to create web service clients that can make use of the integrated metabolomic database for their own applications. </h4>
+    </div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+    <div class="col-sm-8">
+        <h1>Open Source</h1>
+        <h4>All of our software and databases are freely downloadable under open source licenses.</h4>
+    </div>
+    <div class="col-sm-4">
+        <img class="img-responsive" src="{{ url_for('static', filename='imgs/opensource.svg') }}">
+    </div>
+    </div>
+
 
 {% endblock %}
 

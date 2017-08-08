@@ -4,101 +4,104 @@
 
 {% block abovebody %}
     <div class="jumbotron">
-      <div class="container">
-          <h1>Text Search</h1>
+        <div class="container">
+            <h1>Text Search</h1>
         </div>
-      </div>
+    </div>
     </div>
 {% endblock %}
 
 {% block body %}
 
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label">Name:</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="name" placeholder="Name, IUPAC Name, Systematic Name, or Synonym" disabled>
-      </div>
-    </div>
-
-    <div class="form-group row">
-      <label class="col-sm-2 col-form-label">Molecular Formula:</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="molecular_formula" placeholder="Example: H2O">
-      </div>
-    </div>
-
-    <div class="form-group row">
-      <label class="col-sm-2 col-form-label">Molecular Weight:</label>
-      <div class="col-sm-7">
-        <input type="text" class="form-control" id="molecular_weight" placeholder="Example: 305.37">
-      </div>
-        <div class="col-sm-1">
-            Tolerance
+        <label class="col-sm-2 col-form-label">Name:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="name"
+                   placeholder="Name, IUPAC Name, Systematic Name, or Synonym" disabled>
         </div>
-      <div class="col-sm-2">
-        <select id="search_tolerance">
-            <option value="1">(&#177;) 1.0 m/z</option>
-            <option value="0.5" selected="selected">(&#177;) 0.5 g/mol</option>
-            <option value="0.2">(&#177;) 0.2 g/mol</option>
-            <option value="0.1">(&#177;) 0.1 g/mol</option>
-            <option value="0.05">(&#177;) 0.05 g/mol</option>
-            <option value="0.01">(&#177;) 0.01 g/mol</option>
-            <option value="0.005">(&#177;) 0.005 g/mol</option>
-            <option value="0.001">(&#177;) 0.001 g/mol</option>
-            <option value="0.0005">(&#177;) 0.0005 g/mol</option>
-        </select>
-      </div>
     </div>
 
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label">External Source:</label>
-
-      <div class="col-sm-2">
-        <select id="source_name">
-            <option value="HMDB Accession">HMDB Accession</option>
-            <option value="ChEBI ID">ChEBI ID</option>
-            <option value="PubChem ID">PubChem ID</option>
-            <option value="KEGG Compound">KEGG Compound</option>
-            <option value="CAS">CAS</option>
-            <option value="Wikidata">Wikidata</option>
-            <option value="Chemspider">Chemspider</option>
-
-        </select>
-      </div>
-        <div class="col-sm-8">
-        <input type="text" class="form-control" id="source_id" placeholder="Example: HMDB00258">
-      </div>
+        <label class="col-sm-2 col-form-label">Molecular Formula:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="molecular_formula" placeholder="Example: H2O">
+        </div>
     </div>
 
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label">InChI:</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="inchi" placeholder="Example: 1S/H2O/h1H2">
-      </div>
+        <label class="col-sm-2 col-form-label">Molecular Weight:</label>
+        <div class="col-sm-5">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Username" aria-describedby="molecular_weight_gmol">
+                <span class="input-group-addon" id="molecular_weight_gmol">g/mol</span>
+            </div>
+        </div>
+        <label class="col-sm-2 col-form-label">Tolerance:</label>
+        <div class="col-sm-3">
+            <select id="search_tolerance" class="form-control">
+                <option value="1">(&#177;) 1.0 g/mol</option>
+                <option value="0.5" selected="selected">(&#177;) 0.5 g/mol</option>
+                <option value="0.2">(&#177;) 0.2 g/mol</option>
+                <option value="0.1">(&#177;) 0.1 g/mol</option>
+                <option value="0.05">(&#177;) 0.05 g/mol</option>
+                <option value="0.01">(&#177;) 0.01 g/mol</option>
+                <option value="0.005">(&#177;) 0.005 g/mol</option>
+                <option value="0.001">(&#177;) 0.001 g/mol</option>
+                <option value="0.0005">(&#177;) 0.0005 g/mol</option>
+            </select>
+        </div>
     </div>
 
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label">InChI Key:</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="inchikey" placeholder="Example: XLYOFNOQVPJJNP-UHFFFAOYSA-N">
-      </div>
+        <label class="col-sm-2 col-form-label">External Source:</label>
+
+        <div class="col-sm-3">
+            <select id="source_name" class="form-control">
+                <option value="HMDB Accession">HMDB Accession</option>
+                <option value="ChEBI ID">ChEBI ID</option>
+                <option value="PubChem ID">PubChem ID</option>
+                <option value="KEGG Compound">KEGG Compound</option>
+                <option value="CAS">CAS</option>
+                <option value="Wikidata">Wikidata</option>
+                <option value="Chemspider">Chemspider</option>
+                <option value="Chemspider">BioCyc</option>
+            </select>
+        </div>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" id="source_id" placeholder="Example: HMDB00258">
+        </div>
     </div>
 
     <div class="form-group row">
-      <label class="col-sm-2 col-form-label">SMILES:</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="smiles" placeholder="Example: O">
-      </div>
+        <label class="col-sm-2 col-form-label">InChI:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="inchi" placeholder="Example: 1S/H2O/h1H2">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">InChI Key:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="inchikey" placeholder="Example: XLYOFNOQVPJJNP-UHFFFAOYSA-N">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">SMILES:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="smiles" placeholder="Example: O">
+        </div>
     </div>
 
     <div id="submit_search" class="btn btn-primary pull-right">
         <i class="glyphicon glyphicon-search"></i> Submit Search
     </div>
 
-        <table id="search_results" class="table table-striped">
-
+    <div id="advanced_search_results">
+        <h2 class="page-header">Search Results</h2>
+        <table id="search_results_table" class="table table-striped" width="100%">
         </table>
-
+    </div>
 {% endblock %}
 
 

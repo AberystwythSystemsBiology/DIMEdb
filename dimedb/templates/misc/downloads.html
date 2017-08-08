@@ -2,6 +2,12 @@
 
 {% block title %}Download Centre{% endblock %}
 
+
+{% block head %}
+    <link href="{{ url_for('static', filename='bower_components/prismjs/themes/prism.css') }}" rel="stylesheet">
+{% endblock %}
+
+
 {% block abovebody %}
     <div class="jumbotron">
       <div class="container">
@@ -13,6 +19,8 @@
 {% block body %}
 
     <h2>Database Information</h2>
+
+    <p>It is possible to download DIMEdb directly without going through the DIMEdb web service.</p>
 
     <table class="table table-striped">
         <tr>
@@ -28,7 +36,7 @@
         {% endfor %}
     </table>
 
-    <h2>Software</h2>
+    <h2>Available Software</h2>
 
     <h3>dimedbpy: Python wrapper for the DIMEdb REST API.</h3>
 
@@ -37,18 +45,35 @@
 
     <P>Here's a quick example, showing how to retrieve metabolites by id (InChIKey):</P>
 
-    <pre class="code langugage-python"><code class="code language-python">from dimedbpy import get_metabolites
+    <pre class="language-python"><code class="language-python">from dimedbpy import get_metabolites
 
 metabolites = get_metabolites("DOUMFZQKYFQNTF-WUTVXBCWSA-N")
 
 for metabolite in metabolites:
     print metabolite.name</code></pre>
 
-    <p>dimedbpy is licensed under the MIT licence, and is freely available <a href="https://github.com/KeironO/dimedbpy"
+    <p>dimedbpy is licensed under the open source MIT licence, and is freely available <a href="https://github.com/KeironO/dimedbpy"
                                                                               target="_blank">here</a>.</p>
 
     <h3>pyIDICk: Python Isotopic Distribution Calculator</h3>
 
+    <p>pyIDICk can calculate the isotopic distribution of a given SMILES string.</p>
 
+    <p>Here's an example of how to use the package.</p>
+
+
+    <pre class="language-python"><code class="language-python">import pyidick
+
+# Create Molecule object for H2O
+m = pyidick.Molecule("O")
+
+# Return Molecular Formula
+m.molecular_formula
+
+#Calculate Isotopic Distribution
+m.isotopic_distribution()</code></pre>
+
+    <p>pyIDICK is licensed under the open source MIT licence, and is freely available <a href="https://github.com/KeironO/pyidick"
+                                                                              target="_blank">here</a>.</p>
 
 {% endblock %}

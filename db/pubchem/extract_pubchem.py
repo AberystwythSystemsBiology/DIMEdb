@@ -1,4 +1,4 @@
-import os, xmltodict, json, gzip
+import os, xmltodict, json, gzip, requests
 
 def get_data(compound):
     cpd = xmltodict.parse(compound)["PC-Compound"]
@@ -6,7 +6,6 @@ def get_data(compound):
     id = cpd["PC-Compound_id"]["PC-CompoundType"]["PC-CompoundType_id"]["PC-CompoundType_id_cid"]
 
     cpd_properties = cpd["PC-Compound_props"]["PC-InfoData"]
-
 
     for p in cpd_properties:
         check = p["PC-InfoData_urn"]["PC-Urn"]
@@ -24,9 +23,20 @@ def get_data(compound):
         except Exception, err:
             print "ERROR FOUND (cpd", id, "INCHIKEY)"
             pass
+    try:
+        response = requests.get("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/%(cid)s/synonyms/JSON" % dict(cid=id))
+        if response.status_code == 200:
+            names = json.loads(response.text)["InformationList"]["Information"][0]["Synonym"]
+        else:
+            names = None
+    except requests.exceptions.ConnectionError:
+        names = None
 
-    if inchi_key != None:
+
+    if inchi_key != None and names != None:
         return inchi_key, {
+            "Name" : names[0],
+            "Synonyms" : names[1:],
             "PubChem ID": id,
             "InChI": inchi
         }
@@ -42,6 +52,8 @@ if __name__ == "__main__":
 
     keep_going = False
 
+    index = 0
+
     for file in os.listdir(directory+"pubchem/"):
         hmdb_xml = gzip.open(directory+"pubchem/"+file , "rb")
 
@@ -54,6 +66,8 @@ if __name__ == "__main__":
                 keep_going = False
                 inchi, data = get_data(metabolite_text)
                 if inchi != None:
+                    index += 1
+                    print index
                     stripped_metabolites[inchi] = data
                 metabolite_text = ""
 

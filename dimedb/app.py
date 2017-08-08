@@ -9,11 +9,12 @@ app.config.update(
     DEBUG = True
 )
 
+
 # Annoying webpage stuff.
 
 @app.route("/")
 def homepage():
-    return render_template("home.html")
+    return render_template("home.html", count='{:,}'.format(app.data.driver.db['metabolites'].count()))
 
 @app.route("/search/mass")
 def mass_search():
@@ -50,6 +51,10 @@ def view(_id):
 def get_structures_image(id):
     d = os.path.expanduser("~/.data/dimedb/structures/")
     return send_from_directory(d, id+".svg")
+
+@app.route("/tools/isotopic_distribution/")
+def isotopic_distribution_calculator():
+    return render_template("tools/isotopic_distribution.html")
 
 @app.errorhandler(404)
 def page_not_found(e):
