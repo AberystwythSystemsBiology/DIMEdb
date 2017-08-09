@@ -49,6 +49,11 @@
                 <li><a href="{{ url_for('help')}}">
                     <i class="glyphicon glyphicon-question-sign"></i> Help
                 </a></li>
+                {% if g.user.is_authenticated %}
+                    <li><a href="#">{{ g.user.first_name }}</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}"><i class="glyphicon glyphicon-log-in"></i> Login</a></li>
+                {% endif %}
             </ul>
         </div>
     </div>

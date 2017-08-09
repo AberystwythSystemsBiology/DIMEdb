@@ -16,14 +16,10 @@ def login():
         if user and user.is_correct_password(form.password.data):
             if user.confirmed == False:
                 flash("Still waiting for account approval")
-            elif user.banned == True:
-                flash("Your account has been banned")
-            elif user.disabled == True:
-                flash("Your account has been disabled")
             else:
                 login_user(user)
                 flash("Login successful")
-                return redirect(url_for("index"))
+                return redirect(url_for("homepage"))
         else:
             flash("Incorrect email or password given")
     return render_template("auth/login.html", form=form)
