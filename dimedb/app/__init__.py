@@ -5,7 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask.ext.bcrypt import Bcrypt
 from flask.ext.login import LoginManager
 
-
 from hurry.filesize import size, si
 
 import os
@@ -13,6 +12,7 @@ import os
 app = Eve(__name__)
 app.config.update(
     DEBUG = True,
+    BASE_DIR = os.path.abspath(os.path.dirname(__file__)),
     SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://keo7:password@localhost/dimedb",
     SQLALCHEMY_TRACK_MODIFICATIONS = False,
     LDAP_LOGIN_VIEW = 'auth.login',
@@ -78,4 +78,7 @@ def page_not_found(e):
 
 # Blueprints
 
+from app.mod_auth.controllers import authentication
+
+app.register_blueprint(authentication)
 db.create_all()

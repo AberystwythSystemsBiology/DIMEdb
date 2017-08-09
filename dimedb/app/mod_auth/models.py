@@ -1,3 +1,7 @@
+from app import db, bcrypt
+from sqlalchemy.ext.hybrid import hybrid_property
+from hashlib import md5
+
 class Base(db.Model):
     __abstract__ = True
 
@@ -12,7 +16,7 @@ class UserType(db.Enum):
 
 
 class User(Base):
-    __tablename__ == "users"
+    __tablename__ = "auth_user"
     user_name = db.Column(db.String(64), unique=True, nullable=False)
     _password = db.Column(db.String(128), nullable=False)
     email_address = db.Column(db.String(128), unique=True)
