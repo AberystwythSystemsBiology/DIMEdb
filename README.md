@@ -1,71 +1,9 @@
 # DIMEdb: Direct Infusion Metabolite Database
 
-## Installation
+<a href="https://dimedb.ibers.aber.ac.uk"><img src="https://raw.githubusercontent.com/KeironO/DIMEdb/master/dimedb/app/static/imgs/dimedb.svg" align="left" hspace="10" vspace="6"></a>
 
-These instructions are written for Ubuntu 16.04. If you require any platform-specific assistance in setting DIMEdb up, please feel free to [open an issue](https://github.com/KeironO/DIMEdb/issues).
+**DIMEdb** is a...
 
-### MongoDB
-
-#### Installing MongoDB
-
-MongoDB is already included in the standard Ubuntu package repository, but the recommended installation source is from the official MongoDB repository.
-
-To do this, firstly you are required to import the key for the official MongoDB repository to your sources list.
-
-```
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
-```
-
-Now you are required to add the repository details through the addition of the packages list.
-
-```
-echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list && sudo apt-get update
-```
-Once completed, you can now install the MongoDB package.
-
-```
-sudo apt-get install -y mongodb-org
-```
-
-#### Configurating MongoDB
-
-We're not quite finished(!) We now need to tell ```systemd``` how to manage the resource.
-
-First of all, create a new ```service``` file in the ```/etc/systemd/system/``` directory.
-
-```
-sudo vim /etc/systemd/system/mongodb.service
-```
-
-Paste in the following text.
-
-```
-[Unit]
-Description=High-performance, schema-free document-oriented database
-After=network.target
-
-[Service]
-User=mongodb
-ExecStart=/usr/bin/mongod --quiet --config /etc/mongod.conf
-
-[Install]
-WantedBy=multi-user.target
-```
-Then save and close the file (for the vim virgins to do this press ```Esc``` and then type ```:wq```).
-
-Now set up the service to run by default.
-
-```
-sudo systemctl start mongodb && sudo systemctl enable mongodb
-```
-
-#### Setting up the collection
-
-```
-mongoimport --db dimedb --collection metabolites --type json --file dimedb.json --jsonArray 
-```
-
-### python-pip
 
 ## License
 
