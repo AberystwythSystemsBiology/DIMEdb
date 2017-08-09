@@ -1,15 +1,32 @@
 from eve import Eve
-from flask import render_template, abort, request, send_from_directory
+from flask import render_template, request, send_from_directory, g
+
+from flask_sqlalchemy import SQLAlchemy
+from flask.ext.bcrypt import Bcrypt
+from flask.ext.login import LoginManager
+
+
 from hurry.filesize import size, si
 
 import os
 
 app = Eve(__name__)
 app.config.update(
-    DEBUG = True
+    DEBUG = True,
+    SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://keo7:password@localhost/dimedb",
+    SQLALCHEMY_TRACK_MODIFICATIONS = False,
+    LDAP_LOGIN_VIEW = 'auth.login',
+    CSRF_ENABLED = True,
+    CSRF_SESSION_KEY = "secret",
+    SECRET_KEY = "secret"
 )
 
-# Annoying webpage stuff.
+db = SQLAlchemy(app)
+bcrypt = Bcrypt(app)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
 
 @app.route("/")
 def homepage():
@@ -58,3 +75,7 @@ def isotopic_distribution_calculator():
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template("./misc/404.html"), 404
+
+# Blueprints
+
+db.create_all()
