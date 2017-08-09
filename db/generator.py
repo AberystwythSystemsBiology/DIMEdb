@@ -328,10 +328,10 @@ def generate_image(mol, inchikey):
 if __name__ == "__main__":
     limiter = 500
     inchikeys = combined.keys()
-    slice = range(0, len(inchikeys), limiter)[12:]
+    slice = range(0, len(inchikeys), limiter)[18:]
 
 
-    # 12 ->
+    # 18 ->
     for inchikey_index in tqdm(slice):
         break
         processed_data = Parallel(n_jobs=32)(delayed(process_compound)(id) for id in inchikeys[inchikey_index:inchikey_index+limiter])

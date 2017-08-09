@@ -1,14 +1,13 @@
 from eve import Eve
-
 from flask import render_template, abort, request, send_from_directory
 from hurry.filesize import size, si
-import urllib, json, os
+
+import os
 
 app = Eve(__name__)
 app.config.update(
     DEBUG = True
 )
-
 
 # Annoying webpage stuff.
 
