@@ -30,7 +30,28 @@ def login():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    pass
+    form = RegistrationForm(request.form)
+    if form.validate_on_submit():
+        if User.query.filter_by(email_address=form.email_address.data).first():
+            flash("Email address already used!")
+        elif User.query.filter_by(user_name=form.user_name.data).first():
+            flash("Username already in use!")
+        else:
+            user = User(
+                user_name=form.user_name.data,
+                password=form.password.data,
+                email_address=form.email_address.data,
+                first_name=form.first_name.data,
+                last_name=form.last_name.data,
+                affiliation=form.affiliation.data,
+                country=form.country.data,
+                user_type=form.user_type.data
+            )
+            db.session.add(user)
+            db.session.commit()
+            flash("Thank you for registering!")
+            return redirect(url_for("login"))
+    return render_template("auth/register.html", form=form)
 
 @app.route("/logout")
 def logout():

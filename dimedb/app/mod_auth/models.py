@@ -28,6 +28,8 @@ class User(Base):
     last_name = db.Column(db.String(128), nullable=False)
     user_type = db.Column(db.String, nullable=False)
 
+    confirmed = db.Column(db.Boolean, default=False, nullable=False)
+
     @hybrid_property
     def password(self):
         return self._password
