@@ -45,12 +45,12 @@
                   <li><a href="{{ url_for('mass_search')}}">Mass Search</a></li>
                 </ul>
                 </li>
-
+                <li><a href="{{ url_for('tables_home') }}"><i class="glyphicon glyphicon-tasks"></i> Tables</a></li>
                 <li><a href="{{ url_for('help')}}">
                     <i class="glyphicon glyphicon-question-sign"></i> Help
                 </a></li>
                 {% if g.user.is_authenticated %}
-                    <li><a href="#">{{ g.user.first_name }}</a></li>
+                    <li><a href="#"><img src="{{ g.user.avatar(18) }}" class="profile-image img-circle"> {{ g.user.first_name }}</a></li>
                 {% else %}
                     <li><a href="{{ url_for('login') }}"><i class="glyphicon glyphicon-log-in"></i> Login</a></li>
                 {% endif %}

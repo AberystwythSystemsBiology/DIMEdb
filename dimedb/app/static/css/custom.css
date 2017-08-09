@@ -78,6 +78,11 @@ h1, h2, h3, h4, h5, h6 {
     width: auto;
 }
 
+.navbar-nav>li>a.profile-image {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 .jumbotron {
     background-color: #2e6da4;
     color:#fff;

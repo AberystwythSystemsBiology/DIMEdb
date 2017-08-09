@@ -79,6 +79,9 @@ def page_not_found(e):
 # Blueprints
 
 from app.mod_auth.controllers import authentication
+from app.mod_tables.controllers import tables
 
 app.register_blueprint(authentication)
+app.register_blueprint(tables)
+
 db.create_all()
