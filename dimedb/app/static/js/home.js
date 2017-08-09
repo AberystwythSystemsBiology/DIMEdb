@@ -1,3 +1,3 @@
 $(document).ready(function () {
-    $(".navbar-brand img").hide();
+    $(".navbar img").hide();
 });
