@@ -1,4 +1,4 @@
-import json, urllib2, collections, pyidick, requests, re
+import json, urllib2, collections, pyidick, requests, re, pickle, os
 from rdkit.Chem import rdMolDescriptors, MolFromSmiles, MolSurf, Fragments, rdmolops, Draw
 from bioservices import KEGG, KEGGParser
 from bson.json_util import dumps as bson_dumps
@@ -326,19 +326,23 @@ def generate_image(mol, inchikey):
     Draw.MolToFile(mol, fileName=directory+"structures/"+inchikey+".svg", imageType="svg", size=(250, 250))
 
 if __name__ == "__main__":
-    limiter = 4000
+    limiter = 500
     inchikeys = combined.keys()
-    slice = range(0, len(inchikeys), limiter)
+    slice = range(0, len(inchikeys), limiter)[12:]
 
-    p_db = []
 
+    # 12 ->
     for inchikey_index in tqdm(slice):
+        break
         processed_data = Parallel(n_jobs=32)(delayed(process_compound)(id) for id in inchikeys[inchikey_index:inchikey_index+limiter])
-        p_db.extend(processed_data)
+        processed_data = [[compound, rdkit_mol] for compound, rdkit_mol in processed_data if compound != None]
+        [generate_image(rdkit_mol, compound["_id"]) for compound, rdkit_mol in processed_data if compound != None]
+        pickle.dump(processed_data, open(directory+"pickles/"+str(inchikey_index)+".pkl", "wb"))
 
-    [generate_image(rdkit_mol, compound["_id"]) for compound, rdkit_mol in p_db if compound != None]
-
-    db = [compound for compound, rdkit_mol in p_db if compound != None]
+    db = []
+    for file in os.listdir(directory+"pickles/"):
+        processed_data = pickle.load(open(directory+"pickles/"+file, "rb"))
+        db.extend([compound for compound, rdkit_mol in processed_data])
 
     mongodb_file = json.loads(bson_dumps(db), object_pairs_hook=collections.OrderedDict)
 
