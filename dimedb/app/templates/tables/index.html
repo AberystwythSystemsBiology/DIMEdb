@@ -5,7 +5,29 @@
 {% block abovebody %}
     <div class="jumbotron">
         <div class="container">
-            <h1>Tables</h1>
+            <h1>Public Tables</h1>
         </div>
     </div>
+{% endblock %}
+
+{% block body %}
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th width="60%">Table Name</th>
+            <th>Author</th>
+            <th width="15%">Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for t in public_tables %}
+            <tr>
+                <td>{{ t.title }}</td>
+                <td>{{ t.first_name }} {{ t.last_name }}</td>
+                <td>{{ t.creation_date }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
