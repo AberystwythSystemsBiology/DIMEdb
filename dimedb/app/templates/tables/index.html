@@ -5,16 +5,18 @@
 {% block abovebody %}
     <div class="jumbotron">
         <div class="container">
-            <h1>Public Tables</h1>
+            <h1>DIMEdb Tables</h1>
         </div>
     </div>
 {% endblock %}
 
 {% block body %}
+
     <table id="public_tables" class="table table-striped">
         <thead>
         <tr>
-            <th width="60%">Table Name</th>
+            <th width="50%">Name</th>
+            <th>Species</th>
             <th>Author</th>
             <th width="15%">Date</th>
         </tr>
@@ -23,12 +25,25 @@
         {% for t in public_tables %}
             <tr>
                 <td><a href="{{ url_for('view_table', id=t.id) }}">{{ t.title }}</a></td>
+                <td>{{ t.species }}</td>
                 <td>{{ t.first_name }} {{ t.last_name }}</td>
                 <td>{{ t.creation_date.strftime('%d-%m-%Y')}}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+
+    {% if g.user.is_authenticated %}
+        <div class="form-inline">
+            <div class="btn btn-default pull-right" data-toggle="modal" data-target="#create_modal">
+                Create Table
+            </div>
+        </div>
+
+        {% include "tables/modals/create_modal.html" %}
+    {% endif %}
+
+
 {% endblock %}
 
 {% block javascript %}

@@ -14,9 +14,9 @@ class MetaboliteTables(Base):
     description = db.Column(db.String, nullable=True)
     doi = db.Column(db.String, nullable=True)
     public = db.Column(db.Boolean, default=False, nullable=False)
+    species = db.Column(db.String, nullable=True)
 
 class Metabolite(Base):
     __tablename__ = "metabolite"
     table_id = db.Column(db.Integer, db.ForeignKey("metabolite_tables.id"), nullable=False)
     inchikey = db.Column(db.String, nullable=False)
-    comment = db.Column(db.String, nullable=True)

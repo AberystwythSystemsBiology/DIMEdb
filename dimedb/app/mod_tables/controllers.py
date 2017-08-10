@@ -26,6 +26,7 @@ def view_table(id):
         MetaboliteTables.description,
         MetaboliteTables.doi,
         MetaboliteTables.creation_date,
+        MetaboliteTables.species,
         User.first_name,
         User.last_name
     ).filter(MetaboliteTables.id == id).first()
@@ -38,12 +39,10 @@ def get_metabolites(id):
     metabolites = Metabolite.query.filter(Metabolite.table_id == id).all()
     json_dict = {"data" : []}
     for tm in metabolites:
-        metabolite_dict = {"Comments": None, "InChIKey": None,
-                           "Name": None, "Molecular Formula": None, "Table ID" : None}
+        metabolite_dict = {"InChIKey": None, "Name": None, "Molecular Formula": None, "Table ID" : None}
 
         metabolite = app.data.driver.db["metabolites"].find_one({'_id': tm.inchikey})
 
-        metabolite_dict["Comments"] = tm.comment
         metabolite_dict["InChIKey"] = tm.inchikey
         metabolite_dict["Name"] = metabolite["Identification Information"]["Name"]
         metabolite_dict["Molecular Formula"] = metabolite["Identification Information"]["Molecular Formula"]

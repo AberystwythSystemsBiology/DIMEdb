@@ -18,7 +18,6 @@ def login():
                 flash("Still waiting for account approval")
             else:
                 login_user(user)
-                flash("Login successful")
                 return redirect(url_for("homepage"))
         else:
             flash("Incorrect email or password given")
