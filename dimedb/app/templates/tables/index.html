@@ -1,6 +1,6 @@
 {% extends "template.html" %}
 
-{% block title %}Tables{% endblock %}
+{% block title %}DIMEdb Tables{% endblock %}
 
 {% block abovebody %}
     <div class="jumbotron">
@@ -35,12 +35,11 @@
 
     {% if g.user.is_authenticated %}
         <div class="form-inline">
-            <div class="btn btn-default pull-right" data-toggle="modal" data-target="#create_modal">
-                Create Table
-            </div>
+            <a href="{{ url_for('create_table') }}">
+                <div class="btn btn-default pull-right">Create Table</div>
+            </a>
         </div>
 
-        {% include "tables/modals/create_modal.html" %}
     {% endif %}
 
 

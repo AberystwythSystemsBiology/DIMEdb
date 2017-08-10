@@ -1,19 +1,5 @@
 {% extends "template.html" %}
 
-
-{% macro render_field(field, placeholder=None) %}
-    {% set css_class='form-control ' + kwargs.pop('class', '') %}
-    <div class="form-group row">
-    {% if form.password.errors %}
-        {% for error in field.errors %}
-        <div class="alert alert-danger"><i class="glyphicon glyphicon-alert"></i> <b>Error:</b> {{ error }}</div>
-        {% endfor %}
-    {% endif %}
-    {{ field(class=css_class, placeholder=placeholder, **kwargs) }}
-
-    </div>
-{% endmacro %}
-
 {% block title %}Login{% endblock %}
 
 {% block abovebody %}
@@ -42,8 +28,9 @@
         <form method="post" action="{{ url_for('login') }}" accept-charset="UTF-8" role="form">
             {{ form.csrf_token }}
 
-            {{ render_field(form.user_name, placeholder='Username')}}
-            {{ render_field(form.password, placeholder='Password')}}
+            {{ render_form_field(form.user_name, label="Username", type="text")}}
+            {{ render_form_field(form.password, label="Password", type="text")}}
+
             <div class="form-group row">
                 <button id="login-button" class="btn btn-success full-width" type="submit">Log In</button>
             </div>

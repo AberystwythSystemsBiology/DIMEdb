@@ -1,8 +1,11 @@
-from flask import Blueprint, request, render_template, g, session, redirect, url_for, jsonify
+from flask import Blueprint, flash, render_template, g, redirect, url_for, jsonify
 from app import app, db
 
 from app.mod_tables.models import MetaboliteTables, Metabolite
 from app.mod_auth.models import User
+
+from app.mod_tables.forms import CreateTableForm
+
 
 tables = Blueprint("tables", __name__)
 
@@ -15,8 +18,22 @@ def tables_home():
         User.first_name,
         User.last_name
     ).filter(MetaboliteTables.public == True).all()
-
     return render_template("tables/index.html", public_tables=public_tables)
+
+@app.route("/tables/new", methods=["GET", "POST"])
+def create_table():
+    form = CreateTableForm()
+    if form.validate_on_submit():
+        metabolite_table = MetaboliteTables(
+            title=form.title.data,
+            description=form.description.data,
+            species=form.species.data,
+            doi=form.doi.data,
+            owner_id=g.user.id
+        )
+        db.session.add(metabolite_table)
+        db.session.commit()
+    return render_template("tables/new.html", form=form)
 
 @app.route("/tables/DdbT<id>")
 def view_table(id):
@@ -32,6 +49,7 @@ def view_table(id):
     ).filter(MetaboliteTables.id == id).first()
 
     return render_template("tables/view.html", table_info = table_info)
+
 
 
 @app.route("/tables/DdbT<id>/get_metabolites")

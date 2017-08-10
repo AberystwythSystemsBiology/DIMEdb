@@ -1,29 +1,6 @@
 {% extends "template.html" %}
 
 
-{% macro render_text_field(field, placeholder=None) %}
-    {% set css_class='form-control ' + kwargs.pop('class', '') %}
-    <div class="form-group row">
-    {% if form.password.errors %}
-        {% for error in field.errors %}
-        <div class="alert alert-danger"><i class="glyphicon glyphicon-alert"></i> <b>Error:</b> {{ error }}</div>
-        {% endfor %}
-    {% endif %}
-    {{ field(class=css_class, placeholder=placeholder, **kwargs) }}
-    </div>
-{% endmacro %}
-
-{% macro render_radiobuttons(field) %}
-<div class="form-group row">
-    {% for select in field %}
-     <label class="radio-inline">
-        {{ select }} {{ select.label }}
-     </label>
-    {% endfor %}
-    </div>
-
-{% endmacro %}
-
 {% block title %}Register{% endblock %}
 
 {% block abovebody %}
@@ -37,9 +14,7 @@
 {% block body %}
 
     <div class="row">
-        <div class="col-sm-3">
-
-        </div>
+        <div class="col-sm-3"></div>
         <div class="col-sm-6">
 
             {% with messages = get_flashed_messages() %}
@@ -54,30 +29,24 @@
 
         <h3>Personal Information</h3>
 
-        {{ render_text_field(form.first_name, placeholder='First Name') }}
-        {{ render_text_field(form.last_name, placeholder='Last Name') }}
-        {{ render_text_field(form.email_address, placeholder='Email Address') }}
+        {{ render_form_field(form.first_name, placeholder='First Name') }}
+        {{ render_form_field(form.last_name, placeholder='Last Name') }}
+        {{ render_form_field(form.email_address, placeholder='Email Address') }}
 
-        {{ render_text_field(form.affiliation, placeholder='Affiliation') }}
+        {{ render_form_field(form.affiliation, placeholder='Affiliation') }}
 
-        {{ render_text_field(form.country, placeholder='Country') }}
-
-
-
+        {{ render_form_field(form.country, placeholder='Country') }}
 
         <h3>Account Information</h3>
 
-        {{ render_text_field(form.user_name, placeholder='Username') }}
-        {{ render_text_field(form.password, placeholder='Password') }}
-        {{ render_text_field(form.password_confirm, placeholder='Re-enter password') }}
+        {{ render_form_field(form.user_name, placeholder='Username') }}
+        {{ render_form_field(form.password, placeholder='Password') }}
+        {{ render_form_field(form.password_confirm, placeholder='Re-enter password') }}
 
-        <h3>Account Type</h3>
-
-
-        {{ render_radiobuttons(form.user_type)}}
+        {{ render_form_field(form.user_type, label="Account Type", type="radio")}}
 
         <div class="form-group row">
-            <button id="register-button" class="btn btn-success full-width" type="submit">Create Account</button>
+            <button id="register-button" class="btn btn-success full" type="submit">Create Account</button>
         </div>
 </form>
 {% endblock %}

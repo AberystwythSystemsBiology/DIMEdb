@@ -14,6 +14,7 @@ class MetaboliteTables(Base):
     description = db.Column(db.String, nullable=True)
     doi = db.Column(db.String, nullable=True)
     public = db.Column(db.Boolean, default=False, nullable=False)
+    removed = db.Column(db.Boolean, default=False, nullable=False)
     species = db.Column(db.String, nullable=True)
 
 class Metabolite(Base):

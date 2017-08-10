@@ -332,8 +332,7 @@ if __name__ == "__main__":
 
 
     for inchikey_index in tqdm(slice):
-        break
-        processed_data = Parallel(n_jobs=32)(delayed(process_compound)(id) for id in inchikeys[inchikey_index:inchikey_index+limiter])
+        processed_data = Parallel(n_jobs=8)(delayed(process_compound)(id) for id in inchikeys[inchikey_index:inchikey_index+limiter])
         processed_data = [[compound, rdkit_mol] for compound, rdkit_mol in processed_data if compound != None]
         [generate_image(rdkit_mol, compound["_id"]) for compound, rdkit_mol in processed_data if compound != None]
         pickle.dump(processed_data, open(directory+"pickles/"+str(inchikey_index)+".pkl", "wb"))

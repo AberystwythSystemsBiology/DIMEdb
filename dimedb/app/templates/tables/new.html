@@ -1,0 +1,34 @@
+
+
+
+{% extends "template.html" %}
+
+{% block title %}New Table : DIMEdb Tables{% endblock %}
+
+{% block abovebody %}
+    <div class="jumbotron">
+        <div class="container">
+            <h1>New Table</h1>
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6">
+            <form method="post" action="{{ url_for('tables_home') }}" accept-charset="UTF-8" role="form">
+                {{ form.csrf_token }}
+
+                {{ render_form_field(form.title, label="Title") }}
+                {{ render_form_field(form.description, label="Description") }}
+                {{ render_form_field(form.doi, label="DOI") }}
+
+                {{ render_form_field(form.species, label="Species") }}
+                {{ render_form_field(form.public, label="Public", type="radio") }}
+            <button id="register-button" class="btn btn-success full-width" type="submit">Create Account</button>
+        </form>
+        </div>
+        <div class="col-sm-3"></div>
+    </div>
+{% endblock %}
