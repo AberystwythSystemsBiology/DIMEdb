@@ -19,14 +19,18 @@
         <div class="col-sm-4">
         </div>
         <div class="col-sm-4">
-            <p><i class="glyphicon glyphicon-calendar"></i> <b>Submitted on:</b> {{ table_info.creation_date }}</p>
+            <p><i class="glyphicon glyphicon-calendar"></i> <b>Submitted on:</b> {{ table_info.creation_date.strftime('%d-%m-%Y') }}</p>
         </div>
     </div>
 
+
+    <h2>Description</h2>
     {% if table_info.description != None %}
-        <h2>Description.</h2>
         <p>{{ table_info.description }}</p>
+    {% else %}
+        <p>No description available.</p>
     {% endif %}
+
 
     <h2>Metabolite Table</h2>
     <table id="metabolite_table" class="table table-striped">
@@ -37,6 +41,7 @@
 {% block javascript %}
     <script src="{{ url_for('static', filename='js/tables/view.js') }}"></script>
     <script>
-        render_metabolite_table("{{ api_url }}")
+        generate_table("{{ table_info.id }}")
+
     </script>
 {% endblock %}

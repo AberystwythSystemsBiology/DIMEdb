@@ -17,10 +17,10 @@
   "dependencies": {
     "bootstrap": "^3.3.6",
     "datatables": "^1.10",
-    "bootstrap-toggle" : "^2.2.2",
-    "bootstrap-tagsinput" : "^0.8.0",
-    "chartjs" : "^2.6.0",
-    "prismjs" : "^1.6.0"
-  },
+    "bootstrap-toggle": "^2.2.2",
+    "bootstrap-tagsinput": "^0.8.0",
+    "chartjs": "^2.6.0",
+    "prismjs": "^1.6.0"
+  }
   "directory": ".app//static/bower_components"
 }

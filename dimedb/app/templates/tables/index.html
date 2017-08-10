@@ -24,7 +24,7 @@
             <tr>
                 <td><a href="{{ url_for('view_table', id=t.id) }}">{{ t.title }}</a></td>
                 <td>{{ t.first_name }} {{ t.last_name }}</td>
-                <td>{{ t.creation_date }}</td>
+                <td>{{ t.creation_date.strftime('%d-%m-%Y')}}</td>
             </tr>
         {% endfor %}
         </tbody>
