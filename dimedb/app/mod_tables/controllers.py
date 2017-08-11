@@ -10,7 +10,7 @@ from app.mod_tables.forms import CreateTableForm
 tables = Blueprint("tables", __name__)
 
 @app.route("/tables")
-def tables_home():
+def public_tables():
     public_tables = User.query.join(MetaboliteTables, User.id == MetaboliteTables.owner_id).add_columns(
         MetaboliteTables.id,
         MetaboliteTables.title,
@@ -33,6 +33,7 @@ def create_table():
         )
         db.session.add(metabolite_table)
         db.session.commit()
+        db.session.flush()
     return render_template("tables/new.html", form=form)
 
 @app.route("/tables/DdbT<id>")

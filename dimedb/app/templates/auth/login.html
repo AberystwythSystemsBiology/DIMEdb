@@ -18,18 +18,13 @@
         </div>
         <div class="col-sm-6">
 
-            {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-danger"><i class="glyphicon glyphicon-alert"></i> <b>Error:</b> {{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+        {{ display_warnings() }}
+
         <form method="post" action="{{ url_for('login') }}" accept-charset="UTF-8" role="form">
             {{ form.csrf_token }}
 
-            {{ render_form_field(form.user_name, label="Username", type="text")}}
-            {{ render_form_field(form.password, label="Password", type="text")}}
+            {{ render_form_field(form.user_name, label="Username")}}
+            {{ render_form_field(form.password, label="Password", type="password")}}
 
             <div class="form-group row">
                 <button id="login-button" class="btn btn-success full-width" type="submit">Log In</button>

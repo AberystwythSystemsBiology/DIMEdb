@@ -1,15 +1,33 @@
-{% macro render_form_field(field, label=None, type="text") %}
+{% macro render_form_field(field, label=None, type="string") %}
     {% set css_class='form-control ' + kwargs.pop('class', '') %}
     <div class="form-group row">
-    {% if type == "text" %}
+
+    {% for error in field.errors %}
+        <div class="alert alert-danger">
+            <i class="glyphicon glyphicon-alert"></i> <b>Error:</b> {{ error }}
+        </div>
+    {% endfor %}
+
+    {% if type == "string" %}
+        <input type="string" class="form-control" name="{{ field.name }}" placeholder="{{ label }}">
+    {% elif type == "password" %}
         {{ field(class=css_class, placeholder=label, **kwargs) }}
-    {% elif type =="radio" %}
-        <p><b>{{ label }}:</b></p>
-        {% for select in field %}
-            <label class="radio-inline">{{ select }} {{ select.label }} </label>
-        {% endfor %}
+    {% elif type =="checkbox" %}
+       <p>{{ field }} {{ label }}</p>
+    {% elif type == "text" %}
+        <textarea class="form-control" name="{{ field.name }}" placeholder="{{ label }}"></textarea>
     {% endif %}
     </div>
+{% endmacro %}
+
+{% macro display_warnings() %}
+ {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-warning"><i class="glyphicon glyphicon-alert"></i> <b>Warning:</b> {{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 {% endmacro %}
 
 <!DOCTYPE html>
@@ -59,7 +77,21 @@
                   <li><a href="{{ url_for('mass_search')}}">Mass Search</a></li>
                 </ul>
                 </li>
-                <li><a href="{{ url_for('tables_home') }}"><i class="glyphicon glyphicon-list"></i> Tables</a></li>
+                {% if g.user.is_authenticated %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            <i class="glyphicon glyphicon-list"></i> Tables <span class="caret"></span>
+                        </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('public_tables') }}">Public Tables</a></li>
+                        <li><a href="{{ url_for('public_tables') }}">My Tables</a></li>
+                        <li><a href="{{ url_for('create_table') }}">Create Table</a></li>
+
+                    </ul>
+                    </li>
+                {% else %}
+                    <li><a href="{{ url_for('public_tables') }}"><i class="glyphicon glyphicon-list"></i> Tables</a></li>
+                {% endif %}
                 <li><a href="{{ url_for('help')}}">
                     <i class="glyphicon glyphicon-question-sign"></i> Help
                 </a></li>

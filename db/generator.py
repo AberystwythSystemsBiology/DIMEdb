@@ -328,7 +328,7 @@ def generate_image(mol, inchikey):
 if __name__ == "__main__":
     limiter = 500
     inchikeys = combined.keys()
-    slice = range(0, len(inchikeys), limiter)[23:]
+    slice = range(0, len(inchikeys), limiter)[24:]
 
 
     for inchikey_index in tqdm(slice):

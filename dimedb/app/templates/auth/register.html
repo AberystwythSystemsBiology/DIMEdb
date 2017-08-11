@@ -13,10 +13,11 @@
 
 {% block body %}
 
+    {{ display_warnings() }}
+
     <div class="row">
         <div class="col-sm-3"></div>
         <div class="col-sm-6">
-
             {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}
@@ -29,19 +30,20 @@
 
         <h3>Personal Information</h3>
 
-        {{ render_form_field(form.first_name, placeholder='First Name') }}
-        {{ render_form_field(form.last_name, placeholder='Last Name') }}
-        {{ render_form_field(form.email_address, placeholder='Email Address') }}
+        {{ render_form_field(form.first_name, label='First Name') }}
 
-        {{ render_form_field(form.affiliation, placeholder='Affiliation') }}
+        {{ render_form_field(form.last_name, label='Last Name') }}
+        {{ render_form_field(form.email_address, label='Email Address') }}
 
-        {{ render_form_field(form.country, placeholder='Country') }}
+        {{ render_form_field(form.affiliation, label='Affiliation') }}
+
+        {{ render_form_field(form.country, label='Country') }}
 
         <h3>Account Information</h3>
 
-        {{ render_form_field(form.user_name, placeholder='Username') }}
-        {{ render_form_field(form.password, placeholder='Password') }}
-        {{ render_form_field(form.password_confirm, placeholder='Re-enter password') }}
+        {{ render_form_field(form.user_name, label='Username') }}
+        {{ render_form_field(form.password, label='Password', type="password") }}
+        {{ render_form_field(form.password_confirm, label='Re-enter password', type="password") }}
 
         {{ render_form_field(form.user_type, label="Account Type", type="radio")}}
 
