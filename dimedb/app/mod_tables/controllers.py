@@ -1,4 +1,6 @@
-from flask import Blueprint, flash, render_template, g, redirect, url_for, jsonify, abort
+import json
+
+from flask import Blueprint, flash, render_template, g, redirect, url_for, jsonify, request
 from app import app, db
 
 from flask_login import login_required
@@ -29,6 +31,24 @@ def public_tables():
 def mytables():
     mytables = MetaboliteTables.query.filter(MetaboliteTables.owner_id== g.user.id).all()
     return render_template("tables/mytables.html", mytables=mytables)
+
+@app.route("/tables/mytables/api/add_metabolite", methods=["POST"])
+@login_required
+def add_metabolite():
+    payload = request.form
+    table = MetaboliteTables.query.filter(MetaboliteTables.owner_id == g.user.id).first()
+    if table != None:
+        metabolite = Metabolite(
+            table_id = payload["Table ID"],
+            inchikey = payload["InChI Key"]
+        )
+
+        db.session.add(metabolite)
+        db.session.commit()
+
+        return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+    else:
+        return json.dumps({'success': False}), 500, {'ContentType': 'application/json'}
 
 @app.route("/tables/mytables/api/get_mytables")
 @login_required
@@ -98,4 +118,5 @@ def get_metabolites(id):
         return jsonify(json_dict)
     else:
         abort(500)
+
 

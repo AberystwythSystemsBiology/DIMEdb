@@ -205,13 +205,38 @@
 
             </div>
             <div class="col-sm-4">
-                <div class="form-group">
                 {% if g.user.is_authenticated %}
-                        <div class="form-group item">
-                            <div class="btn btn-primary full-width">Add to Table</div>
+
+                    <div id="add_to_table_container" class="panel panel-primary">
+                        <div class="panel-heading text-center" data-toggle="collapse" href="#add_to_table">
+                            Add to Table
                         </div>
+                        <div id="add_to_table" class="panel-collapse collapse">
+                            <div class="panel-body container">
+                                <div class="form-group row">
+                                    <select id="table_selector" class="form-control">
+
+                                    </select>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div id="add_submission" class="btn btn-success full-width">Submit</div>
+                                </div>
+                            </div>
+                            </div>
+
+                        </div>
+
+                    <div id="success" class="container">
+                    <div class="alert alert-success">
+                        <i class="glyphicon glyphicon-check"></i> Successfully Added
+                    </div>
+                    </div>
+
+
+
+
                 {% endif %}
-                </div>
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -259,7 +284,7 @@
                     </ul>
                 </div>
 
-            </div>
+                </div>
         </div>
     </div>
 
@@ -281,6 +306,10 @@
     <script src="{{ url_for('static', filename='js/view/pathway_information.js') }}"></script>
     <script src="{{ url_for('static', filename='js/view/view.js') }}"></script>
     <script src="{{ url_for('static', filename='js/comment.js') }}"></script>
+
+    {% if g.user.is_authenticated %}
+        <script src="{{ url_for('static', filename='js/tables/add.js') }}"></script>
+    {% endif %}
 
     <script>
         render_metabolite_view("{{ id }}");

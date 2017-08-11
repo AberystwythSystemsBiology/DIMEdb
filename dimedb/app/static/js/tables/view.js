@@ -21,7 +21,7 @@ function generate_table(id) {
                 },
                 {
                     "title" : "Metabolite Name",
-                    "width" : "20%",
+                    "width" : "80%",
                     "render" : function (data, type, row) {
                          return "<a href='" + getBaseURL() + "view/" + row.InChIKey + "' target='_blank'>" + row.Name + "</a>"
                     }
@@ -32,13 +32,6 @@ function generate_table(id) {
                     "className" : "dt-center",
                     "render" : function (data, type, row) {
                         return row["Molecular Formula"].replace(/([0-9]+)/g, '<sub>$1</sub>');
-                    }
-                },
-                {
-                    "title" : "Comments",
-                    "width" : "50%",
-                    "render" : function (data, type, row) {
-                        return row["Comments"]
                     }
                 }
             ],
