@@ -205,6 +205,13 @@
 
             </div>
             <div class="col-sm-4">
+                <div class="form-group">
+                {% if g.user.is_authenticated %}
+                        <div class="form-group item">
+                            <div class="btn btn-primary full-width">Add to Table</div>
+                        </div>
+                {% endif %}
+                </div>
 
                 <div class="panel panel-default">
                     <div class="panel-heading">

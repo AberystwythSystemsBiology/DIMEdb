@@ -5,7 +5,7 @@
 {% block abovebody %}
     <div class="jumbotron">
         <div class="container">
-            <h1>Public Tables</h1>
+            <h1>My Tables</h1>
         </div>
     </div>
 {% endblock %}
@@ -14,18 +14,18 @@
 
     {{ display_warnings() }}
 
-    <table id="public_tables" class="table table-striped">
+    <table id="my_tables" class="table table-striped">
         <thead>
         <tr>
-            <th width="50%">Title</th>
+            <th width="40%">Title</th>
             <th>Species</th>
             <th>DOI</th>
-            <th>Author</th>
-            <th width="15%">Date</th>
+            <th>Public?</th>
+            <th width="15%">Creation Date</th>
         </tr>
         </thead>
         <tbody>
-        {% for t in public_tables %}
+        {% for t in mytables %}
             <tr>
                 <td><a href="{{ url_for('view_table', id=t.id) }}">{{ t.title }}</a></td>
                 <td>{{ t.species }}</td>
@@ -36,7 +36,13 @@
                         <i class="glyphicon glyphicon-unchecked"></i>
                     {% endif %}
                 </td>
-                <td>{{ t.first_name }} {{ t.last_name }}</td>
+                <td>
+                    {% if t.public == True %}
+                        <i class="glyphicon glyphicon-check"></i>
+                    {% else %}
+                        <i class="glyphicon glyphicon-unchecked"></i>
+                    {% endif %}
+                </td>
                 <td>{{ t.creation_date.strftime('%d-%m-%Y')}}</td>
             </tr>
         {% endfor %}
@@ -44,9 +50,8 @@
     </table>
 
 
-
 {% endblock %}
 
 {% block javascript %}
-    <script src="{{ url_for('static', filename='js/tables/index.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/tables/mytables.js') }}"></script>
 {% endblock %}

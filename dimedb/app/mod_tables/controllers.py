@@ -1,5 +1,7 @@
-from flask import Blueprint, flash, render_template, g, redirect, url_for, jsonify
+from flask import Blueprint, flash, render_template, g, redirect, url_for, jsonify, abort
 from app import app, db
+
+from flask_login import login_required
 
 from app.mod_tables.models import MetaboliteTables, Metabolite
 from app.mod_auth.models import User
@@ -15,12 +17,34 @@ def public_tables():
         MetaboliteTables.id,
         MetaboliteTables.title,
         MetaboliteTables.creation_date,
+        MetaboliteTables.doi,
+        MetaboliteTables.species,
         User.first_name,
         User.last_name
     ).filter(MetaboliteTables.public == True).all()
     return render_template("tables/index.html", public_tables=public_tables)
 
+@app.route("/tables/mytables")
+@login_required
+def mytables():
+    mytables = MetaboliteTables.query.filter(MetaboliteTables.owner_id== g.user.id).all()
+    return render_template("tables/mytables.html", mytables=mytables)
+
+@app.route("/tables/mytables/api/get_mytables")
+@login_required
+def get_mytables():
+    mytables = MetaboliteTables.query.filter(MetaboliteTables.owner_id== g.user.id).all()
+    json_dict = {"data": []}
+
+    for table in mytables:
+        table_dict = {"Title" : table.title, "id" : table.id, "Creation Date" : table.creation_date,
+                      "Public" : table.public}
+        json_dict["data"].append(table_dict)
+    return jsonify(json_dict)
+
+
 @app.route("/tables/new", methods=["GET", "POST"])
+@login_required
 def create_table():
     form = CreateTableForm()
     if form.validate_on_submit():
@@ -29,11 +53,14 @@ def create_table():
             description=form.description.data,
             species=form.species.data,
             doi=form.doi.data,
-            owner_id=g.user.id
+            owner_id=g.user.id,
+            public = form.public.data,
         )
         db.session.add(metabolite_table)
         db.session.commit()
-        db.session.flush()
+        flash("New table created")
+        return redirect(url_for("mytables"))
+
     return render_template("tables/new.html", form=form)
 
 @app.route("/tables/DdbT<id>")
@@ -52,20 +79,23 @@ def view_table(id):
     return render_template("tables/view.html", table_info = table_info)
 
 
-
-@app.route("/tables/DdbT<id>/get_metabolites")
+@app.route("/tables/DdbT<id>/api/get_metabolites")
 def get_metabolites(id):
-    metabolites = Metabolite.query.filter(Metabolite.table_id == id).all()
-    json_dict = {"data" : []}
-    for tm in metabolites:
-        metabolite_dict = {"InChIKey": None, "Name": None, "Molecular Formula": None, "Table ID" : None}
+    table = MetaboliteTables.query.filter(id == id).first()
+    if table.public == True or table.owner_id == g.user.id:
+        metabolites = Metabolite.query.filter(Metabolite.table_id == id).all()
+        json_dict = {"data" : []}
+        for tm in metabolites:
+            metabolite_dict = {"InChIKey": None, "Name": None, "Molecular Formula": None, "Table ID" : None}
 
-        metabolite = app.data.driver.db["metabolites"].find_one({'_id': tm.inchikey})
+            metabolite = app.data.driver.db["metabolites"].find_one({'_id': tm.inchikey})
 
-        metabolite_dict["InChIKey"] = tm.inchikey
-        metabolite_dict["Name"] = metabolite["Identification Information"]["Name"]
-        metabolite_dict["Molecular Formula"] = metabolite["Identification Information"]["Molecular Formula"]
-        metabolite_dict["Table ID"] = tm.id
-        json_dict["data"].append(metabolite_dict)
+            metabolite_dict["InChIKey"] = tm.inchikey
+            metabolite_dict["Name"] = metabolite["Identification Information"]["Name"]
+            metabolite_dict["Molecular Formula"] = metabolite["Identification Information"]["Molecular Formula"]
+            metabolite_dict["Table ID"] = tm.id
+            json_dict["data"].append(metabolite_dict)
+        return jsonify(json_dict)
+    else:
+        abort(500)
 
-    return jsonify(json_dict)
