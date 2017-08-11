@@ -5,7 +5,15 @@
 {% block abovebody %}
     <div class="jumbotron">
         <div class="container">
-            <h2>DdbT{{ table_info.id }}: {{ table_info.title }}</h2>
+            <h2>
+                DdbT{{ table_info.id }}: {{ table_info.title }}
+                {% if table_info.public == True%}
+                    <label class="label label-success pull-right">Public</label>
+                {% else %}
+                    <label class="label label-danger pull-right">Private</label>
+
+                {% endif %}
+            </h2>
         </div>
     </div>
 {% endblock %}
@@ -23,6 +31,11 @@
         </div>
         <div class="col-sm-4">
             <p><i class="glyphicon glyphicon-calendar"></i> <b>Submitted on:</b> {{ table_info.creation_date.strftime('%d-%m-%Y') }}</p>
+            {% if g.user.id == table_info.owner_id %}
+                <div class="btn btn-warning full-width">
+                    <i class="glyphicon glyphicon-edit"></i> Edit Table
+                </div>
+            {% endif %}
         </div>
     </div>
 
@@ -35,6 +48,7 @@
     {% endif %}
 
 
+
     <h2>Metabolite Table</h2>
     <table id="metabolite_table" class="table table-striped">
 
@@ -45,6 +59,5 @@
     <script src="{{ url_for('static', filename='js/tables/view.js') }}"></script>
     <script>
         generate_table("{{ table_info.id }}")
-
     </script>
 {% endblock %}

@@ -1,6 +1,6 @@
 import json
 
-from flask import Blueprint, flash, render_template, g, redirect, url_for, jsonify, request
+from flask import Blueprint, flash, render_template, g, abort, redirect, url_for, jsonify, request
 from app import app, db
 
 from flask_login import login_required
@@ -83,6 +83,11 @@ def create_table():
 
     return render_template("tables/new.html", form=form)
 
+@app.route("/tables/DdbT<id>/edit", methods=["GET", "POST"])
+@login_required
+def edit_table(id):
+    return render_template("tables/edit.html")
+
 @app.route("/tables/DdbT<id>")
 def view_table(id):
     table_info = User.query.join(MetaboliteTables, User.id == MetaboliteTables.owner_id).add_columns(
@@ -91,10 +96,12 @@ def view_table(id):
         MetaboliteTables.description,
         MetaboliteTables.doi,
         MetaboliteTables.creation_date,
+        MetaboliteTables.owner_id,
         MetaboliteTables.species,
+        MetaboliteTables.public,
         User.first_name,
         User.last_name
-    ).filter(MetaboliteTables.id == id).first()
+    ).filter(MetaboliteTables.id == id).first_or_404()
 
     return render_template("tables/view.html", table_info = table_info)
 
