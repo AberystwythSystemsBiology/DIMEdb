@@ -23,6 +23,10 @@ def login():
             flash("Incorrect email or password given")
     return render_template("auth/login.html", form=form)
 
+@login_required
+def management():
+    return render_template("auth/management.html")
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     form = RegistrationForm(request.form)

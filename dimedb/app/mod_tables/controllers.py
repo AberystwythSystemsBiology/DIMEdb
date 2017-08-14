@@ -8,7 +8,7 @@ from flask_login import login_required
 from app.mod_tables.models import MetaboliteTables, Metabolite
 from app.mod_auth.models import User
 
-from app.mod_tables.forms import CreateTableForm
+from app.mod_tables.forms import CreateTableForm, EditTableForm
 
 
 tables = Blueprint("tables", __name__)
@@ -86,7 +86,20 @@ def create_table():
 @app.route("/tables/DdbT<id>/edit", methods=["GET", "POST"])
 @login_required
 def edit_table(id):
-    return render_template("tables/edit.html")
+    metabolite_table = MetaboliteTables.query.get_or_404(id)
+    if metabolite_table.owner_id == g.user.id:
+        form = EditTableForm()
+        if form.validate_on_submit():
+            metabolite_table.title = form.title.data,
+            metabolite_table.description = form.description.data,
+            metabolite_table.species = form.species.data,
+            metabolite_table.doi = form.doi.data
+            db.session.commit()
+            flash("Table edited!")
+            return render_template("tables/edit.html", metabolite_table=metabolite_table, form=form)
+        return render_template("tables/edit.html", metabolite_table=metabolite_table , form=form)
+    else:
+        abort(500)
 
 @app.route("/tables/DdbT<id>")
 def view_table(id):

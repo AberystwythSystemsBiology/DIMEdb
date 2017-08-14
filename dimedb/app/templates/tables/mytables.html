@@ -22,6 +22,7 @@
             <th>DOI</th>
             <th>Public?</th>
             <th width="15%">Creation Date</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -44,6 +45,13 @@
                     {% endif %}
                 </td>
                 <td>{{ t.creation_date.strftime('%d-%m-%Y')}}</td>
+                <td>
+                    <a href="{{ url_for('edit_table', id=t.id) }}">
+                        <div class="btn btn-warning btn-sm">
+                            <i class="glyphicon glyphicon-edit"></i>
+                        </div>
+                    </a>
+                </td>
             </tr>
         {% endfor %}
         </tbody>
