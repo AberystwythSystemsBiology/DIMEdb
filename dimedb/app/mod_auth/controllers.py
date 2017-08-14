@@ -24,6 +24,7 @@ def login():
     return render_template("auth/login.html", form=form)
 
 @login_required
+@app.route("/account_management")
 def management():
     return render_template("auth/management.html")
 
