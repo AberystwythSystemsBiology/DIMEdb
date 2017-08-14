@@ -32,9 +32,11 @@
         <div class="col-sm-4">
             <p><i class="glyphicon glyphicon-calendar"></i> <b>Submitted on:</b> {{ table_info.creation_date.strftime('%d-%m-%Y') }}</p>
             {% if g.user.id == table_info.owner_id %}
-                <div class="btn btn-warning full-width">
-                    <i class="glyphicon glyphicon-edit"></i> Edit Table
-                </div>
+                <a href="{{ url_for('edit_table', id=table_info.id) }}">
+                    <div class="btn btn-warning full-width">
+                        <i class="glyphicon glyphicon-edit"></i> Edit Table
+                    </div>
+                </a>
             {% endif %}
         </div>
     </div>

@@ -16,6 +16,11 @@
        <p>{{ field }} {{ label }}</p>
     {% elif type == "text" %}
         <textarea class="form-control" name="{{ field.name }}" placeholder="{{ label }}"></textarea>
+    {% elif type == "radio" %}
+        <p><b>{{ label }}:</b></p>
+        {% for s in field %}
+            <label class="radio-inline">{{ s }}{{ s.label }}</label>
+        {% endfor %}
     {% endif %}
     </div>
 {% endmacro %}
