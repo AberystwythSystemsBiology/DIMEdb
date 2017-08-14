@@ -111,6 +111,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
                             <img src="{{ g.user.avatar(18) }}" class="profile-image img-circle"> {{ g.user.first_name }} <span class="caret"></span></a>
                         <ul class="dropdown-menu">
+                            <li><a href="{{ url_for('management') }}">Account Management</a></li>
                             <li><a href="{{ url_for('logout') }}"><div class="btn btn-danger full-width">Log Out</div></a></li>
                         </ul>
                     </li>

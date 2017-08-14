@@ -26,7 +26,3 @@ class RegistrationForm(FlaskForm):
     first_name = StringField("First Name", [DataRequired("You must provide your first name!")])
     mid_initials = StringField("Middle Initials", [Length(min=1, max=5)])
     last_name = StringField("Last Name", [DataRequired("You must provide your last name!")])
-
-    user_type = RadioField("User Type", choices=[("ADMIN", "Admin"),
-                                                  ("RESEARCH", "Researcher"),
-                                                  ("OTHER", "Other")])

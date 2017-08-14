@@ -18,14 +18,14 @@ function get_usertables() {
 function populate_select_area(tables) {
 
     if (tables.length > 0) {
+        $("#add_to_table_container").fadeIn(200);
         for (index in tables) {
             var option = new Option("DdbT" + tables[index]["id"] + ": " + tables[index]["Title"], tables[index]["id"])
             $("#table_selector").append(option);
         }
     }
     else {
-        $("#table_selector").prop("disabled", true);
-        $("#add_submission").prop("disabled", true);
+        $("#add_to_table_container").fadeOut(200);
 
     }
 
@@ -45,6 +45,7 @@ $("#add_submission").click(function () {
    var payload = {
        "Table ID" : $("#table_selector").find(":selected").val(),
        "InChI Key" : $("#inchi_key").text(),
+       "Comments" : $("#comments").text()
    };
 
    $.ajax({

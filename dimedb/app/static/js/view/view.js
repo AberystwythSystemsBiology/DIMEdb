@@ -91,7 +91,13 @@ function fill_isotopic_distribution_table(adduct_info) {
     $("#distribution_table tbody tr").remove();
     for (distribution_index in adduct_info["Isotopic Distribution"]) {
         var distribution = adduct_info["Isotopic Distribution"][distribution_index];
-        $("#distribution_table").append("<tr><td class='text-center'>"+distribution[0].toFixed(3)+"</td><td class='text-center'>"+distribution[1].toFixed(2)+"</td></tr>")
+        if (distribution[1] > 5) {
+            $("#distribution_table").append("<tr><td class='text-center'><b>"+distribution[0].toFixed(3)+"</b></td><td class='text-center'><b>"+distribution[1].toFixed(2)+"</b></td></tr>")
+        }
+        else {
+            $("#distribution_table").append("<tr><td class='text-center'>"+distribution[0].toFixed(3)+"</td><td class='text-center'>"+distribution[1].toFixed(2)+"</td></tr>")
+
+        }
     }
 
 }
@@ -99,9 +105,23 @@ function fill_isotopic_distribution_table(adduct_info) {
 function chart_distribution(distribution_array) {
     var masses = [];
     var intensities = [];
+
     for (i in distribution_array) {
-        masses.push(distribution_array[i][0]);
-        intensities.push(distribution_array[i][1]);
+        var mass = distribution_array[i][0];
+        var intensity = distribution_array[i][1];
+        if ($("#rel_i_limiter").prop('checked') == true) {
+            if (intensity > 4.99) {
+                masses.push(mass);
+                intensities.push(intensity);
+            }
+        }
+
+        else {
+            masses.push(mass);
+            intensities.push(intensity);
+        }
+
+
     }
 
 

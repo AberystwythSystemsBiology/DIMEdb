@@ -5,7 +5,8 @@ from app import app, db
 
 from flask_login import login_required
 
-from app.mod_tables.models import MetaboliteTables, Metabolite
+from app.mod_tables.models import MetaboliteTable, Metabolite, MetaboliteTablePublication
+
 from app.mod_auth.models import User
 
 from app.mod_tables.forms import CreateTableForm, EditTableForm
@@ -15,32 +16,32 @@ tables = Blueprint("tables", __name__)
 
 @app.route("/tables")
 def public_tables():
-    public_tables = User.query.join(MetaboliteTables, User.id == MetaboliteTables.owner_id).add_columns(
-        MetaboliteTables.id,
-        MetaboliteTables.title,
-        MetaboliteTables.creation_date,
-        MetaboliteTables.doi,
-        MetaboliteTables.species,
+    public_tables = User.query.join(MetaboliteTable, User.id == MetaboliteTable.owner_id).add_columns(
+        MetaboliteTable.id,
+        MetaboliteTable.title,
+        MetaboliteTable.creation_date,
+        MetaboliteTable.species,
         User.first_name,
         User.last_name
-    ).filter(MetaboliteTables.public == True, MetaboliteTables.removed == False).all()
+    ).filter(MetaboliteTable.public == True, MetaboliteTable.removed == False).all()
     return render_template("tables/index.html", public_tables=public_tables)
 
 @app.route("/tables/mytables")
 @login_required
 def mytables():
-    mytables = MetaboliteTables.query.filter(MetaboliteTables.owner_id== g.user.id, MetaboliteTables.removed == False).all()
+    mytables = MetaboliteTable.query.filter(MetaboliteTable.owner_id== g.user.id, MetaboliteTable.removed == False).all()
     return render_template("tables/mytables.html", mytables=mytables)
 
 @app.route("/tables/mytables/api/add_metabolite", methods=["POST"])
 @login_required
 def add_metabolite():
     payload = request.form
-    table = MetaboliteTables.query.filter(MetaboliteTables.owner_id == g.user.id).first()
+    table = MetaboliteTable.query.filter(MetaboliteTable.owner_id == g.user.id).first()
     if table != None:
         metabolite = Metabolite(
             table_id = payload["Table ID"],
-            inchikey = payload["InChI Key"]
+            inchikey = payload["InChI Key"],
+            comments = payload["Comment"]
         )
 
         db.session.add(metabolite)
@@ -53,7 +54,7 @@ def add_metabolite():
 @app.route("/tables/mytables/api/get_mytables")
 @login_required
 def get_mytables():
-    mytables = MetaboliteTables.query.filter(MetaboliteTables.owner_id== g.user.id, MetaboliteTables.removed == False).all()
+    mytables = MetaboliteTable.query.filter(MetaboliteTable.owner_id== g.user.id, MetaboliteTable.removed == False).all()
     json_dict = {"data": []}
 
     for table in mytables:
@@ -68,11 +69,10 @@ def get_mytables():
 def create_table():
     form = CreateTableForm()
     if form.validate_on_submit():
-        metabolite_table = MetaboliteTables(
+        metabolite_table = MetaboliteTable(
             title=form.title.data,
             description=form.description.data,
             species=form.species.data,
-            doi=form.doi.data,
             owner_id=g.user.id,
             public = form.public.data,
         )
@@ -86,14 +86,13 @@ def create_table():
 @app.route("/tables/DdbT<id>/edit", methods=["GET", "POST"])
 @login_required
 def edit_table(id):
-    metabolite_table = MetaboliteTables.query.get_or_404(id)
+    metabolite_table = MetaboliteTable.query.get_or_404(id)
     if metabolite_table.owner_id == g.user.id and metabolite_table.removed != True:
         form = EditTableForm()
         if form.validate_on_submit():
             metabolite_table.title = form.title.data,
             metabolite_table.description = form.description.data,
             metabolite_table.species = form.species.data,
-            metabolite_table.doi = form.doi.data
             db.session.commit()
             flash("Table edited!")
             return render_template("tables/edit.html", metabolite_table=metabolite_table, form=form)
@@ -103,26 +102,25 @@ def edit_table(id):
 
 @app.route("/tables/DdbT<id>")
 def view_table(id):
-    table_info = User.query.join(MetaboliteTables, User.id == MetaboliteTables.owner_id).add_columns(
-        MetaboliteTables.id,
-        MetaboliteTables.title,
-        MetaboliteTables.description,
-        MetaboliteTables.doi,
-        MetaboliteTables.creation_date,
-        MetaboliteTables.owner_id,
-        MetaboliteTables.species,
-        MetaboliteTables.public,
-        MetaboliteTables.removed,
+    table_info = User.query.join(MetaboliteTable, User.id == MetaboliteTable.owner_id).add_columns(
+        MetaboliteTable.id,
+        MetaboliteTable.title,
+        MetaboliteTable.description,
+        MetaboliteTable.creation_date,
+        MetaboliteTable.owner_id,
+        MetaboliteTable.species,
+        MetaboliteTable.public,
+        MetaboliteTable.removed,
         User.first_name,
         User.last_name
-    ).filter(MetaboliteTables.id == id).first_or_404()
+    ).filter(MetaboliteTable.id == id).first_or_404()
     if table_info.removed != True:
         return render_template("tables/view.html", table_info = table_info)
     else:
         abort(404)
 @app.route("/tables/DdbT<id>/remove")
 def delete_table(id):
-    metabolite_table = MetaboliteTables.query.get_or_404(id)
+    metabolite_table = MetaboliteTable.query.get_or_404(id)
 
     if metabolite_table.owner_id == g.user.id:
         metabolite_table.removed = True
@@ -134,15 +132,13 @@ def delete_table(id):
 
 @app.route("/tables/DdbT<id>/api/get_metabolites")
 def get_metabolites(id):
-    table = MetaboliteTables.query.filter(id == id).first()
+    table = MetaboliteTable.query.filter(id == id).first()
     if table.public == True or table.owner_id == g.user.id and table.removed != True:
         metabolites = Metabolite.query.filter(Metabolite.table_id == id).all()
         json_dict = {"data" : []}
         for tm in metabolites:
             metabolite_dict = {"InChIKey": None, "Name": None, "Molecular Formula": None, "Table ID" : None}
-
             metabolite = app.data.driver.db["metabolites"].find_one({'_id': tm.inchikey})
-
             metabolite_dict["InChIKey"] = tm.inchikey
             metabolite_dict["Name"] = metabolite["Identification Information"]["Name"]
             metabolite_dict["Molecular Formula"] = metabolite["Identification Information"]["Molecular Formula"]

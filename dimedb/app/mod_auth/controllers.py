@@ -14,13 +14,15 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(user_name=form.user_name.data).first()
         if user and user.is_correct_password(form.password.data):
-            if user.confirmed == False:
-                flash("Still waiting for account approval")
+            if user.is_confirmed() == False:
+                flash("Still awaiting account approval")
+            elif user.is_banned():
+                flash("Account has been banned")
             else:
                 login_user(user)
                 return redirect(url_for("homepage"))
         else:
-            flash("Incorrect email or password given")
+            flash("Incorrect username or password given")
     return render_template("auth/login.html", form=form)
 
 @login_required
@@ -47,8 +49,7 @@ def register():
                 phone = form.phone.data,
                 last_name=form.last_name.data,
                 affiliation=form.affiliation.data,
-                country=form.country.data,
-                user_type=form.user_type.data
+                country=form.country.data
             )
             db.session.add(user)
             db.session.commit()

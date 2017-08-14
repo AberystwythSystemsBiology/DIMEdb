@@ -108,7 +108,12 @@
                         </th>
                         <td>
                             <select id="adduct_selector"></select>
+
+                            <span class="pull-right">
+                                <input id="rel_i_limiter" type="checkbox" checked> Remove &le; 5% RI
+                            </span>
                         </td>
+
                     </tr>
                 </table>
 
@@ -207,6 +212,10 @@
             <div class="col-sm-4">
                 {% if g.user.is_authenticated %}
 
+                     <div class="alert alert-warning">
+                         <i class="glyphicon glyphicon-exclamation-sign"></i> <b>Warning:</b> No tables found
+                     </div>
+
                     <div id="add_to_table_container" class="panel panel-primary">
                         <div class="panel-heading text-center" data-toggle="collapse" href="#add_to_table">
                             Add to Table
@@ -220,8 +229,13 @@
                                 </div>
 
                                 <div class="form-group row">
+                                    <input type="text" class="form-control" id="comments" placeholder="Comments">
+                                </div>
+
+                                <div class="form-group row">
                                     <div id="add_submission" class="btn btn-success full-width">Submit</div>
                                 </div>
+
                             </div>
                             </div>
 

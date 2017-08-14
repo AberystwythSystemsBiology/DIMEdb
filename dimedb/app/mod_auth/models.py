@@ -33,8 +33,8 @@ class User(Base):
 
     phone = db.Column(db.String(30), nullable=True)
 
-    user_type = db.Column(db.String, nullable=False)
-
+    admin = db.Column(db.Boolean, default=False, nullable=False)
+    banned = db.Column(db.Boolean, default=False, nullable=False)
     confirmed = db.Column(db.Boolean, default=False, nullable=False)
 
     @hybrid_property
@@ -59,6 +59,15 @@ class User(Base):
 
     def is_anonymous(self):
         return False
+
+    def is_admin(self):
+        return self.admin
+
+    def is_confirmed(self):
+        return self.confirmed
+
+    def is_banned(self):
+        return self.banned
 
     def get_id(self):
         return unicode(self.id)
