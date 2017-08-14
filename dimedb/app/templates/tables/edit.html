@@ -55,7 +55,45 @@
 
     <h2>Edit Table</h2>
 
+    <table id="metabolite_table" class="table table-striped">
+
+    </table>
+
+    <div id="delete_table_button" class="btn btn-danger pull-right">Delete Table</div>
+
+
+    <div class="modal fade" id="delete_modal" role="dialog">
+    <div class="modal-dialog model-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Delete Table</h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <i class="glyphicon glyphicon-exclamation-sign"></i> Terrible things will happen if you don't read this!
+                </div>
+                <p>Deletions <b>CANNOT</b> be undone. This will <b>PERMANTLEY REMOVE</b> the table.</p>
+
+                <a href="{{ url_for('delete_table', id=metabolite_table.id) }}">
+                    <div class="btn btn-danger full-width">
+                        I know what I am doing, remove this table
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block javascript %}
+    <script src="{{ url_for('static', filename='js/tables/edit.js') }}"></script>
+
+    <script>
+        var id = {{ metabolite_table.id }};
+        generate_table(id);
+
+    </script>
 {% endblock %}

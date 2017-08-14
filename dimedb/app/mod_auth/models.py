@@ -18,14 +18,21 @@ class UserType(db.Enum):
 class User(Base):
     __tablename__ = "auth_user"
     user_name = db.Column(db.String(64), unique=True, nullable=False)
+
     _password = db.Column(db.String(128), nullable=False)
+
     email_address = db.Column(db.String(128), unique=True)
 
     affiliation = db.Column(db.String(128))
+    address = db.Column(db.String(128))
     country = db.Column(db.String(128))
 
     first_name = db.Column(db.String(128), nullable=False)
+    mid_initials = db.Column(db.String(10), nullable=True)
     last_name = db.Column(db.String(128), nullable=False)
+
+    phone = db.Column(db.String(30), nullable=True)
+
     user_type = db.Column(db.String, nullable=False)
 
     confirmed = db.Column(db.Boolean, default=False, nullable=False)

@@ -3,12 +3,18 @@
 
 {% block title %}Register{% endblock %}
 
+
 {% block abovebody %}
     <div class="jumbotron">
         <div class="container">
             <h1>Register</h1>
         </div>
     </div>
+{% endblock %}
+
+{% block head %}
+    <link href="{{ url_for('static', filename='bower_components/country-select-js/build/css/countrySelect.min.css') }}"
+          rel="stylesheet">
 {% endblock %}
 
 {% block body %}
@@ -32,13 +38,17 @@
                 <h3>Personal Information</h3>
 
                 {{ render_form_field(form.first_name, label='First Name') }}
+                {{ render_form_field(form.mid_initials, label='Middle Initials') }}
 
                 {{ render_form_field(form.last_name, label='Last Name') }}
                 {{ render_form_field(form.email_address, label='Email Address') }}
 
                 {{ render_form_field(form.affiliation, label='Affiliation') }}
+                {{ render_form_field(form.address, label='Address') }}
 
-                {{ render_form_field(form.country, label='Country') }}
+                {{ render_form_field(form.phone, label='Phone Number') }}
+
+                {{ render_form_field(form.country, type="country", label='Country') }}
 
                 <h3>Account Information</h3>
 
@@ -50,10 +60,20 @@
 
 
                 <div class="form-group row">
-                    <button id="register-button" class="btn btn-success full-width" type="submit">Create Account</button>
+                    <button id="register-button" class="btn btn-success full-width" type="submit">Create Account
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 
+{% endblock %}
+
+{% block javascript %}
+    <script src="{{ url_for('static', filename='bower_components/country-select-js/build/js/countrySelect.min.js') }}"></script>
+    <script>
+        $("#country_selector").countrySelect({
+            defaultCountry : "gb"
+        })
+    </script>
 {% endblock %}

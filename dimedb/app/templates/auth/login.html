@@ -18,6 +18,7 @@
         </div>
         <div class="col-sm-6">
 
+            {{ display_warnings() }}
 
         <form method="post" action="{{ url_for('login') }}" accept-charset="UTF-8" role="form">
             {{ form.csrf_token }}
