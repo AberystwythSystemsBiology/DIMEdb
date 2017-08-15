@@ -18,6 +18,7 @@ function get_usertables() {
 function populate_select_area(tables) {
 
     if (tables.length > 0) {
+        $("#no_table_warning").fadeOut(0);
         $("#add_to_table_container").fadeIn(200);
         for (index in tables) {
             var option = new Option("DdbT" + tables[index]["id"] + ": " + tables[index]["Title"], tables[index]["id"])
@@ -45,7 +46,7 @@ $("#add_submission").click(function () {
    var payload = {
        "Table ID" : $("#table_selector").find(":selected").val(),
        "InChI Key" : $("#inchi_key").text(),
-       "Comments" : $("#comments").text()
+       "Comments" : $("#comments").val()
    };
 
    $.ajax({

@@ -1,6 +1,6 @@
 {% extends "template.html" %}
 
-{% block title %}Public Tables{% endblock %}
+{% block title %}My Tables{% endblock %}
 
 {% block abovebody %}
     <div class="jumbotron">
@@ -17,9 +17,8 @@
     <table id="my_tables" class="table table-striped">
         <thead>
         <tr>
-            <th width="40%">Title</th>
+            <th width="50%">Title</th>
             <th>Species</th>
-            <th>DOI</th>
             <th>Public?</th>
             <th width="15%">Creation Date</th>
             <th>Actions</th>
@@ -30,13 +29,6 @@
             <tr>
                 <td><a href="{{ url_for('view_table', id=t.id) }}">{{ t.title }}</a></td>
                 <td>{{ t.species }}</td>
-                <td>
-                    {% if t.doi != "" %}
-                        <i class="glyphicon glyphicon-check"></i>
-                    {% else %}
-                        <i class="glyphicon glyphicon-unchecked"></i>
-                    {% endif %}
-                </td>
                 <td>
                     {% if t.public == True %}
                         <i class="glyphicon glyphicon-check"></i>

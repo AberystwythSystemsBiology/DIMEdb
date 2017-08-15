@@ -21,9 +21,15 @@ function generate_table(id) {
                 },
                 {
                     "title" : "Metabolite Name",
-                    "width" : "80%",
+                    "width" : "30%",
                     "render" : function (data, type, row) {
                          return "<a href='" + getBaseURL() + "view/" + row.InChIKey + "' target='_blank'>" + row.Name + "</a>"
+                    }
+                },
+                {
+                    "title" : "Comments",
+                    "render" : function (data, type, row) {
+                         return row["Comments"]
                     }
                 },
                 {

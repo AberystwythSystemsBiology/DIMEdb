@@ -26,21 +26,17 @@
                 {{ render_form_field(form.species, label="Species") }}
                 {{ render_form_field(form.public, type="checkbox", label="Public") }}
 
-
-                <h2>
-                    Publications
-                    <label class="btn btn-sm pull-right btn-primary">
-                        Add Publication
-                    </label>
-                </h2>
-
-                <div id="publication_info">
-                    <p>No publication information available.</p>
-                </div>
-
-                <button id="register-button" class="btn btn-success full-width" type="submit" disabled>Create Table</button>
-        </form>
+                <button id="create-button" class="btn btn-success full-width" type="submit">Create Table
+                </button>
+            </form>
         </div>
         <div class="col-sm-3"></div>
     </div>
+
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+    <script src="{{ url_for('static', filename='js/tables/create.js') }}"></script>
 {% endblock %}

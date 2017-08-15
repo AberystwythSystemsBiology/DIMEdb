@@ -4,10 +4,10 @@
 
 {% block abovebody %}
     <div class="jumbotron">
-      <div class="container">
-          <h1>Mass Search</h1>
+        <div class="container">
+            <h1>Mass Search</h1>
         </div>
-      </div>
+    </div>
     </div>
 {% endblock %}
 
@@ -23,13 +23,15 @@
                 <div class="panel-body">
                     <div class="form-group">
                         <label for="masses">Precusor Masses (m/z): </label>
-                        <input id="masses" type="text" value="176.03,209.32,496.47,652.60,780.84,956.3,1120.47" data-role="tagsinput"/>
-                        <p class="small pull-right"> <i class="glyphicon glyphicon-exclamation-sign"></i> Seperate masses using ","</p>
+                        <input id="masses" type="text" value="176.03,209.32,496.47,652.60,780.84,956.3,1120.47"
+                               data-role="tagsinput"/>
+                        <p class="small pull-right"><i class="glyphicon glyphicon-exclamation-sign"></i> Seperate masses
+                            using ","</p>
                     </div>
                     <div class="form-group">
                         <label for="tolerance">Tolerance:</label>
                         <div class="form-group">
-                            <select id="search_tolerance" class="for" >
+                            <select id="search_tolerance" class="for">
                                 <option value="1">(&#177;) 1.0 m/z</option>
                                 <option value="0.5" selected="selected">(&#177;) 0.5 m/z</option>
                                 <option value="0.2">(&#177;) 0.2 m/z</option>
@@ -47,14 +49,14 @@
                             <div class="form-group">
                                 <label for="ionisation">Ionisation: </label>
                                 <div id="ionisation" class="radio">
-                                        <label><input type="radio" name="ionisation" value="Neutral" checked>Neutral</label>
-                                    </div>
-                                    <div class="radio">
-                                        <label><input type="radio" name="ionisation" value="Positive">Positive (+)</label>
-                                    </div>
-                                    <div class="radio">
-                                        <label><input type="radio" name="ionisation" value="Negative">Negative (-)</label>
-                                    </div>
+                                    <label><input type="radio" name="ionisation" value="Neutral" checked>Neutral</label>
+                                </div>
+                                <div class="radio">
+                                    <label><input type="radio" name="ionisation" value="Positive">Positive (+)</label>
+                                </div>
+                                <div class="radio">
+                                    <label><input type="radio" name="ionisation" value="Negative">Negative (-)</label>
+                                </div>
                             </div>
                         </div>
                         <div class="col-sm-6">
@@ -67,9 +69,10 @@
 
                 </div>
                 <div class="panel-footer">
-                    <div id="search_button" class="btn btn-primary pull-right">
-                        <i class="glyphicon glyphicon-search"></i> Search
-                    </div>
+
+                        <div id="search_button" class="btn btn-primary pull-right">
+                            <i class="glyphicon glyphicon-search"></i> Search
+                        </div>
                     <div class="clearfix"></div>
                 </div>
             </div>

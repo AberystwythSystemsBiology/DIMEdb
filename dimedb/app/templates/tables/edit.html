@@ -25,12 +25,12 @@
 
 {% extends "template.html" %}
 
-{% block title %}Edit Table (DdbT:{{ metabolite_table.id }}){% endblock %}
+{% block title %}Edit Table{% endblock %}
 
 {% block abovebody %}
     <div class="jumbotron">
         <div class="container">
-            <h1>Edit Table (DdbT:{{ metabolite_table.id }})</h1>
+            <h1>Edit Table</h1>
         </div>
     </div>
 {% endblock %}
@@ -40,18 +40,44 @@
 
     <h2>Edit Details</h2>
 
+
     <form method="post" action="{{ url_for('edit_table', id=metabolite_table.id) }}" accept-charset="utf-8"
           role="form">
         {{ form.csrf_token }}
         {{ render_edit_field(form.title, label="Title", type="string", content=metabolite_table.title) }}
         {{ render_edit_field(form.description, label="Description", type="text", content=metabolite_table.description) }}
         {{ render_edit_field(form.species, label="Species", type="string", content=metabolite_table.species) }}
-        {{ render_edit_field(form.doi, label="DOI", type="string", content=metabolite_table.doi) }}
 
         <div class="form-group row">
             <button class="btn btn-success pull-right" type="submit">Submit Changes</button>
         </div>
     </form>
+
+    <h2>Add/Remove Publications</h2>
+
+        <ul class="list-group">
+            {% for publication in publications %}
+                <li class="list-group-item">
+                    <h4>{{ publication.publication_title }}</h4>
+                    <p>{{ publication.author_list }}</p>
+                    {% if publication.doi != None %}
+                        <p>DOI: <a href="{{ publication.doi }}" target="_blank">{{ publication.doi }}</a></p>
+                    {% endif %}
+                    {% if publication.pubmed_id != None %}
+                        <p>Pubmed: <a href="https://www.ncbi.nlm.nih.gov/pubmed/{{ publication.pubmed_id }}" target="_blank">https://www.ncbi.nlm.nih.gov/pubmed/{{ publication.pubmed_id }}</a></p>
+                    {% endif %}
+
+                <div class="btn btn-danger pull-right">Remove Publication</div>
+                <div class="clearfix"></div>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <div class="form-group row">
+            <a href="{{ url_for('add_publication', id=metabolite_table.id) }}">
+                <div class="btn btn-success pull-right">Add Publication</div>
+            </a>
+        </div>
 
     <h2>Edit Table</h2>
 

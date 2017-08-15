@@ -19,7 +19,6 @@
         <tr>
             <th width="50%">Title</th>
             <th>Species</th>
-            <th>DOI</th>
             <th>Author</th>
             <th width="15%">Date</th>
         </tr>
@@ -29,13 +28,6 @@
             <tr>
                 <td><a href="{{ url_for('view_table', id=t.id) }}">{{ t.title }}</a></td>
                 <td>{{ t.species }}</td>
-                <td>
-                    {% if t.doi != "" %}
-                        <i class="glyphicon glyphicon-check"></i>
-                    {% else %}
-                        <i class="glyphicon glyphicon-unchecked"></i>
-                    {% endif %}
-                </td>
                 <td>{{ t.first_name }} {{ t.last_name }}</td>
                 <td>{{ t.creation_date.strftime('%d-%m-%Y')}}</td>
             </tr>

@@ -9,7 +9,7 @@ from app.mod_tables.models import MetaboliteTable, Metabolite, MetaboliteTablePu
 
 from app.mod_auth.models import User
 
-from app.mod_tables.forms import CreateTableForm, EditTableForm
+from app.mod_tables.forms import CreateTableForm, EditTableForm, NewPublicationForm
 
 
 tables = Blueprint("tables", __name__)
@@ -36,12 +36,13 @@ def mytables():
 @login_required
 def add_metabolite():
     payload = request.form
+    print payload
     table = MetaboliteTable.query.filter(MetaboliteTable.owner_id == g.user.id).first()
     if table != None:
         metabolite = Metabolite(
             table_id = payload["Table ID"],
             inchikey = payload["InChI Key"],
-            comments = payload["Comment"]
+            comments = payload["Comments"]
         )
 
         db.session.add(metabolite)
@@ -88,6 +89,7 @@ def create_table():
 def edit_table(id):
     metabolite_table = MetaboliteTable.query.get_or_404(id)
     if metabolite_table.owner_id == g.user.id and metabolite_table.removed != True:
+        publications = MetaboliteTablePublication.query.filter(MetaboliteTablePublication.table_id == id).all()
         form = EditTableForm()
         if form.validate_on_submit():
             metabolite_table.title = form.title.data,
@@ -95,8 +97,29 @@ def edit_table(id):
             metabolite_table.species = form.species.data,
             db.session.commit()
             flash("Table edited!")
-            return render_template("tables/edit.html", metabolite_table=metabolite_table, form=form)
-        return render_template("tables/edit.html", metabolite_table=metabolite_table , form=form)
+        return render_template("tables/edit.html", metabolite_table=metabolite_table , form=form, publications=publications)
+    else:
+        abort(500)
+
+@app.route("/tables/DdbT<id>/edit/add_publication", methods=["GET", "POST"])
+@login_required
+def add_publication(id):
+    metabolite_table = MetaboliteTable.query.get_or_404(id)
+    if metabolite_table.owner_id == g.user.id and metabolite_table.removed != True:
+        form = NewPublicationForm(request.form)
+        if form.validate_on_submit():
+            publication = MetaboliteTablePublication(
+                table_id = id,
+                pubmed_id = form.pubchem_id.data,
+                doi = form.doi.data,
+                author_list = form.author_list.data,
+                title = form.author_list.data
+            )
+            db.session.add(publication)
+            db.session.commit()
+            flash("Publication Added")
+            return redirect(url_for("view_table", id=id))
+        return render_template("tables/new_publication.html", id=id, form=form)
     else:
         abort(500)
 
@@ -113,11 +136,13 @@ def view_table(id):
         MetaboliteTable.removed,
         User.first_name,
         User.last_name
-    ).filter(MetaboliteTable.id == id).first_or_404()
-    if table_info.removed != True:
-        return render_template("tables/view.html", table_info = table_info)
-    else:
-        abort(404)
+    ).filter(MetaboliteTable.id == id, MetaboliteTable.removed == False).first_or_404()
+
+    publications = MetaboliteTablePublication.query.filter(MetaboliteTablePublication.table_id == id).all()
+
+    return render_template("tables/view.html", table_info = table_info, publications=publications)
+
+
 @app.route("/tables/DdbT<id>/remove")
 def delete_table(id):
     metabolite_table = MetaboliteTable.query.get_or_404(id)
@@ -137,9 +162,10 @@ def get_metabolites(id):
         metabolites = Metabolite.query.filter(Metabolite.table_id == id).all()
         json_dict = {"data" : []}
         for tm in metabolites:
-            metabolite_dict = {"InChIKey": None, "Name": None, "Molecular Formula": None, "Table ID" : None}
+            metabolite_dict = {"InChIKey": None, "Name": None, "Comments" : None, "Molecular Formula": None, "Table ID" : None}
             metabolite = app.data.driver.db["metabolites"].find_one({'_id': tm.inchikey})
             metabolite_dict["InChIKey"] = tm.inchikey
+            metabolite_dict["Comments"] = tm.comments
             metabolite_dict["Name"] = metabolite["Identification Information"]["Name"]
             metabolite_dict["Molecular Formula"] = metabolite["Identification Information"]["Molecular Formula"]
             metabolite_dict["Table ID"] = tm.id

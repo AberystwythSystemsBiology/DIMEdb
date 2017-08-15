@@ -3,7 +3,6 @@ function clear_results() {
     $("#search_results").empty();
 }
 
-
 function generate_table(mass, ionisation, api_url, tolerance) {
 
     function insert_table(mass) {

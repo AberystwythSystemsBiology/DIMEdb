@@ -1,0 +1,52 @@
+{% extends "template.html" %}
+
+{% block title %}New Publication: DIMEdb Tables{% endblock %}
+
+{% block abovebody %}
+    <div class="jumbotron">
+        <div class="container">
+            <h1>New Publication</h1>
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6">
+            <form>
+                {{ form.csrf_token }}
+
+                {{ render_form_field(form.publication_title, label='Publication Title') }}
+                {{ render_form_field(form.author_list, label='Author List') }}
+                {{ render_form_field(form.author_list, label='Pubmed ID') }}
+                {{ render_form_field(form.author_list, label='DOI') }}
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="btn btn-default full-width">
+                            <i class="glyphicon glyphicon-search"></i> Autofill from Pubmed
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="btn btn-default full-width">
+                            <i class="glyphicon glyphicon-search"></i> Autofill from DOI
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+
+                <div class="btn btn-primary full-width">
+                    Submit Publication
+                </div>
+
+            </form>
+        </div>
+        <div class="col-sm-3"></div>
+
+    </div>
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}

@@ -63,7 +63,7 @@
 
             <div class="form-group row">
                 <label class="col-sm-3">Account Created:</label>
-                <div class="col-sm-9">{{ g.user.creation_date}}</div>
+                <div class="col-sm-9">{{ g.user.creation_date.strftime('%d-%m-%Y')}}</div>
             </div>
 
         </div>

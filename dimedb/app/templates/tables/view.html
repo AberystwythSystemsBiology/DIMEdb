@@ -16,20 +16,25 @@
 
     <div class="row">
         <div class="col-sm-7">
-            <p><i class="glyphicon glyphicon-user"></i> <b>Submitted by:</b> {{ table_info.first_name }} {{ table_info.last_name }}</p>
-            {% if table_info.doi != "" %}
-                <p><i class="glyphicon glyphicon-link"></i> <b>DOI:</b> <a href="{{ table_info.doi }}" target="_blank">{{ table_info.doi }}</a></p>
+            <p><i class="glyphicon glyphicon-user"></i> <b>Submitted
+                by:</b> {{ table_info.first_name }} {{ table_info.last_name }}</p>
+
+            {% if table_info.owner_id == g.user.id %}
+                <a href="{{ url_for('edit_table', id=table_info.id) }}">
+                    <div class="btn btn-warning">Edit Table</div>
+                </a>
             {% endif %}
         </div>
         <div class="col-sm-1">
         </div>
         <div class="col-sm-4">
-            <p><i class="glyphicon glyphicon-calendar"></i> <b>Submitted on:</b> {{ table_info.creation_date.strftime('%d-%m-%Y') }}</p>
+            <p><i class="glyphicon glyphicon-calendar"></i> <b>Submitted
+                on:</b> {{ table_info.creation_date.strftime('%d-%m-%Y') }}</p>
             <p><i class="glyphicon glyphicon-paperclip"></i> <b>Status:</b>
-            {% if table_info.public == True %}
-                Public
+                {% if table_info.public == True %}
+                    Public
                 {% else %}
-                Private
+                    Private
                 {% endif %}
             </p>
         </div>
@@ -42,7 +47,26 @@
         <p>No description available.</p>
     {% endif %}
 
+    {% if publications|length > 0 %}
+        <h2>Publication Information</h2>
 
+        <ul class="list-group">
+            {% for publication in publications %}
+                <li class="list-group-item">
+                    <h4>{{ publication.publication_title }}</h4>
+                    <p>{{ publication.author_list }}</p>
+                    {% if publication.doi != None %}
+                        <p>DOI: <a href="{{ publication.doi }}" target="_blank">{{ publication.doi }}</a></p>
+                    {% endif %}
+                    {% if publication.pubmed_id != None %}
+                        <p>Pubmed: <a href="https://www.ncbi.nlm.nih.gov/pubmed/{{ publication.pubmed_id }}"
+                                      target="_blank">https://www.ncbi.nlm.nih.gov/pubmed/{{ publication.pubmed_id }}</a>
+                        </p>
+
+                    {% endif %}
+                </li>
+            {% endfor %}        </ul>
+    {% endif %}
 
     <h2>Metabolite Table</h2>
     <table id="metabolite_table" class="table table-striped">
