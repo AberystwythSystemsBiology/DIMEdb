@@ -67,7 +67,11 @@
                         <p>Pubmed: <a href="https://www.ncbi.nlm.nih.gov/pubmed/{{ publication.pubmed_id }}" target="_blank">https://www.ncbi.nlm.nih.gov/pubmed/{{ publication.pubmed_id }}</a></p>
                     {% endif %}
 
-                <div class="btn btn-danger pull-right">Remove Publication</div>
+                <a href="{{ url_for('remove_publication', id=metabolite_table.id, pub_id=publication.id) }}">
+                <div class="btn btn-danger pull-right">
+                    Remove Publication
+                </div>
+                    </a>
                 <div class="clearfix"></div>
                 </li>
             {% endfor %}

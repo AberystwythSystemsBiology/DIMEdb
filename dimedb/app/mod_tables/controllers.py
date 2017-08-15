@@ -110,16 +110,29 @@ def add_publication(id):
         if form.validate_on_submit():
             publication = MetaboliteTablePublication(
                 table_id = id,
-                pubmed_id = form.pubchem_id.data,
+                pubmed_id = form.pubmed_id.data,
                 doi = form.doi.data,
                 author_list = form.author_list.data,
-                title = form.author_list.data
+                publication_title = form.publication_title.data
             )
             db.session.add(publication)
             db.session.commit()
             flash("Publication Added")
-            return redirect(url_for("view_table", id=id))
+            return redirect(url_for("edit_table", id=id))
         return render_template("tables/new_publication.html", id=id, form=form)
+    else:
+        abort(500)
+
+@app.route("/tables/DdbT<id>/edit/remove_publication/<pub_id>")
+@login_required
+def remove_publication(id, pub_id):
+    metabolite_table = MetaboliteTable.query.get_or_404(id)
+    if metabolite_table.owner_id == g.user.id and metabolite_table.removed != True:
+        publication = MetaboliteTablePublication.query.get_or_404(pub_id)
+        db.session.delete(publication)
+        db.session.commit()
+        flash("Publication Successfully Removed")
+        return redirect(url_for("edit_table", id=id))
     else:
         abort(500)
 
