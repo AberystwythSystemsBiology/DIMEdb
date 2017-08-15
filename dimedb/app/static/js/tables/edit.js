@@ -23,10 +23,12 @@ function generate_table(id) {
                 }
             },
             {
-                "title": "Metabolite Name",
+                "title": "Metabolite",
                 "width": "80%",
                 "render": function (data, type, row) {
-                    return "<a href='" + getBaseURL() + "view/" + row.InChIKey + "' target='_blank'>" + row.Name + "</a>"
+                    var s = "<a href='" + getBaseURL() + "view/" + row.InChIKey + "' target='_blank'>" + row.Name + "</a>";
+                    s += "<p>"+row.Comments+"</p>";
+                    return s
                 }
             },
             {
@@ -42,7 +44,9 @@ function generate_table(id) {
                 "width" : "10%",
                 "className" : "dt-center",
                 "render" : function (data, type, row) {
-                    return "<div class='btn btn-sm btn-danger'><i class='glyphicon glyphicon-trash'></i></div>"
+                    var s = "<a href='" + getBaseURL() + "tables/DdbT" + id + "/edit/remove_metabolite/" + row["Table ID"] + "'>";
+                    s += "<div class='btn btn-sm btn-danger'><i class='glyphicon glyphicon-trash'></i></div></a>";
+                    return s
                 }
             }
         ],

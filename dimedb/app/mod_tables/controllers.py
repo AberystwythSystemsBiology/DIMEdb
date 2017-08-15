@@ -136,6 +136,20 @@ def remove_publication(id, pub_id):
     else:
         abort(500)
 
+@app.route("/tables/DdbT<id>/edit/remove_metabolite/<m_id>")
+@login_required
+def remove_metabolite(id, m_id):
+    metabolite_table = MetaboliteTable.query.get_or_404(id)
+    if metabolite_table.owner_id == g.user.id and metabolite_table.removed != True:
+        metabolite = Metabolite.query.get_or_404(m_id)
+        db.session.delete(metabolite)
+        db.session.commit()
+        flash("Metabolite Successfully Removed")
+        return redirect(url_for("edit_table", id=id))
+    else:
+        abort(500)
+
+
 @app.route("/tables/DdbT<id>")
 def view_table(id):
     table_info = User.query.join(MetaboliteTable, User.id == MetaboliteTable.owner_id).add_columns(

@@ -48,7 +48,7 @@
     {% endif %}
 
     {% if publications|length > 0 %}
-        <h2>Publication Information</h2>
+        <h2>Publications</h2>
 
         <ul class="list-group">
             {% for publication in publications %}
@@ -62,7 +62,6 @@
                         <p>Pubmed: <a href="https://www.ncbi.nlm.nih.gov/pubmed/{{ publication.pubmed_id }}"
                                       target="_blank">https://www.ncbi.nlm.nih.gov/pubmed/{{ publication.pubmed_id }}</a>
                         </p>
-
                     {% endif %}
                 </li>
             {% endfor %}
