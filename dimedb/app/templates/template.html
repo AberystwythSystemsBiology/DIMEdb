@@ -95,6 +95,7 @@
                         </a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ url_for('public_tables') }}">Public Tables</a></li>
+                        <li class="divider"></li>
                         <li><a href="{{ url_for('mytables') }}">My Tables</a></li>
                         <li><a href="{{ url_for('create_table') }}">Create Table</a></li>
 
@@ -111,8 +112,36 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
                             <img src="{{ g.user.avatar(18) }}" class="profile-image img-circle"> {{ g.user.first_name }} <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="{{ url_for('management') }}">Account Management</a></li>
-                            <li><a href="{{ url_for('logout') }}"><div class="btn btn-danger full-width">Log Out</div></a></li>
+                            <li>
+                            <div class="navbar-login">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <p class="text-center">
+                                            <img src="{{ g.user.avatar(256) }}" class="img-circle img-responsive">
+                                        </p>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <p class="text-left"><strong>{{ g.user.first_name }} {{ g.user.last_name }}</strong></p>
+                                        <p class="text-left small">{{ g.user.email_address }}</p>
+                                        <p class="text-left">
+                                            <a href="{{ url_for('management') }}" class="btn btn-primary btn-block btn-sm">Account Management</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <div class="navbar-login navbar-login-session">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <p>
+                                            <a href="{{ url_for('logout') }}" class="btn btn-danger btn-block">Log Out</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
                         </ul>
                     </li>
                 {% else %}

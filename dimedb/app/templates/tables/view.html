@@ -30,7 +30,7 @@
         <div class="col-sm-4">
             <p><i class="glyphicon glyphicon-calendar"></i> <b>Submitted
                 on:</b> {{ table_info.creation_date.strftime('%d-%m-%Y') }}</p>
-            <p><i class="glyphicon glyphicon-paperclip"></i> <b>Status:</b>
+            <p><i class="glyphicon glyphicon-book"></i> <b>Status:</b>
                 {% if table_info.public == True %}
                     Public
                 {% else %}
@@ -48,24 +48,21 @@
     {% endif %}
 
     {% if publications|length > 0 %}
-        <h2>Publications</h2>
-
-        <ul class="list-group">
-            {% for publication in publications %}
-                <li class="list-group-item">
-                    <h4>{{ publication.publication_title }}</h4>
-                    <p>{{ publication.author_list }}</p>
-                    {% if publication.doi != None %}
-                        <p>DOI: <a href="{{ publication.doi }}" target="_blank">{{ publication.doi }}</a></p>
-                    {% endif %}
-                    {% if publication.pubmed_id != None %}
-                        <p>Pubmed: <a href="https://www.ncbi.nlm.nih.gov/pubmed/{{ publication.pubmed_id }}"
-                                      target="_blank">https://www.ncbi.nlm.nih.gov/pubmed/{{ publication.pubmed_id }}</a>
-                        </p>
-                    {% endif %}
+        <h2>Publications ({{publications|length}})</h2>
+        <ol>
+            {% for p in publications %}
+                <li>
+                {% if p.doi != None %}
+                    <a href="https://doi.org/{{ p.doi }}" target="_blank">
+                {% elif p.pubmed != None %}
+                    <a href="https://www.ncbi.nlm.nih.gov/pubmed/{{ p.pubmed_id }}" target="_blank">
+                {% else %}
+                    <a href="#">
+                {% endif %}
+                     {{ p.publication_title }} </a>
                 </li>
             {% endfor %}
-        </ul>
+        </ol>
     {% endif %}
 
     <h2>Metabolite Table</h2>

@@ -49,6 +49,26 @@ h1, h2, h3, h4, h5, h6 {
 
 
 
+.navbar-login
+{
+    color: #000;
+    width: 305px;
+    padding: 10px;
+    padding-bottom: 0px;
+}
+
+.navbar-login-session
+{
+    padding: 10px;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+.icon-size
+{
+    font-size: 87px;
+}
+
 .navbar-inverse {
     background-image: none;
     background-color: #2e6da4;
