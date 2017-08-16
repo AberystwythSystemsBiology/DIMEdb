@@ -7,6 +7,24 @@ import pybel
 from joblib import Parallel, delayed
 from tqdm import tqdm
 
+import signal, os
+
+class TimeoutError(Exception):
+    pass
+
+class timeout:
+    def __init__(self, seconds=1, error_message='Timeout'):
+        self.seconds = seconds
+        self.error_message = error_message
+    def handle_timeout(self, signum, frame):
+        raise TimeoutError(self.error_message)
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, self.handle_timeout)
+        signal.alarm(self.seconds)
+    def __exit__(self, type, value, traceback):
+        signal.alarm(0)
+
+
 directory = "/home/keo7/.data/dimedb/"
 
 def load_json(fp):
@@ -298,6 +316,7 @@ def adduct_information(smiles, properties):
     return adducts
 
 def process_compound(inchikey):
+
     id_info, rdkit_mol = identification_info(inchikey)
 
     if id_info["Molecular Formula"] != None:
@@ -326,16 +345,26 @@ def generate_image(mol, inchikey):
     Draw.MolToFile(mol, fileName=directory+"structures/"+inchikey+".svg", imageType="svg", size=(250, 250))
 
 if __name__ == "__main__":
-    limiter = 500
+    limiter = 10
     inchikeys = combined.keys()
-    slice = range(0, len(inchikeys), limiter)[40:]
+    slice = range(0, len(inchikeys), limiter)[1184:]
 
+
+    failed_slices = [["From", "To"]]
 
     for inchikey_index in tqdm(slice):
-        processed_data = Parallel(n_jobs=32)(delayed(process_compound)(id) for id in inchikeys[inchikey_index:inchikey_index+limiter])
-        processed_data = [[compound, rdkit_mol] for compound, rdkit_mol in processed_data if compound != None]
-        [generate_image(rdkit_mol, compound["_id"]) for compound, rdkit_mol in processed_data if compound != None]
-        pickle.dump(processed_data, open(directory+"pickles/"+str(inchikey_index)+".pkl", "wb"))
+        try:
+            with timeout(30):
+                processed_data = Parallel(n_jobs=32)(delayed(process_compound)(id) for id in inchikeys[inchikey_index:inchikey_index+limiter])
+                processed_data = [[compound, rdkit_mol] for compound, rdkit_mol in processed_data if compound != None]
+                [generate_image(rdkit_mol, compound["_id"]) for compound, rdkit_mol in processed_data if compound != None]
+                pickle.dump(processed_data, open(directory+"pickles/"+str(inchikey_index)+".pkl", "wb"))
+        except TimeoutError:
+            print inchikey_index, "failed"
+            failed_slices.append([inchikey_index, inchikey_index+limiter])
+
+    for i in failed_slices:
+        print i
 
     db = []
     for file in os.listdir(directory+"pickles/"):

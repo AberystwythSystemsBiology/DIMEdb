@@ -13,6 +13,10 @@
 
 {% block body %}
 
+    <div id="search_filters">
+
+    <h2 class="page-header">Search Filters</h2>
+
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Name:</label>
         <div class="col-sm-10">
@@ -97,10 +101,14 @@
         <i class="glyphicon glyphicon-search"></i> Submit Search
     </div>
 
+    </div>
+
     <div id="advanced_search_results">
         <h2 class="page-header">Search Results</h2>
         <table id="search_results_table" class="table table-striped" width="100%">
         </table>
+
+        <div id="show_filter" class="btn btn-primary pull-right"><i class="glyphicon glyphicon-search"></i> Show Filter</div>
     </div>
 {% endblock %}
 
