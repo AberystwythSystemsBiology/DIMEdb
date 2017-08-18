@@ -1,4 +1,7 @@
-import json, pybel, requests, re, signal, pyidick, collections
+import json, pybel, requests, re, signal, pyidick, collections, pickle, os
+from bson.json_util import dumps as bson_dumps
+from tqdm import tqdm
+from joblib import Parallel, delayed
 
 from bioservices import KEGG, KEGGParser
 from biocyc import biocyc
@@ -20,6 +23,10 @@ pubchem = load_json(directory + "stripped_pubchem.json")
 class SMILESerror(Exception):
     def __init__(self):
         super(SMILESerror, self).__init__("Unable to generate SMILES")
+
+class MolecularFormulaError(Exception):
+    def __init__(self):
+        super(MolecularFormulaError, self).__init__("Unable to generate Molecular Formula")
 
 
 class TimeoutError(Exception):
@@ -63,15 +70,20 @@ class Metabolite(object):
             "Systematic Name": None,
             "InChI": self.inchi,
             "SMILES": self.smiles,
-            "Molecular Formula": rdMolDescriptors.CalcMolFormula(self.rdkit_mol)
+            "Molecular Formula": None
         }
+
+        try:
+            id_info["Molecular Formula"] = rdMolDescriptors.CalcMolFormula(self.rdkit_mol)
+        except Exception:
+            raise MolecularFormulaError()
 
         if self.combined_info["HMDB Accession"] != None:
             if combined[self.inchikey]["HMDB Accession"] != None:
                 id_info["Name"] = hmdb[self.inchikey]["Name"]
                 id_info["Synonyms"].extend(hmdb[self.inchikey]["Synonyms"])
 
-            if combined[inchikey]["PubChem ID"] != None:
+            if combined[self.inchikey]["PubChem ID"] != None:
                 if type(pubchem[self.inchikey]["Name"]) != list:
                     id_info["Name"] = pubchem[self.inchikey]["Name"]
                 else:
@@ -197,164 +209,150 @@ class Metabolite(object):
 
         adducts = []
         def calculate(type, polarity, mol, rule_dict=None, electrons=0, charge=0):
-            iso_dist = mol.isotopic_distribution(rule_dict=rule_dict, electrons=electrons, charge=charge)
+            try:
+                with timeout(10):
+                    iso_dist = mol.isotopic_distribution(rule_dict=rule_dict, electrons=electrons, charge=charge)
 
-            return {
-                "Polarity": polarity,
-                "Adduct": type,
-                "Accurate Mass": iso_dist[0][0],
-                "Isotopic Distribution": iso_dist
-            }
+                    adducts.append({
+                        "Polarity": polarity,
+                        "Adduct": type,
+                        "Accurate Mass": iso_dist[0][0],
+                        "Isotopic Distribution": iso_dist
+                    })
+            except (RuntimeError, TimeoutError) as e:
+                pass
+
 
         mol = pyidick.Molecule(self.smiles)
 
-        adducts.append(calculate("[M]", "Neutral", mol))
+        calculate("[M]", "Neutral", mol)
 
-        try:
-            with timeout(10):
-                if self.physicochemical_properties["Formal Charge"] == -1:
-                    adducts.append(
-                        calculate("[M1-.]1-", "Negative", "Positive", mol, {"add": {}, "remove": {}}, charge=-1,
-                                  electrons=-0))
-                if self.physicochemical_properties["Hydrogen Bond Donors"] > 0 and self.physicochemical_properties[
-                    "Formal Charge"] == 0:
-                    adducts.append(
-                        calculate("[3M-H]1-", "Negative", mol, {"add": {}, "remove": {"H": 1}, "multiply": 3},
-                                  charge=-1, electrons=1))
-                    adducts.append(
-                        calculate("[2M+Hac-H]1-", "Negative", mol,
-                                  {"add": {"C": 2, "H": 3, "O": 2}, "remove": {}, "multiply": 2}, charge=-1,
-                                  electrons=1))
-                    adducts.append(
-                        calculate("[2M+FA-H]1-", "Negative", mol,
-                                  {"add": {"C": 1, "H": 1, "O": 2}, "remove": {}, "multiply": 2}, charge=-1,
-                                  electrons=1))
-                    adducts.append(
-                        calculate("[2M-H]1-", "Negative", mol, {"add": {}, "remove": {"H": 1}, "multiply": 2},
-                                  charge=-1, electrons=1))
-                    adducts.append(
-                        calculate("[M+TFA-H]1-", "Negative", mol, {"add": {"C": 2, "O": 2, "F": 3}, "remove": {}},
-                                  charge=-1, electrons=1))
-                    adducts.append(
-                        calculate("[M+Hac-H]1-", "Negative", mol, {"add": {"C": 2, "H": 3, "O": 2}, "remove": {}},
-                                  charge=-1, electrons=1))
-                    adducts.append(
-                        calculate("[M+FA-H]1-", "Negative", mol, {"add": {"C": 1, "H": 1, "O": 2}, "remove": {}},
-                                  charge=-1, electrons=1))
-                    adducts.append(
-                        calculate("[M-H]1-", "Positive", mol, {"add": {}, "remove": {"H": 1}}, charge=-1, electrons=1))
-                    if self.physicochemical_properties["Hydrogen Bond Donors"] > 1:
-                        adducts.append(
-                            calculate("[M-2H]2-", "Negative", mol, {"add": {}, "remove": {"H": 2}}, charge=-2,
-                                      electrons=2))
-                    if self.physicochemical_properties["Hydrogen Bond Donors"] > 2:
-                        adducts.append(
-                            calculate("[M-3H]3-", "Negative", mol, {"add": {}, "remove": {"H": 3}}, charge=-3,
-                                      electrons=3))
-                    if self.physicochemical_properties["Hydrogen Bond Acceptors"] > 0:
-                        adducts.append(
-                            calculate("[2M+Na-2H]1-", "Negative", mol,
-                                      {"add": {"Na": 1}, "remove": {"H": 2}, "multiply": 2}, charge=-1,
-                                      electrons=1))
-                        adducts.append(
-                            calculate("[M+K-2H]1-", "Negative", mol, {"add": {"K": 1}, "remove": {"H": 2}}, charge=-1,
-                                      electrons=1))
-                    if self.physicochemical_properties["Hydrogen Bond Donors"] > 1 and self.physicochemical_properties[
-                        "Hydrogen Bond Acceptors"] > 0:
-                        adducts.append(
-                            calculate("[M+Na-2H]1-", "Negative", mol, {"add": {"Na": 1}, "remove": {"H": 2}}, charge=-1,
-                                      electrons=1))
-                    if self.physicochemical_properties["Hydrogen Bond Acceptors"] > 0 and \
-                                    self.physicochemical_properties["Formal Charge"] == 0:
-                        adducts.append(
-                            calculate("[M+Br]1-", "Negative", mol, {"add": {"Br": 1}, "remove": {}}, charge=-1,
-                                      electrons=1))
-                        adducts.append(
-                            calculate("[M+Cl]1-", "Negative", mol, {"add": {"Cl": 1}, "remove": {}}, charge=-1,
-                                      electrons=1))
+        if self.physicochemical_properties["Formal Charge"] == -1:
+            calculate("[M1-.]1-", "Negative", mol, {"add": {}, "remove": {}}, charge=-1, electrons=-0)
+        if self.physicochemical_properties["Hydrogen Bond Donors"] > 0 and self.physicochemical_properties["Formal Charge"] == 0:
+            calculate("[3M-H]1-", "Negative", mol, {"add": {}, "remove": {"H": 1}, "multiply": 3}, charge=-1,
+                      electrons=1)
+            calculate("[2M+Hac-H]1-", "Negative", mol, {"add": {"C": 2, "H": 3, "O": 2}, "remove": {}, "multiply": 2},
+                      charge=-1, electrons=1)
+            calculate("[2M+FA-H]1-", "Negative", mol, {"add": {"C": 1, "H": 1, "O": 2}, "remove": {}, "multiply": 2}, charge=-1, electrons=1)
+            calculate("[2M-H]1-", "Negative", mol, {"add": {}, "remove": {"H": 1}, "multiply": 2}, charge=-1, electrons=1)
+            calculate("[M+TFA-H]1-", "Negative", mol, {"add": {"C": 2, "O": 2, "F": 3}, "remove": {}},
+                          charge=-1, electrons=1)
+            calculate("[M+Hac-H]1-", "Negative", mol, {"add": {"C": 2, "H": 3, "O": 2}, "remove": {}},
+                          charge=-1, electrons=1)
+            calculate("[M+FA-H]1-", "Negative", mol, {"add": {"C": 1, "H": 1, "O": 2}, "remove": {}},
+                          charge=-1, electrons=1)
+            adducts.append(
+                calculate("[M-H]1-", "Negative", mol, {"add": {}, "remove": {"H": 1}}, charge=-1, electrons=1))
+            if self.physicochemical_properties["Hydrogen Bond Donors"] > 1:
+                adducts.append(
+                    calculate("[M-2H]2-", "Negative", mol, {"add": {}, "remove": {"H": 2}}, charge=-2,
+                              electrons=2))
+            if self.physicochemical_properties["Hydrogen Bond Donors"] > 2:
+                adducts.append(
+                    calculate("[M-3H]3-", "Negative", mol, {"add": {}, "remove": {"H": 3}}, charge=-3,
+                              electrons=3))
+            if self.physicochemical_properties["Hydrogen Bond Acceptors"] > 0:
+                adducts.append(
+                    calculate("[2M+Na-2H]1-", "Negative", mol,
+                              {"add": {"Na": 1}, "remove": {"H": 2}, "multiply": 2}, charge=-1,
+                              electrons=1))
+                adducts.append(
+                    calculate("[M+K-2H]1-", "Negative", mol, {"add": {"K": 1}, "remove": {"H": 2}}, charge=-1,
+                              electrons=1))
+            if self.physicochemical_properties["Hydrogen Bond Donors"] > 1 and self.physicochemical_properties[
+                "Hydrogen Bond Acceptors"] > 0:
+                adducts.append(
+                    calculate("[M+Na-2H]1-", "Negative", mol, {"add": {"Na": 1}, "remove": {"H": 2}}, charge=-1,
+                              electrons=1))
+            if self.physicochemical_properties["Hydrogen Bond Acceptors"] > 0 and \
+                            self.physicochemical_properties["Formal Charge"] == 0:
+                adducts.append(
+                    calculate("[M+Br]1-", "Negative", mol, {"add": {"Br": 1}, "remove": {}}, charge=-1,
+                              electrons=1))
+                adducts.append(
+                    calculate("[M+Cl]1-", "Negative", mol, {"add": {"Cl": 1}, "remove": {}}, charge=-1,
+                              electrons=1))
                 # Positive
-                if self.physicochemical_properties["Formal Charge"] == 1:
-                    adducts.append(
-                        calculate("[M1+.]1+", "Positive", mol, {"add": {}, "remove": {}}, charge=1, electrons=-0))
-                if self.physicochemical_properties["Formal Charge"] == 0:
-                    if self.physicochemical_properties["Hydrogen Bond Acceptors"] > 0:
-                        adducts.append(
-                            calculate("[2M+K]1+", "Positive", mol, {"add": {"K": 1}, "remove": {}, "multiply": 2},
-                                      charge=1, electrons=-1))
-                        adducts.append(
-                            calculate("[2M+Na]1+", "Positive", mol, {"add": {"Na": 1}, "remove": {}, "multiply": 2},
-                                      charge=1, electrons=-1))
-                        adducts.append(
-                            calculate("[2M+NH4]1+", "Positive", mol,
-                                      {"add": {"N": 4, "H": 4}, "remove": {}, "multiply": 2}, charge=1,
-                                      electrons=-1))
-                        adducts.append(
-                            calculate("[2M+H]1+", "Positive", mol, {"add": {"H": 1}, "remove": {}, "multiply": 2},
-                                      charge=1, electrons=-1))
-                        adducts.append(
-                            calculate("[M+2K-H]1+", "Positive", mol, {"add": {"K": 2}, "remove": {"H": 1}}, charge=1,
-                                      electrons=-1))
-                        adducts.append(
-                            calculate("[M+2Na-H]1+", "Positive", mol, {"add": {"Na": 2}, "remove": {"H": 1}}, charge=1,
-                                      electrons=-1))
-                        adducts.append(
-                            calculate("[M+K]1+", "Positive", mol, {"add": {"K": 1}, "remove": {}}, charge=1,
-                                      electrons=-1))
-                        adducts.append(
-                            calculate("[M+Na]1+", "Positive", mol, {"add": {"Na": 1}, "remove": {}}, charge=1,
-                                      electrons=-1))
-                        adducts.append(
-                            calculate("[M+H]1+", "Positive", mol, {"add": {"H": 1}, "remove": {}}, charge=1,
-                                      electrons=-1))
-                    if self.physicochemical_properties["Hydrogen Bond Acceptors"] > 1:
-                        adducts.append(
-                            calculate("[2M+3H2O+2H]2+", "Positive", mol,
-                                      {"add": {"H": 8, "O": 3}, "remove": {}, "multiply": 2}, charge=2,
-                                      electrons=-2))
-                        adducts.append(
-                            calculate("[2M+3ACN+2H]2+", "Positive", mol,
-                                      {"add": {"C": 6, "H": 11, "N": 3}, "remove": {}, "multiply": 2},
-                                      charge=2, electrons=-2))
-                        adducts.append(
-                            calculate("[M+2ACN+2H]2+", "Positive", mol, {"add": {"C": 3, "H": 8, "N": 2}, "remove": {}},
-                                      charge=2,
-                                      electrons=-2))
+        if self.physicochemical_properties["Formal Charge"] == 1:
+            adducts.append(
+                calculate("[M1+.]1+", "Positive", mol, {"add": {}, "remove": {}}, charge=1, electrons=-0))
+        if self.physicochemical_properties["Formal Charge"] == 0:
+            if self.physicochemical_properties["Hydrogen Bond Acceptors"] > 0:
+                adducts.append(
+                    calculate("[2M+K]1+", "Positive", mol, {"add": {"K": 1}, "remove": {}, "multiply": 2},
+                              charge=1, electrons=-1))
+                adducts.append(
+                    calculate("[2M+Na]1+", "Positive", mol, {"add": {"Na": 1}, "remove": {}, "multiply": 2},
+                              charge=1, electrons=-1))
+                adducts.append(
+                    calculate("[2M+NH4]1+", "Positive", mol,
+                              {"add": {"N": 4, "H": 4}, "remove": {}, "multiply": 2}, charge=1,
+                              electrons=-1))
+                adducts.append(
+                    calculate("[2M+H]1+", "Positive", mol, {"add": {"H": 1}, "remove": {}, "multiply": 2},
+                              charge=1, electrons=-1))
+                adducts.append(
+                    calculate("[M+2K-H]1+", "Positive", mol, {"add": {"K": 2}, "remove": {"H": 1}}, charge=1,
+                              electrons=-1))
+                adducts.append(
+                    calculate("[M+2Na-H]1+", "Positive", mol, {"add": {"Na": 2}, "remove": {"H": 1}}, charge=1,
+                              electrons=-1))
+                adducts.append(
+                    calculate("[M+K]1+", "Positive", mol, {"add": {"K": 1}, "remove": {}}, charge=1,
+                              electrons=-1))
+                adducts.append(
+                    calculate("[M+Na]1+", "Positive", mol, {"add": {"Na": 1}, "remove": {}}, charge=1,
+                              electrons=-1))
+                adducts.append(
+                    calculate("[M+H]1+", "Positive", mol, {"add": {"H": 1}, "remove": {}}, charge=1,
+                              electrons=-1))
+            if self.physicochemical_properties["Hydrogen Bond Acceptors"] > 1:
+                adducts.append(
+                    calculate("[2M+3H2O+2H]2+", "Positive", mol,
+                              {"add": {"H": 8, "O": 3}, "remove": {}, "multiply": 2}, charge=2,
+                              electrons=-2))
+                adducts.append(
+                    calculate("[2M+3ACN+2H]2+", "Positive", mol,
+                              {"add": {"C": 6, "H": 11, "N": 3}, "remove": {}, "multiply": 2},
+                              charge=2, electrons=-2))
+                adducts.append(
+                    calculate("[M+2ACN+2H]2+", "Positive", mol, {"add": {"C": 3, "H": 8, "N": 2}, "remove": {}},
+                              charge=2,
+                              electrons=-2))
 
-                        adducts.append(
-                            calculate("[M+2Na]2+", "Positive", mol, {"add": {"Na": 2}, "remove": {}}, charge=2,
-                                      electrons=-2))
-                        adducts.append(
-                            calculate("[M+2ACN+2H]2+", "Positive", mol, {"add": {"C": 2, "H": 5, "N": 1}, "remove": {}},
-                                      charge=2,
-                                      electrons=-2))
-                        adducts.append(
-                            calculate("[M+H+K]2+", "Positive", mol, {"add": {"K": 1, "H": 1}, "remove": {}}, charge=2,
-                                      electrons=-2))
-                        adducts.append(
-                            calculate("[M+H+Na]2+", "Positive", mol, {"add": {"Na": 1, "H": 1}, "remove": {}}, charge=2,
-                                      electrons=-2))
-                        adducts.append(
-                            calculate("[M+H+NH4]2+", "Positive", mol, {"add": {"N": 5, "H": 5}, "remove": {}}, charge=2,
-                                      electrons=-2))
-                        adducts.append(
-                            calculate("[M+2H]2+", "Positive", mol, {"add": {"H": 2}, "remove": {}}, charge=2,
-                                      electrons=-2))
-                    if self.physicochemical_properties["Hydrogen Bond Acceptors"] > 2:
-                        adducts.append(
-                            calculate("[M+3Na]3+", "Positive", mol, {"add": {"Na": 3}, "remove": {}}, charge=3,
-                                      electrons=-3))
-                        adducts.append(
-                            calculate("[M+H+2Na]3+", "Positive", mol, {"add": {"H": 1, "Na": 2}, "remove": {}},
-                                      charge=3, electrons=-3))
-                        adducts.append(
-                            calculate("[M+3H]3+", "Positive", mol, {"add": {"H": 3}, "remove": {}}, charge=3,
-                                      electrons=-3))
-                        adducts.append(
-                            calculate("[M+2H+2a]3+", "Positive", mol, {"add": {"H": 2, "Na": 1}, "remove": {}},
-                                      charge=3, electrons=-3))
-
-        except TimeoutError:
-            pass
+                adducts.append(
+                    calculate("[M+2Na]2+", "Positive", mol, {"add": {"Na": 2}, "remove": {}}, charge=2,
+                              electrons=-2))
+                adducts.append(
+                    calculate("[M+2ACN+2H]2+", "Positive", mol, {"add": {"C": 2, "H": 5, "N": 1}, "remove": {}},
+                              charge=2,
+                              electrons=-2))
+                adducts.append(
+                    calculate("[M+H+K]2+", "Positive", mol, {"add": {"K": 1, "H": 1}, "remove": {}}, charge=2,
+                              electrons=-2))
+                adducts.append(
+                    calculate("[M+H+Na]2+", "Positive", mol, {"add": {"Na": 1, "H": 1}, "remove": {}}, charge=2,
+                              electrons=-2))
+                adducts.append(
+                    calculate("[M+H+NH4]2+", "Positive", mol, {"add": {"N": 5, "H": 5}, "remove": {}}, charge=2,
+                              electrons=-2))
+                adducts.append(
+                    calculate("[M+2H]2+", "Positive", mol, {"add": {"H": 2}, "remove": {}}, charge=2,
+                              electrons=-2))
+            if self.physicochemical_properties["Hydrogen Bond Acceptors"] > 2:
+                adducts.append(
+                    calculate("[M+3Na]3+", "Positive", mol, {"add": {"Na": 3}, "remove": {}}, charge=3,
+                              electrons=-3))
+                adducts.append(
+                    calculate("[M+H+2Na]3+", "Positive", mol, {"add": {"H": 1, "Na": 2}, "remove": {}},
+                              charge=3, electrons=-3))
+                adducts.append(
+                    calculate("[M+3H]3+", "Positive", mol, {"add": {"H": 3}, "remove": {}}, charge=3,
+                              electrons=-3))
+                adducts.append(
+                    calculate("[M+2H+2a]3+", "Positive", mol, {"add": {"H": 2, "Na": 1}, "remove": {}},
+                              charge=3, electrons=-3))
 
         return adducts
 
@@ -376,11 +374,37 @@ class Metabolite(object):
 
         return collections.OrderedDict(compound)
 
+
+def handler(inchikey):
+    try:
+        metabolite = Metabolite(inchikey)
+        metabolite.generate_image(directory + "structures/" + metabolite.inchikey + ".svg")
+        metabolite_dict = metabolite.to_dict()
+    except (SMILESerror, MolecularFormulaError) as e:
+        metabolite_dict = None
+
+    return metabolite_dict
+
+
 if __name__ == "__main__":
 
-    for inchikey in combined.keys():
-        try:
-            metabolite = Metabolite(inchikey)
-            print metabolite.to_dict()
-        except SMILESerror:
-            pass
+
+    limiter = 1000
+    inchikeys = combined.keys()
+    slice = range(0, len(inchikeys), limiter)
+
+    for inchikey_index in tqdm(slice):
+        processed_data = Parallel(n_jobs=32)(delayed(handler)(id) for id in inchikeys[inchikey_index:inchikey_index + limiter])
+        processed_data = [x for x in processed_data if x != None]
+        pickle.dump(processed_data, open(directory + "pickles/" + str(inchikey_index) + ".pkl", "wb"))
+        break
+
+    db = []
+
+    for file in os.listdir(directory+"pickles/"):
+        processed_data = pickle.load(open(directory+"pickles/"+file, "rb"))
+        db.extend([metabolite for metabolite in processed_data])
+
+    mongodb_file = json.loads(bson_dumps(db), object_pairs_hook=collections.OrderedDict)
+    with open(directory+"dimedb.json", "wb") as outfile:
+        json.dump(mongodb_file, outfile, indent=4)
