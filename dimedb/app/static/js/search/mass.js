@@ -52,7 +52,7 @@ function generate_table(mass, ionisation, api_url, tolerance) {
                     "className": "dt-center",
                     "width": "10%",
                     "render": function (data, type, row) {
-                        return data[ionisation][0]["Accurate Mass"].toFixed(3);
+                        return data[0]["Accurate Mass"].toFixed(3);
                     }
                 },
                 {
@@ -61,7 +61,7 @@ function generate_table(mass, ionisation, api_url, tolerance) {
                     "className": "dt-center",
                     "width": "10%",
                     "render": function (data, type, row) {
-                        return data[ionisation][0]["Type"];
+                        return data[0]["Adduct"];
                     }
                 },
                 {
@@ -70,7 +70,7 @@ function generate_table(mass, ionisation, api_url, tolerance) {
                     "className": "dt-center",
                     "width": "10%",
                     "render": function (data, type, row) {
-                        return (data[ionisation][0]["Accurate Mass"] - mass).toFixed(3);
+                        return (data[0]["Accurate Mass"] - mass).toFixed(3);
                     }
                 }
             ],
@@ -99,7 +99,7 @@ function generate_api_url(mass, ionisation) {
 
     var api_url = getBaseURL() + "api/metabolites/?where={";
 
-    api_url += '"Adducts.' + ionisation + '" : {"$elemMatch" : {"Type" : {"$in" : ' + generate_adducts() + '},';
+    api_url += '"Adducts" : {"$elemMatch" : {"Polarity" : "'+ ionisation +'", "Adduct" : {"$in" : ' + generate_adducts() + '},';
 
 
     var lte = parseFloat(mass) + parseFloat(tolerance);

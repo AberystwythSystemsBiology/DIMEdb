@@ -323,6 +323,7 @@ function render_metabolite_view(metabolite_id) {
     fill_external_sources(metabolite["External Sources"]);
     supply_image(metabolite_id);
 
+    // TODO: Fix here.
     fill_adducts_information("Neutral", metabolite["Adducts"]["Neutral"]);
     fill_isotopic_distribution_table(metabolite["Adducts"]["Neutral"][0]);
     chart_distribution(metabolite["Adducts"]["Neutral"][0]["Isotopic Distribution"]);

@@ -42,31 +42,16 @@ physiochemical_properties = {
     }
 }
 
-adduct = {
+adducts = {
+    "type" : "list",
     "schema" : {
+        "Polarity" : "string",
         "Type" : "string",
         "Accurate Mass" : "float",
         "Isotopic Distribution" : "list"
     }
 }
 
-adducts = {
-    "type" : "dict",
-    "schema" : {
-        "Negative" : {
-            "type" : "list",
-            "schema" : adduct
-        },
-        "Neutral" : {
-            "type" : "list",
-            "schema" : adduct
-        },
-        "Positive" : {
-            "type" : "list",
-            "schema" : adduct
-        }
-    }
-}
 
 external_sources = {
     "schema" : {

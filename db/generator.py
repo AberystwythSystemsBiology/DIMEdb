@@ -127,12 +127,16 @@ def generate_sources(inchikey):
     except Exception:
         pass
 
-    if sources["KEGG Compound"] != None:
-        response = requests.get("https://websvc.biocyc.org/META/foreignid?ids=Kegg:" + sources["KEGG Compound"])
-        if response.status_code == 200:
-            biocyc_info = response.text.split("\t")
-            if biocyc_info[1] == "1":
-                sources["BioCyc"] = biocyc_info[2].replace("\n", "")
+    try:
+        if sources["KEGG Compound"] != None:
+            response = requests.get("https://websvc.biocyc.org/META/foreignid?ids=Kegg:" + sources["KEGG Compound"])
+            if response.status_code == 200:
+                biocyc_info = response.text.split("\t")
+                if biocyc_info[1] == "1":
+                    sources["BioCyc"] = biocyc_info[2].replace("\n", "")
+
+    except Exception:
+        pass
 
     sources.update({
         "ChEBI ID" : combined[inchikey]["ChEBI ID"],
@@ -196,123 +200,124 @@ def physicochemical(rdkit_mol):
     }
 
 def adduct_information(smiles, properties):
-    adducts = collections.defaultdict(list)
+    adducts = []
     try:
         mol = pyidick.Molecule(smiles)
     except Exception:
         mol = None
 
-    def calculate(type, mol, rule_dict=None, electrons=0, charge=0):
+    def calculate(type, polarity, mol, rule_dict=None, electrons=0, charge=0):
         iso_dist = mol.isotopic_distribution(rule_dict=rule_dict, electrons=electrons, charge=charge)
 
         return {
-            "Type": type,
+            "Polarity" : polarity,
+            "Adduct": type,
             "Accurate Mass": iso_dist[0][0],
             "Isotopic Distribution": iso_dist
         }
 
     try:
         # Neutral
-        adducts["Neutral"].append(calculate("[M]", mol))
+        adducts.append(calculate("[M]", "Neutral", mol))
         # Negative
         if properties["Formal Charge"] == -1:
-            adducts["Negative"].append(calculate("[M1-.]1-", mol, {"add": {}, "remove": {}}, charge=-1, electrons=-0))
+            adducts.append(calculate("[M1-.]1-", "Negative", "Positive", mol, {"add": {}, "remove": {}}, charge=-1, electrons=-0))
         if properties["Hydrogen Bond Donors"] > 0 and properties["Formal Charge"] == 0:
-            adducts["Negative"].append(
-                calculate("[3M-H]1-", mol, {"add": {}, "remove": {"H": 1}, "multiply": 3}, charge=-1, electrons=1))
-            adducts["Negative"].append(
-                calculate("[2M+Hac-H]1-", mol, {"add": {"C": 2, "H": 3, "O": 2}, "remove": {}, "multiply": 2}, charge=-1,
+            adducts.append(
+                calculate("[3M-H]1-", "Negative", mol, {"add": {}, "remove": {"H": 1}, "multiply": 3}, charge=-1, electrons=1))
+            adducts.append(
+                calculate("[2M+Hac-H]1-", "Negative", mol, {"add": {"C": 2, "H": 3, "O": 2}, "remove": {}, "multiply": 2}, charge=-1,
+                          electrons=1))
+            adducts.append(
+                calculate("[2M+FA-H]1-", "Negative", mol, {"add": {"C": 1, "H": 1, "O": 2}, "remove": {}, "multiply": 2}, charge=-1,
                           electrons=1))
             adducts["Negative"].append(
-                calculate("[2M+FA-H]1-", mol, {"add": {"C": 1, "H": 1, "O": 2}, "remove": {}, "multiply": 2}, charge=-1,
-                          electrons=1))
+                calculate("[2M-H]1-", "Negative", mol, {"add": {}, "remove": {"H": 1}, "multiply": 2}, charge=-1, electrons=1))
             adducts["Negative"].append(
-                calculate("[2M-H]1-", mol, {"add": {}, "remove": {"H": 1}, "multiply": 2}, charge=-1, electrons=1))
+                calculate("[M+TFA-H]1-", "Negative", mol, {"add": {"C": 2, "O": 2, "F": 3}, "remove": {}}, charge=-1, electrons=1))
             adducts["Negative"].append(
-                calculate("[M+TFA-H]1-", mol, {"add": {"C": 2, "O": 2, "F": 3}, "remove": {}}, charge=-1, electrons=1))
+                calculate("[M+Hac-H]1-", "Negative", mol, {"add": {"C": 2, "H": 3, "O": 2}, "remove": {}}, charge=-1, electrons=1))
             adducts["Negative"].append(
-                calculate("[M+Hac-H]1-", mol, {"add": {"C": 2, "H": 3, "O": 2}, "remove": {}}, charge=-1, electrons=1))
-            adducts["Negative"].append(
-                calculate("[M+FA-H]1-", mol, {"add": {"C": 1, "H": 1, "O": 2}, "remove": {}}, charge=-1, electrons=1))
-            adducts["Negative"].append(calculate("[M-H]1-", mol, {"add": {}, "remove": {"H": 1}}, charge=-1, electrons=1))
+                calculate("[M+FA-H]1-", "Negative", mol, {"add": {"C": 1, "H": 1, "O": 2}, "remove": {}}, charge=-1, electrons=1))
+            adducts["Negative"].append(calculate("[M-H]1-", "Positive", mol, {"add": {}, "remove": {"H": 1}}, charge=-1, electrons=1))
             if properties["Hydrogen Bond Donors"] > 1:
                 adducts["Negative"].append(
-                    calculate("[M-2H]2-", mol, {"add": {}, "remove": {"H": 2}}, charge=-2, electrons=2))
+                    calculate("[M-2H]2-", "Negative", mol, {"add": {}, "remove": {"H": 2}}, charge=-2, electrons=2))
             if properties["Hydrogen Bond Donors"] > 2:
                 adducts["Negative"].append(
-                    calculate("[M-3H]3-", mol, {"add": {}, "remove": {"H": 3}}, charge=-3, electrons=3))
+                    calculate("[M-3H]3-", "Negative", mol, {"add": {}, "remove": {"H": 3}}, charge=-3, electrons=3))
             if properties["Hydrogen Bond Acceptors"] > 0:
                 adducts["Negative"].append(
-                    calculate("[2M+Na-2H]1-", mol, {"add": {"Na": 1}, "remove": {"H": 2}, "multiply": 2}, charge=-1,
+                    calculate("[2M+Na-2H]1-", "Negative", mol, {"add": {"Na": 1}, "remove": {"H": 2}, "multiply": 2}, charge=-1,
                               electrons=1))
-                adducts["Negative"].append(
-                    calculate("[M+K-2H]1-", mol, {"add": {"K": 1}, "remove": {"H": 2}}, charge=-1, electrons=1))
+                adducts.append(
+                    calculate("[M+K-2H]1-", "Negative", mol, {"add": {"K": 1}, "remove": {"H": 2}}, charge=-1, electrons=1))
             if properties["Hydrogen Bond Donors"] > 1 and properties["Hydrogen Bond Acceptors"] > 0:
-                adducts["Negative"].append(
-                    calculate("[M+Na-2H]1-", mol, {"add": {"Na": 1}, "remove": {"H": 2}}, charge=-1, electrons=1))
+                adducts.append(
+                    calculate("[M+Na-2H]1-", "Negative", mol, {"add": {"Na": 1}, "remove": {"H": 2}}, charge=-1, electrons=1))
             if properties["Hydrogen Bond Acceptors"] > 0 and properties["Formal Charge"] == 0:
-                adducts["Negative"].append(
-                    calculate("[M+Br]1-", mol, {"add": {"Br": 1}, "remove": {}}, charge=-1, electrons=1))
-                adducts["Negative"].append(
-                    calculate("[M+Cl]1-", mol, {"add": {"Cl": 1}, "remove": {}}, charge=-1, electrons=1))
+                adducts.append(
+                    calculate("[M+Br]1-", "Negative", mol, {"add": {"Br": 1}, "remove": {}}, charge=-1, electrons=1))
+                adducts.append(
+                    calculate("[M+Cl]1-", "Negative", mol, {"add": {"Cl": 1}, "remove": {}}, charge=-1, electrons=1))
         # Positive
         if properties["Formal Charge"] == 1:
-            adducts["Positive"].append(calculate("[M1+.]1+", mol, {"add": {}, "remove": {}}, charge=1, electrons=-0))
+            adducts.append(calculate("[M1+.]1+", "Positive", mol, {"add": {}, "remove": {}}, charge=1, electrons=-0))
         if properties["Formal Charge"] == 0:
             if properties["Hydrogen Bond Acceptors"] > 0:
-                adducts["Positive"].append(
-                    calculate("[2M+K]1+", mol, {"add": {"K": 1}, "remove": {}, "multiply": 2}, charge=1, electrons=-1))
-                adducts["Positive"].append(
-                    calculate("[2M+Na]1+", mol, {"add": {"Na": 1}, "remove": {}, "multiply": 2}, charge=1, electrons=-1))
-                adducts["Positive"].append(
-                    calculate("[2M+NH4]1+", mol, {"add": {"N": 4, "H": 4}, "remove": {}, "multiply": 2}, charge=1,
+                adducts.append(
+                    calculate("[2M+K]1+", "Positive", mol, {"add": {"K": 1}, "remove": {}, "multiply": 2}, charge=1, electrons=-1))
+                adducts.append(
+                    calculate("[2M+Na]1+", "Positive", mol, {"add": {"Na": 1}, "remove": {}, "multiply": 2}, charge=1, electrons=-1))
+                adducts.append(
+                    calculate("[2M+NH4]1+", "Positive", mol, {"add": {"N": 4, "H": 4}, "remove": {}, "multiply": 2}, charge=1,
                               electrons=-1))
-                adducts["Positive"].append(
-                    calculate("[2M+H]1+", mol, {"add": {"H": 1}, "remove": {}, "multiply": 2}, charge=1, electrons=-1))
-                adducts["Positive"].append(
-                    calculate("[M+2K-H]1+", mol, {"add": {"K": 2}, "remove": {"H": 1}}, charge=1, electrons=-1))
-                adducts["Positive"].append(
-                    calculate("[M+2Na-H]1+", mol, {"add": {"Na": 2}, "remove": {"H": 1}}, charge=1, electrons=-1))
-                adducts["Positive"].append(
-                    calculate("[M+K]1+", mol, {"add": {"K": 1}, "remove": {}}, charge=1, electrons=-1))
-                adducts["Positive"].append(
-                    calculate("[M+Na]1+", mol, {"add": {"Na": 1}, "remove": {}}, charge=1, electrons=-1))
-                adducts["Positive"].append(
-                    calculate("[M+H]1+", mol, {"add": {"H": 1}, "remove": {}}, charge=1, electrons=-1))
+                adducts.append(
+                    calculate("[2M+H]1+", "Positive", mol, {"add": {"H": 1}, "remove": {}, "multiply": 2}, charge=1, electrons=-1))
+                adducts.append(
+                    calculate("[M+2K-H]1+", "Positive", mol, {"add": {"K": 2}, "remove": {"H": 1}}, charge=1, electrons=-1))
+                adducts.append(
+                    calculate("[M+2Na-H]1+", "Positive", mol, {"add": {"Na": 2}, "remove": {"H": 1}}, charge=1, electrons=-1))
+                adducts.append(
+                    calculate("[M+K]1+", "Positive", mol, {"add": {"K": 1}, "remove": {}}, charge=1, electrons=-1))
+                adducts.append(
+                    calculate("[M+Na]1+", "Positive", mol, {"add": {"Na": 1}, "remove": {}}, charge=1, electrons=-1))
+                adducts.append(
+                    calculate("[M+H]1+", "Positive", mol, {"add": {"H": 1}, "remove": {}}, charge=1, electrons=-1))
             if properties["Hydrogen Bond Acceptors"] > 1:
-                adducts["Positive"].append(
-                    calculate("[2M+3H2O+2H]2+", mol, {"add": {"H": 8, "O": 3}, "remove": {}, "multiply": 2}, charge=2,
+                adducts.append(
+                    calculate("[2M+3H2O+2H]2+", "Positive", mol, {"add": {"H": 8, "O": 3}, "remove": {}, "multiply": 2}, charge=2,
                               electrons=-2))
-                adducts["Positive"].append(
-                    calculate("[2M+3ACN+2H]2+", mol, {"add": {"C": 6, "H": 11, "N": 3}, "remove": {}, "multiply": 2},
+                adducts.append(
+                    calculate("[2M+3ACN+2H]2+", "Positive", mol, {"add": {"C": 6, "H": 11, "N": 3}, "remove": {}, "multiply": 2},
                               charge=2, electrons=-2))
-                adducts["Positive"].append(
-                    calculate("[M+2ACN+2H]2+", mol, {"add": {"C": 3, "H": 8, "N": 2}, "remove": {}}, charge=2,
+                adducts.append(
+                    calculate("[M+2ACN+2H]2+", "Positive", mol, {"add": {"C": 3, "H": 8, "N": 2}, "remove": {}}, charge=2,
                               electrons=-2))
-                adducts["Positive"].append(
-                    calculate("[M+2Na]2+", mol, {"add": {"Na": 2}, "remove": {}}, charge=2, electrons=-2))
-                adducts["Positive"].append(
-                    calculate("[M+2ACN+2H]2+", mol, {"add": {"C": 2, "H": 5, "N": 1}, "remove": {}}, charge=2,
+                adducts.append(
+                    calculate("[M+2Na]2+", "Positive", mol, {"add": {"Na": 2}, "remove": {}}, charge=2, electrons=-2))
+                adducts.append(
+                    calculate("[M+2ACN+2H]2+", "Positive", mol, {"add": {"C": 2, "H": 5, "N": 1}, "remove": {}}, charge=2,
                               electrons=-2))
-                adducts["Positive"].append(
-                    calculate("[M+H+K]2+", mol, {"add": {"K": 1, "H": 1}, "remove": {}}, charge=2, electrons=-2))
-                adducts["Positive"].append(
-                    calculate("[M+H+Na]2+", mol, {"add": {"Na": 1, "H": 1}, "remove": {}}, charge=2, electrons=-2))
-                adducts["Positive"].append(
-                    calculate("[M+H+NH4]2+", mol, {"add": {"N": 5, "H": 5}, "remove": {}}, charge=2, electrons=-2))
-                adducts["Positive"].append(
-                    calculate("[M+2H]2+", mol, {"add": {"H": 2}, "remove": {}}, charge=2, electrons=-2))
+                adducts.append(
+                    calculate("[M+H+K]2+", "Positive", mol, {"add": {"K": 1, "H": 1}, "remove": {}}, charge=2, electrons=-2))
+                adducts.append(
+                    calculate("[M+H+Na]2+", "Positive", mol, {"add": {"Na": 1, "H": 1}, "remove": {}}, charge=2, electrons=-2))
+                adducts.append(
+                    calculate("[M+H+NH4]2+", "Positive", mol, {"add": {"N": 5, "H": 5}, "remove": {}}, charge=2, electrons=-2))
+                adducts.append(
+                    calculate("[M+2H]2+", "Positive", mol, {"add": {"H": 2}, "remove": {}}, charge=2, electrons=-2))
             if properties["Hydrogen Bond Acceptors"] > 2:
-                adducts["Positive"].append(
-                    calculate("[M+3Na]3+", mol, {"add": {"Na": 3}, "remove": {}}, charge=3, electrons=-3))
-                adducts["Positive"].append(
-                    calculate("[M+H+2Na]3+", mol, {"add": {"H": 1, "Na": 2}, "remove": {}}, charge=3, electrons=-3))
-                adducts["Positive"].append(
-                    calculate("[M+3H]3+", mol, {"add": {"H": 3}, "remove": {}}, charge=3, electrons=-3))
-                adducts["Positive"].append(
-                    calculate("[M+2H+2a]3+", mol, {"add": {"H": 2, "Na": 1}, "remove": {}}, charge=3, electrons=-3))
-    except Exception:
-        adducts = {"Positive" : [], "Negative" : [], "Neutral" : []}
+                adducts.append(
+                    calculate("[M+3Na]3+", "Positive", mol, {"add": {"Na": 3}, "remove": {}}, charge=3, electrons=-3))
+                adducts.append(
+                    calculate("[M+H+2Na]3+", "Positive", mol, {"add": {"H": 1, "Na": 2}, "remove": {}}, charge=3, electrons=-3))
+                adducts.append(
+                    calculate("[M+3H]3+", "Positive", mol, {"add": {"H": 3}, "remove": {}}, charge=3, electrons=-3))
+                adducts.append(
+                    calculate("[M+2H+2a]3+", "Positive", mol, {"add": {"H": 2, "Na": 1}, "remove": {}}, charge=3, electrons=-3))
+    except Exception, e:
+        pass
     return adducts
 
 def process_compound(inchikey):
@@ -345,31 +350,34 @@ def generate_image(mol, inchikey):
     Draw.MolToFile(mol, fileName=directory+"structures/"+inchikey+".svg", imageType="svg", size=(250, 250))
 
 if __name__ == "__main__":
-    limiter = 10
+    limiter = 100
     inchikeys = combined.keys()
-    slice = range(0, len(inchikeys), limiter)[1184:]
-
+    slice = range(0, len(inchikeys), limiter)[119:]
 
     failed_slices = [["From", "To"]]
 
     for inchikey_index in tqdm(slice):
+        break
         try:
-            with timeout(30):
+            with timeout(600):
                 processed_data = Parallel(n_jobs=32)(delayed(process_compound)(id) for id in inchikeys[inchikey_index:inchikey_index+limiter])
                 processed_data = [[compound, rdkit_mol] for compound, rdkit_mol in processed_data if compound != None]
                 [generate_image(rdkit_mol, compound["_id"]) for compound, rdkit_mol in processed_data if compound != None]
                 pickle.dump(processed_data, open(directory+"pickles/"+str(inchikey_index)+".pkl", "wb"))
         except TimeoutError:
-            print inchikey_index, "failed"
             failed_slices.append([inchikey_index, inchikey_index+limiter])
+            continue
 
     for i in failed_slices:
         print i
 
     db = []
+
     for file in os.listdir(directory+"pickles/"):
         processed_data = pickle.load(open(directory+"pickles/"+file, "rb"))
         db.extend([compound for compound, rdkit_mol in processed_data])
+
+
 
     mongodb_file = json.loads(bson_dumps(db), object_pairs_hook=collections.OrderedDict)
 
