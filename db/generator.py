@@ -2,7 +2,6 @@ import json, urllib2, collections, pyidick, requests, re, pickle, os
 from rdkit.Chem import rdMolDescriptors, MolFromSmiles, MolSurf, Fragments, rdmolops, Draw
 from bioservices import KEGG, KEGGParser
 from bson.json_util import dumps as bson_dumps
-from biocyc import biocyc
 import pybel
 from joblib import Parallel, delayed
 from tqdm import tqdm
@@ -294,6 +293,8 @@ def adduct_information(smiles, properties):
                 adducts.append(
                     calculate("[M+2ACN+2H]2+", "Positive", mol, {"add": {"C": 3, "H": 8, "N": 2}, "remove": {}}, charge=2,
                               electrons=-2))
+
+
                 adducts.append(
                     calculate("[M+2Na]2+", "Positive", mol, {"add": {"Na": 2}, "remove": {}}, charge=2, electrons=-2))
                 adducts.append(
