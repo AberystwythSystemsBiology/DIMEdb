@@ -165,13 +165,16 @@ function chart_distribution(distribution_array) {
 function fill_adducts_information(ionisation, adduct_information) {
     $("#ionisation_title").html(ionisation);
 
+    console.log(adduct_information);
+
     $("#adduct_selector").empty();
 
     for (var adduct_index in adduct_information) {
         var adduct = adduct_information[adduct_index];
+        console.log(adduct);
         var adduct_html = "<option ";
         adduct_html += "value='"+adduct_index+"'>";
-        adduct_html += adduct["Type"] +": ";
+        adduct_html += adduct["Adduct"] +": ";
         adduct_html += adduct["Accurate Mass"].toFixed(3) + " m/z";
         adduct_html += "</option>";
         $("#adduct_selector").append(adduct_html);
@@ -323,24 +326,43 @@ function render_metabolite_view(metabolite_id) {
     fill_external_sources(metabolite["External Sources"]);
     supply_image(metabolite_id);
 
-    // TODO: Fix here.
-    fill_adducts_information("Neutral", metabolite["Adducts"]["Neutral"]);
-    fill_isotopic_distribution_table(metabolite["Adducts"]["Neutral"][0]);
-    chart_distribution(metabolite["Adducts"]["Neutral"][0]["Isotopic Distribution"]);
+    for (index in metabolite["Adducts"]) {
+        if (metabolite["Adducts"][index]["Polarity"] == "Neutral") {
+            console.log(metabolite["Adducts"][index]);
+            fill_adducts_information("Neutral", [metabolite["Adducts"][index]]);
+            fill_isotopic_distribution_table(metabolite["Adducts"][index]);
+            chart_distribution(metabolite["Adducts"][index]["Isotopic Distribution"]);
+        }
+    }
+
     fill_pathway_data(metabolite["Pathways"]);
     fill_tproperties_information(metabolite["Taxonomic Properties"]);
 
     skeletons(metabolite["_id"]);
 
     $("input[type=radio][name=ionisation]").change(function () {
-        fill_adducts_information(this.value, metabolite["Adducts"][this.value]);
+        var adduct_list = [];
+
+        for (index in metabolite["Adducts"]) {
+            if (metabolite["Adducts"][index]["Polarity"] == this.value) {
+                adduct_list.push(metabolite["Adducts"][index])
+            }
+        }
+        fill_adducts_information(this.value, adduct_list);
     });
 
     $("#adduct_selector").on("change", function () {
         var adduct_index = this.value;
         var ionisation = $("input[name=ionisation]:checked").val();
-        fill_isotopic_distribution_table(metabolite["Adducts"][ionisation][adduct_index]);
-        chart_distribution(metabolite["Adducts"][ionisation][adduct_index]["Isotopic Distribution"]);
+        var adducts = [];
+        for (index in metabolite["Adducts"]) {
+            if (metabolite["Adducts"][index]["Polarity"] == ionisation) {
+                adducts.push(metabolite["Adducts"][index]);
+            }
+        }
+
+        fill_isotopic_distribution_table(adducts[adduct_index]);
+        chart_distribution(adducts[adduct_index]["Isotopic Distribution"]);
     });
 
     $("#formula_search_button").click(function () {

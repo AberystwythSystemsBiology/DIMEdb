@@ -1,4 +1,4 @@
-import json, requests, re, signal, pyidick, collections, pickle, os, warnings
+import json, requests, pybel, re, signal, pyidick, collections, pickle, os, warnings
 # Do I look like I give a fuck?
 warnings.filterwarnings("ignore")
 
@@ -11,7 +11,6 @@ from bioservices import KEGG, KEGGParser
 from biocyc import biocyc
 from rdkit.Chem import rdMolDescriptors, MolFromSmiles, MolSurf, Fragments, rdmolops, Draw
 
-import pybel
 
 
 def load_json(fp):
@@ -53,7 +52,10 @@ class timeout:
 class Metabolite(object):
     def __init__(self, inchikey):
         self.inchikey = inchikey
-        self.combined_info = combined[inchikey]
+        try:
+            self.combined_info = combined[str(inchikey)]
+        except KeyError:
+            raise SMILESerror()
         self.inchi = self.combined_info["InChI"]
         try:
             self.smiles = pybel.readstring("inchi", str(self.inchi)).write("smi").rstrip()
@@ -183,9 +185,12 @@ class Metabolite(object):
             if biocyc_object != None:
                 biocyc_pathways = []
                 for reaction in biocyc_object.reactions:
-                    reaction_pathways = reaction.pathways
-                    for pathway in reaction_pathways:
-                        biocyc_pathways.append(re.sub('<[^<]+?>', '', pathway.biocyc_link_html))
+                    try:
+                        reaction_pathways = reaction.pathways
+                        for pathway in reaction_pathways:
+                            biocyc_pathways.append(re.sub('<[^<]+?>', '', pathway.biocyc_link_html))
+                    except AttributeError:
+                        biocyc_pathways = []
                 pathways["BioCyc"] = list(set(biocyc_pathways))
 
 
@@ -216,7 +221,7 @@ class Metabolite(object):
         adducts = []
         def calculate(type, polarity, mol, rule_dict=None, electrons=0, charge=0):
             try:
-                with timeout(10):
+                with timeout(20):
                     iso_dist = mol.isotopic_distribution(rule_dict=rule_dict, electrons=electrons, charge=charge)
 
                     adducts.append({
@@ -329,11 +334,12 @@ if __name__ == "__main__":
     inchikeys = combined.keys()
     slice = range(0, len(inchikeys), limiter)
 
+
     for inchikey_index in tqdm(slice):
+        break
         processed_data = Parallel(n_jobs=32)(delayed(handler)(id) for id in inchikeys[inchikey_index:inchikey_index + limiter])
         processed_data = [x for x in processed_data if x != None]
         pickle.dump(processed_data, open(directory + "pickles/" + str(inchikey_index) + ".pkl", "wb"))
-        break
 
     db = []
 

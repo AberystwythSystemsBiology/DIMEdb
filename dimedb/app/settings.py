@@ -46,7 +46,7 @@ adducts = {
     "type" : "list",
     "schema" : {
         "Polarity" : "string",
-        "Type" : "string",
+        "Adduct" : "string",
         "Accurate Mass" : "float",
         "Isotopic Distribution" : "list"
     }
