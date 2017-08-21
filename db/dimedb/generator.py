@@ -328,16 +328,12 @@ def handler(inchikey):
 
 
 if __name__ == "__main__":
-
-
-    limiter = 1000
+    limiter = 500
     inchikeys = combined.keys()
     slice = range(0, len(inchikeys), limiter)
 
-
     for inchikey_index in tqdm(slice):
-        break
-        processed_data = Parallel(n_jobs=32)(delayed(handler)(id) for id in inchikeys[inchikey_index:inchikey_index + limiter])
+        processed_data = Parallel(n_jobs=16)(delayed(handler)(id) for id in inchikeys[inchikey_index:inchikey_index + limiter])
         processed_data = [x for x in processed_data if x != None]
         pickle.dump(processed_data, open(directory + "pickles/" + str(inchikey_index) + ".pkl", "wb"))
 

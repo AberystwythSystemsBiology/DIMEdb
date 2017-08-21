@@ -1,0 +1,19 @@
+{% extends "template.html" %}
+
+{% block title %}Administration Panel{% endblock %}
+
+{% block abovebody %}
+    <div class="jumbotron">
+        <div class="container">
+            <h1>Administrator Panel</h1>
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+
+    {% for u in users %}
+        {{ u.id }}
+    {% endfor %}
+
+{% endblock %}

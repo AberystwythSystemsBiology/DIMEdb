@@ -1,0 +1,37 @@
+{% extends "template.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block abovebody %}
+    <div class="jumbotron">
+        <div class="container">
+            <h1>Resend Confirmation Email</h1>
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+
+    <div class="row">
+        <div class="col-sm-3">
+
+        </div>
+        <div class="col-sm-6">
+            <form method="post" action="{{ url_for('resend_confirmation') }}" accept-charset="UTF-8" role="form">
+                {{ form.csrf_token }}
+
+                {{ render_form_field(form.email_address, label='Email Address') }}
+
+                <div class="form-group row">
+                    <button class="btn btn-success full-width" type="submit">Resend Email
+                    </button>
+                </div>
+
+            </form>
+        </div>
+        <div class="col-sm-3">
+
+        </div>
+    </div>
+
+{% endblock %}

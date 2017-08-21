@@ -1,28 +1,23 @@
 from eve import Eve
 from flask import render_template, request, send_from_directory, g
-
 from flask_sqlalchemy import SQLAlchemy
-from flask.ext.bcrypt import Bcrypt
-from flask.ext.login import LoginManager
-
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
 from hurry.filesize import size, si
+from flask_mail import Mail
+
+from config import BaseConfig
 
 import os
 
 app = Eve(__name__)
-app.config.update(
-    DEBUG = True,
-    BASE_DIR = os.path.abspath(os.path.dirname(__file__)),
-    SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://keo7:password@localhost/dimedb",
-    SQLALCHEMY_TRACK_MODIFICATIONS = False,
-    LDAP_LOGIN_VIEW = 'auth.login',
-    CSRF_ENABLED = True,
-    CSRF_SESSION_KEY = "secret",
-    SECRET_KEY = "secret"
-)
+app.config.from_object(BaseConfig)
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
+
+mail = Mail(app)
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -76,12 +71,19 @@ def isotopic_distribution_calculator():
 def page_not_found(e):
     return render_template("./misc/404.html"), 404
 
+@app.errorhandler(403)
+def forbidden(e):
+    return render_template("./misc/403.html"), 403
+
 # Blueprints
 
 from app.mod_auth.controllers import authentication
 from app.mod_tables.controllers import tables
+from app.mod_admin.controllers import admin
+
 
 app.register_blueprint(authentication)
 app.register_blueprint(tables)
+app.register_blueprint(admin)
 
 db.create_all()

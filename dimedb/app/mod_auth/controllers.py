@@ -1,10 +1,15 @@
-from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for
+from flask import Blueprint, request, render_template, flash, g, abort, redirect, url_for
 
 from app import app, db, bcrypt, login_manager
-from flask.ext.login import login_user, logout_user, current_user, login_required
+from flask_login import login_user, logout_user, current_user, login_required
 
 from app.mod_auth.models import User
-from app.mod_auth.forms import LoginForm, RegistrationForm
+from app.mod_auth.forms import LoginForm, RegistrationForm, ResendConfirmationForm, ResetPasswordForm
+
+from token import generate_confirmation_token, confirm_token
+from email import send_email
+
+# https://realpython.com/blog/python/handling-email-confirmation-in-flask/
 
 authentication = Blueprint("authentication", __name__)
 
@@ -53,6 +58,13 @@ def register():
             )
             db.session.add(user)
             db.session.commit()
+
+            token = generate_confirmation_token(user.email_address)
+            confirm_url = url_for("confirm_email", token=token, _external=True)
+            html = render_template("auth/emails/confirmation_email.html", confirm_url=confirm_url)
+            subject = "Please Confirm your email"
+
+            send_email(user.email_address, subject, html)
             flash("Thank you for registering!")
             return redirect(url_for("login"))
     return render_template("auth/register.html", form=form)
@@ -61,6 +73,43 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for("homepage"))
+
+@app.route("/confirm/<token>")
+def confirm_email(token):
+    email = confirm_token(token)
+    if email == False:
+        flash("The confirmation link is invalid or has expired.")
+        return redirect(url_for("login"))
+    else:
+        user = User.query.filter_by(email_address = email).first_or_404()
+        if user.is_confirmed() == True:
+            flash("Already confirmed, feel free to login.")
+        else:
+            user.confirmed = True
+            db.session.add(user)
+            db.session.commit()
+            flash("Account has been successully confirmed, feel free to login")
+        return redirect(url_for("login"))
+
+@app.route("/resend_confirmation", methods=["GET", "POST"])
+def resend_confirmation():
+    form = ResendConfirmationForm(request.form)
+    if form.validate_on_submit():
+        user = User.query.filter_by(email_address = form.email_address.data, confirmed=False).first()
+        if user != None:
+            token = generate_confirmation_token(user.email_address)
+            confirm_url = url_for("confirm_email", token=token, _external=True)
+            html = render_template("auth/emails/confirmation_email.html", confirm_url=confirm_url)
+            subject = "Please confirm your email"
+            send_email(user.email_address, subject, html)
+        flash("Confirmation email resent, please check your email address")
+        return redirect(url_for("login"))
+    return render_template("auth/resend_confirmation.html", form=form)
+
+@app.route("/reset_password/<token>")
+def reset_password(token):
+    form = ResetPasswordForm(request.form)
+    abort(403)
 
 @login_manager.user_loader
 def load_user(id):

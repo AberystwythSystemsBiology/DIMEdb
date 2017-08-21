@@ -126,6 +126,11 @@
                                         <p class="text-left">
                                             <a href="{{ url_for('management') }}" class="btn btn-primary btn-block btn-sm">Account Management</a>
                                         </p>
+                                        {% if g.user.is_admin() == True %}
+                                            <p class="text-left">
+                                                <a href="{{ url_for('admin_home') }}" class="btn btn-primary btn-block btn-sm">Admin Panel</a>
+                                            </p>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>

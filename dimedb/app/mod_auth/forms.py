@@ -17,12 +17,21 @@ class RegistrationForm(FlaskForm):
     password_confirm = PasswordField("Repeat Password")
     email_address = EmailField("Email", [DataRequired("Please provide your email address!")])
 
-    affiliation = StringField("Affiliation", [Length(min=4)])
+    affiliation = StringField("Affiliation", [Length(min=0)])
     address = StringField("Address")
     country = StringField("Country", [Length(min=4)])
 
-    phone = StringField("Telephone Number", [Length(min=5, max=30)])
+    phone = StringField("Telephone Number", [Length(min=0, max=30)])
 
     first_name = StringField("First Name", [DataRequired("You must provide your first name!")])
-    mid_initials = StringField("Middle Initials", [Length(min=1, max=5)])
+    mid_initials = StringField("Middle Initials", [Length(min=0, max=5)])
     last_name = StringField("Last Name", [DataRequired("You must provide your last name!")])
+
+class ResendConfirmationForm(FlaskForm):
+    email_address = EmailField("Email", [DataRequired("Please provide your email address!")])
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField("Password", [Length(min=4),
+                                          DataRequired("You must provide a password!"),
+                                          EqualTo("password_confirm", message="Passwords must match")])
+    password_confirm = PasswordField("Repeat Password")

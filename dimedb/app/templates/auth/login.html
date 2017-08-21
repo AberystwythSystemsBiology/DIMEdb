@@ -22,12 +22,13 @@
 
         <form method="post" action="{{ url_for('login') }}" accept-charset="UTF-8" role="form">
             {{ form.csrf_token }}
-
             {{ render_form_field(form.user_name, label="Username")}}
             {{ render_form_field(form.password, label="Password", type="password")}}
 
             <div class="form-group row">
-                <button id="login-button" class="btn btn-success full-width" type="submit">Log In</button>
+                <button id="login-button" class="btn btn-success full-width" type="submit">
+                    <i class="glyphicon glyphicon-log-in"></i> Log In
+                </button>
             </div>
         </form>
 
@@ -36,9 +37,20 @@
         </div>
 
         <div class="form-group row text-center">
-            <a href="{{url_for('register')}}">
-                <button class="btn btn-primary full-width">Create New Account</button>
-            </a>
+            <div class="form-group item">
+                <a href="{{url_for('register')}}">
+                    <div class="btn btn-primary full-width">
+                        <i class="glyphicon glyphicon-user"></i> Create New Account
+                    </div>
+                </a>
+            </div>
+            <div class="form-group item">
+                <a href="{{ url_for('resend_confirmation') }}">
+                    <div class="btn btn-warning full-width">
+                        <i class="glyphicon glyphicon-magnet"></i> Resend Confirmation Email
+                    </div>
+                </a>
+            </div>
             <p class="forgotten">Forgotten your password?</p>
         </div>
         </div>
