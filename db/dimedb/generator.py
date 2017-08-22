@@ -230,11 +230,14 @@ class Metabolite(object):
                         "Accurate Mass": iso_dist[0][0],
                         "Isotopic Distribution": iso_dist
                     })
-            except (RuntimeError, TimeoutError, IndexError) as e:
+
+            except Exception:
                 pass
 
-
-        mol = pyidick.Molecule(self.smiles)
+        try:
+            mol = pyidick.Molecule(self.smiles)
+        except ValueError:
+            return []
 
         calculate("[M]", "Neutral", mol)
 
@@ -332,7 +335,7 @@ if __name__ == "__main__":
     inchikeys = combined.keys()
     slice = range(0, len(inchikeys), limiter)
 
-    for inchikey_index in tqdm(slice):
+    for inchikey_index in tqdm(slice[19:]):
         processed_data = Parallel(n_jobs=16)(delayed(handler)(id) for id in inchikeys[inchikey_index:inchikey_index + limiter])
         processed_data = [x for x in processed_data if x != None]
         pickle.dump(processed_data, open(directory + "pickles/" + str(inchikey_index) + ".pkl", "wb"))

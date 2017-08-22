@@ -9,8 +9,6 @@ from app.mod_auth.forms import LoginForm, RegistrationForm, ResendConfirmationFo
 from token import generate_confirmation_token, confirm_token
 from email import send_email
 
-# https://realpython.com/blog/python/handling-email-confirmation-in-flask/
-
 authentication = Blueprint("authentication", __name__)
 
 @app.route("/login", methods=["GET", "POST"])
@@ -106,11 +104,21 @@ def resend_confirmation():
         return redirect(url_for("login"))
     return render_template("auth/resend_confirmation.html", form=form)
 
-@app.route("/reset_password/<token>")
+@app.route("/reset_password/<token>", methods=["GET", "POST"])
 def reset_password(token):
     form = ResetPasswordForm(request.form)
-    abort(403)
+    email = confirm_token(token)
+    if form.validate_on_submit(email_address = email):
+        user = User.query.filter_by(email_address = email).first_or_404()
 
+        user.password = form.password.data
+
+        db.session.add(user)
+        db.session.commit()
+
+        flash("Password successfully changed, please sign in.")
+        return redirect(url_for("login"))
+    return render_template("auth/")
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(id)

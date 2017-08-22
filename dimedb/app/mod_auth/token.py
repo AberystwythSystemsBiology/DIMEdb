@@ -13,3 +13,8 @@ def confirm_token(token, expiration=3600):
     except:
         return False
     return email
+
+def generate_email_reset_token(email):
+    serialiser = URLSafeSerializer(app.config["SECRET_KEY"])
+    return serialiser.dumps(email, salt=app.config["SECURITY_PASSWORD_SALT"])
+
