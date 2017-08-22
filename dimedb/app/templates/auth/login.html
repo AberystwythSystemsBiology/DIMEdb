@@ -20,7 +20,7 @@
 
             {{ display_warnings() }}
 
-        <form method="post" action="{{ url_for('login') }}" accept-charset="UTF-8" role="form">
+        <form method="post" action="{{ url_for('auth.login') }}" accept-charset="UTF-8" role="form">
             {{ form.csrf_token }}
             {{ render_form_field(form.user_name, label="Username")}}
             {{ render_form_field(form.password, label="Password", type="password")}}
@@ -38,20 +38,26 @@
 
         <div class="form-group row text-center">
             <div class="form-group item">
-                <a href="{{url_for('register')}}">
+                <a href="{{url_for('auth.register')}}">
                     <div class="btn btn-primary full-width">
                         <i class="glyphicon glyphicon-user"></i> Create New Account
                     </div>
                 </a>
             </div>
             <div class="form-group item">
-                <a href="{{ url_for('resend_confirmation') }}">
+                <a href="{{ url_for('auth.resend_confirmation') }}">
                     <div class="btn btn-warning full-width">
                         <i class="glyphicon glyphicon-magnet"></i> Resend Confirmation Email
                     </div>
                 </a>
             </div>
-            <p class="forgotten">Forgotten your password?</p>
+            <div class="form-group item">
+                <a href="{{ url_for('auth.reset_password_email') }}">
+                    <div class="btn btn-danger full-width">
+                        <i class="glyphicon glyphicon-question-sign"></i> Forgotten your password?
+                    </div>
+                </a>
+            </div>
         </div>
         </div>
         <div class="col-sm-3">

@@ -124,7 +124,7 @@
                                         <p class="text-left"><strong>{{ g.user.first_name }} {{ g.user.last_name }}</strong></p>
                                         <p class="text-left small">{{ g.user.email_address }}</p>
                                         <p class="text-left">
-                                            <a href="{{ url_for('management') }}" class="btn btn-primary btn-block btn-sm">Account Management</a>
+                                            <a href="{{ url_for('auth.management') }}" class="btn btn-primary btn-block btn-sm">Account Management</a>
                                         </p>
                                         {% if g.user.is_admin() == True %}
                                             <p class="text-left">
@@ -141,7 +141,7 @@
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <p>
-                                            <a href="{{ url_for('logout') }}" class="btn btn-danger btn-block">Log Out</a>
+                                            <a href="{{ url_for('auth.logout') }}" class="btn btn-danger btn-block">Log Out</a>
                                         </p>
                                     </div>
                                 </div>
@@ -150,7 +150,7 @@
                         </ul>
                     </li>
                 {% else %}
-                    <li><a href="{{ url_for('login') }}"><i class="glyphicon glyphicon-log-in"></i> Login</a></li>
+                    <li><a href="{{ url_for('auth.login') }}"><i class="glyphicon glyphicon-log-in"></i> Login</a></li>
                 {% endif %}
             </ul>
         </div>

@@ -9,9 +9,9 @@ from app.mod_auth.forms import LoginForm, RegistrationForm, ResendConfirmationFo
 from token import generate_confirmation_token, confirm_token
 from email import send_email
 
-authentication = Blueprint("authentication", __name__)
+authentication = Blueprint("auth", __name__, url_prefix="/auth")
 
-@app.route("/login", methods=["GET", "POST"])
+@authentication.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
@@ -29,11 +29,11 @@ def login():
     return render_template("auth/login.html", form=form)
 
 @login_required
-@app.route("/account_management")
+@authentication.route("/account_management")
 def management():
-    return render_template("auth/management.html")
+    return render_template("auth/management/management.html")
 
-@app.route("/register", methods=["GET", "POST"])
+@authentication.route("/register", methods=["GET", "POST"])
 def register():
     form = RegistrationForm(request.form)
     if form.validate_on_submit():
@@ -64,15 +64,15 @@ def register():
 
             send_email(user.email_address, subject, html)
             flash("Thank you for registering!")
-            return redirect(url_for("login"))
+            return redirect(url_for("auth.login"))
     return render_template("auth/register.html", form=form)
 
-@app.route("/logout")
+@authentication.route("/logout")
 def logout():
     logout_user()
     return redirect(url_for("homepage"))
 
-@app.route("/confirm/<token>")
+@authentication.route("/confirm/<token>")
 def confirm_email(token):
     email = confirm_token(token)
     if email == False:
@@ -87,9 +87,9 @@ def confirm_email(token):
             db.session.add(user)
             db.session.commit()
             flash("Account has been successully confirmed, feel free to login")
-        return redirect(url_for("login"))
+        return redirect(url_for("auth.login"))
 
-@app.route("/resend_confirmation", methods=["GET", "POST"])
+@authentication.route("/resend_confirmation", methods=["GET", "POST"])
 def resend_confirmation():
     form = ResendConfirmationForm(request.form)
     if form.validate_on_submit():
@@ -97,18 +97,37 @@ def resend_confirmation():
         if user != None:
             token = generate_confirmation_token(user.email_address)
             confirm_url = url_for("confirm_email", token=token, _external=True)
-            html = render_template("auth/emails/confirmation_email.html", confirm_url=confirm_url)
-            subject = "Please confirm your email"
+            html = render_template("auth/emails/account_confirmation.html", confirm_url=confirm_url)
+            subject = "DIMEdb: Account Confirmation Required"
             send_email(user.email_address, subject, html)
         flash("Confirmation email resent, please check your email address")
-        return redirect(url_for("login"))
-    return render_template("auth/resend_confirmation.html", form=form)
+        return redirect(url_for("auth.login"))
+    return render_template("auth/management/resend_confirmation.html", form=form)
 
-@app.route("/reset_password/<token>", methods=["GET", "POST"])
+
+
+@authentication.route("/reset_password", methods=["GET", "POST"])
+def reset_password_email():
+    form = ResendConfirmationForm(request.form)
+    if form.validate_on_submit():
+        user = User.query.filter_by(email_address = form.email_address.data).first()
+        if user != None:
+            token = generate_confirmation_token(user.email_address)
+            reset_url = url_for("reset_password", token=token, _external=True)
+            html = render_template("auth/emails/password_reset.html", reset_url=reset_url)
+            subject = "DIMEdb: AccountPassword Reset"
+            send_email(user.email_address, subject, html)
+        flash("Password reset email sent, please check your email address")
+        return redirect(url_for("auth.login"))
+    return render_template("auth/management/password_email.html", form=form)
+
+
+@authentication.route("/reset_password/<token>", methods=["GET", "POST"])
 def reset_password(token):
     form = ResetPasswordForm(request.form)
     email = confirm_token(token)
-    if form.validate_on_submit(email_address = email):
+
+    if form.validate_on_submit():
         user = User.query.filter_by(email_address = email).first_or_404()
 
         user.password = form.password.data
@@ -117,8 +136,9 @@ def reset_password(token):
         db.session.commit()
 
         flash("Password successfully changed, please sign in.")
-        return redirect(url_for("login"))
-    return render_template("auth/")
+        return redirect(url_for("auth.login"))
+    return render_template("auth/management/reset_password.html", form=form)
+
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(id)

@@ -32,7 +32,7 @@
                     {% endfor %}
                 {% endif %}
             {% endwith %}
-            <form method="post" action="{{ url_for('register') }}" accept-charset="UTF-8" role="form">
+            <form method="post" action="{{ url_for('auth.register') }}" accept-charset="UTF-8" role="form">
                 {{ form.csrf_token }}
 
                 <h3>Personal Information</h3>

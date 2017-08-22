@@ -30,6 +30,7 @@ class RegistrationForm(FlaskForm):
 class ResendConfirmationForm(FlaskForm):
     email_address = EmailField("Email", [DataRequired("Please provide your email address!")])
 
+
 class ResetPasswordForm(FlaskForm):
     password = PasswordField("Password", [Length(min=4),
                                           DataRequired("You must provide a password!"),
