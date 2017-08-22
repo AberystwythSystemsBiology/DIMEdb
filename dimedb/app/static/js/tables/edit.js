@@ -11,7 +11,7 @@ function generate_table(id) {
         "sort": false,
         "pageLength": 10,
         "ajax": {
-            "url": encodeURI(getBaseURL() + "tables/DdbT" + id + "/api/get_metabolites"),
+            "url": encodeURI(getBaseURL() + "tables/api/DdbT" + id + "/get_metabolites"),
             "dataSrc": "data"
         },
         "columns": [
@@ -44,7 +44,7 @@ function generate_table(id) {
                 "width" : "10%",
                 "className" : "dt-center",
                 "render" : function (data, type, row) {
-                    var s = "<a href='" + getBaseURL() + "tables/DdbT" + id + "/edit/remove_metabolite/" + row["Table ID"] + "'>";
+                    var s = "<a href='" + getBaseURL() + "tables/edit/DdbT" + id + "/remove_metabolite/" + row["Table ID"] + "'>";
                     s += "<div class='btn btn-sm btn-danger'><i class='glyphicon glyphicon-trash'></i></div></a>";
                     return s
                 }

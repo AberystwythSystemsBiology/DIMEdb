@@ -12,9 +12,9 @@ from app.mod_auth.models import User
 from app.mod_tables.forms import CreateTableForm, EditTableForm, NewPublicationForm
 
 
-tables = Blueprint("tables", __name__)
+tables = Blueprint("tables", __name__, url_prefix="/tables")
 
-@app.route("/tables")
+@tables.route("/")
 def public_tables():
     public_tables = User.query.join(MetaboliteTable, User.id == MetaboliteTable.owner_id).add_columns(
         MetaboliteTable.id,
@@ -26,13 +26,13 @@ def public_tables():
     ).filter(MetaboliteTable.public == True, MetaboliteTable.removed == False).all()
     return render_template("tables/index.html", public_tables=public_tables)
 
-@app.route("/tables/mytables")
+@tables.route("/mytables")
 @login_required
 def mytables():
     mytables = MetaboliteTable.query.filter(MetaboliteTable.owner_id== g.user.id, MetaboliteTable.removed == False).all()
     return render_template("tables/mytables.html", mytables=mytables)
 
-@app.route("/tables/mytables/api/add_metabolite", methods=["POST"])
+@tables.route("/mytables/api/add_metabolite", methods=["POST"])
 @login_required
 def add_metabolite():
     payload = request.form
@@ -52,7 +52,7 @@ def add_metabolite():
     else:
         return json.dumps({'success': False}), 500, {'ContentType': 'application/json'}
 
-@app.route("/tables/mytables/api/get_mytables")
+@tables.route("/mytables/api/get_mytables")
 @login_required
 def get_mytables():
     mytables = MetaboliteTable.query.filter(MetaboliteTable.owner_id== g.user.id, MetaboliteTable.removed == False).all()
@@ -65,9 +65,9 @@ def get_mytables():
     return jsonify(json_dict)
 
 
-@app.route("/tables/new", methods=["GET", "POST"])
+@tables.route("/new", methods=["GET", "POST"])
 @login_required
-def create_table():
+def new_table():
     form = CreateTableForm()
     if form.validate_on_submit():
         metabolite_table = MetaboliteTable(
@@ -80,11 +80,11 @@ def create_table():
         db.session.add(metabolite_table)
         db.session.commit()
         flash("New table created")
-        return redirect(url_for("mytables"))
+        return redirect(url_for("tables.mytables"))
 
     return render_template("tables/new.html", form=form)
 
-@app.route("/tables/DdbT<id>/edit", methods=["GET", "POST"])
+@tables.route("/edit/DdbT<id>", methods=["GET", "POST"])
 @login_required
 def edit_table(id):
     metabolite_table = MetaboliteTable.query.get_or_404(id)
@@ -101,7 +101,7 @@ def edit_table(id):
     else:
         abort(500)
 
-@app.route("/tables/DdbT<id>/edit/add_publication", methods=["GET", "POST"])
+@tables.route("/edit/DdbT<id>/add_publication", methods=["GET", "POST"])
 @login_required
 def add_publication(id):
     metabolite_table = MetaboliteTable.query.get_or_404(id)
@@ -118,12 +118,12 @@ def add_publication(id):
             db.session.add(publication)
             db.session.commit()
             flash("Publication Added")
-            return redirect(url_for("edit_table", id=id))
+            return redirect(url_for("tables.edit_table", id=id))
         return render_template("tables/new_publication.html", id=id, form=form)
     else:
         abort(500)
 
-@app.route("/tables/DdbT<id>/edit/remove_publication/<pub_id>")
+@tables.route("/edit/DdbT<id>/remove_publication/<pub_id>")
 @login_required
 def remove_publication(id, pub_id):
     metabolite_table = MetaboliteTable.query.get_or_404(id)
@@ -132,11 +132,11 @@ def remove_publication(id, pub_id):
         db.session.delete(publication)
         db.session.commit()
         flash("Publication Successfully Removed")
-        return redirect(url_for("edit_table", id=id))
+        return redirect(url_for("tables.edit_table", id=id))
     else:
         abort(500)
 
-@app.route("/tables/DdbT<id>/edit/remove_metabolite/<m_id>")
+@tables.route("/edit/DdbT<id>/remove_metabolite/<m_id>")
 @login_required
 def remove_metabolite(id, m_id):
     metabolite_table = MetaboliteTable.query.get_or_404(id)
@@ -145,12 +145,11 @@ def remove_metabolite(id, m_id):
         db.session.delete(metabolite)
         db.session.commit()
         flash("Metabolite Successfully Removed")
-        return redirect(url_for("edit_table", id=id))
+        return redirect(url_for("tables.edit_table", id=id))
     else:
         abort(500)
 
-
-@app.route("/tables/DdbT<id>")
+@tables.route("/view/DdbT<id>")
 def view_table(id):
     table_info = User.query.join(MetaboliteTable, User.id == MetaboliteTable.owner_id).add_columns(
         MetaboliteTable.id,
@@ -170,7 +169,7 @@ def view_table(id):
     return render_template("tables/view.html", table_info = table_info, publications=publications)
 
 
-@app.route("/tables/DdbT<id>/remove")
+@tables.route("/DdbT<id>/edit/remove")
 def delete_table(id):
     metabolite_table = MetaboliteTable.query.get_or_404(id)
 
@@ -178,11 +177,11 @@ def delete_table(id):
         metabolite_table.removed = True
         db.session.commit()
         flash("You have succesfully removed the metabolite table")
-        return redirect(url_for("mytables"))
+        return redirect(url_for("tables.mytables"))
     else:
         abort(500)
 
-@app.route("/tables/DdbT<id>/api/get_metabolites")
+@tables.route("/api/DdbT<id>/get_metabolites")
 def get_metabolites(id):
     table = MetaboliteTable.query.filter(id == id).first()
     if table.public == True or table.owner_id == g.user.id and table.removed != True:

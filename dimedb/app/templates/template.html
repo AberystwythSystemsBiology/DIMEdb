@@ -94,15 +94,15 @@
                             <i class="glyphicon glyphicon-list"></i> Tables <span class="caret"></span>
                         </a>
                     <ul class="dropdown-menu">
-                        <li><a href="{{ url_for('public_tables') }}">Public Tables</a></li>
+                        <li><a href="{{ url_for('tables.public_tables') }}">Public Tables</a></li>
                         <li class="divider"></li>
-                        <li><a href="{{ url_for('mytables') }}">My Tables</a></li>
-                        <li><a href="{{ url_for('create_table') }}">Create Table</a></li>
+                        <li><a href="{{ url_for('tables.mytables') }}">My Tables</a></li>
+                        <li><a href="{{ url_for('tables.new_table') }}">Create Table</a></li>
 
                     </ul>
                     </li>
                 {% else %}
-                    <li><a href="{{ url_for('public_tables') }}"><i class="glyphicon glyphicon-list"></i> Tables</a></li>
+                    <li><a href="{{ url_for('tables.public_tables') }}"><i class="glyphicon glyphicon-list"></i> Tables</a></li>
                 {% endif %}
                 <li><a href="{{ url_for('help')}}">
                     <i class="glyphicon glyphicon-question-sign"></i> Help

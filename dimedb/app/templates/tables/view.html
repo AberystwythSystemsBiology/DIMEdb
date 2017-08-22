@@ -20,7 +20,7 @@
                 by:</b> {{ table_info.first_name }} {{ table_info.last_name }}</p>
 
             {% if table_info.owner_id == g.user.id %}
-                <a href="{{ url_for('edit_table', id=table_info.id) }}">
+                <a href="{{ url_for('tables.edit_table', id=table_info.id) }}">
                     <div class="btn btn-warning">Edit Table</div>
                 </a>
             {% endif %}

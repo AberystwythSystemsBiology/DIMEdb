@@ -9,7 +9,7 @@ function generate_table(id) {
             "sort" : false,
             "pageLength": 10,
             "ajax": {
-                "url": encodeURI(getBaseURL()+"tables/DdbT"+id+"/api/get_metabolites"),
+                "url": encodeURI(getBaseURL()+"tables/api/DdbT"+id+"/get_metabolites"),
                 "dataSrc": "data"
             },
             "columns": [
@@ -24,7 +24,7 @@ function generate_table(id) {
                     "width" : "80%",
                     "render" : function (data, type, row) {
                         var s = "<a href='" + getBaseURL() + "view/" + row.InChIKey + "' target='_blank'>" + row.Name + "</a>";
-                        s += "<p>"+row.Comments+"</p>"
+                        s += "<p>"+row.Comments+"</p>";
                         return s
                     }
                 },

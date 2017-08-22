@@ -41,7 +41,7 @@
     <h2>Edit Details</h2>
 
 
-    <form method="post" action="{{ url_for('edit_table', id=metabolite_table.id) }}" accept-charset="utf-8"
+    <form method="post" action="{{ url_for('tables.edit_table', id=metabolite_table.id) }}" accept-charset="utf-8"
           role="form">
         {{ form.csrf_token }}
         {{ render_edit_field(form.title, label="Title", type="string", content=metabolite_table.title) }}
@@ -67,7 +67,7 @@
                         <p>Pubmed: <a href="https://www.ncbi.nlm.nih.gov/pubmed/{{ publication.pubmed_id }}" target="_blank">https://www.ncbi.nlm.nih.gov/pubmed/{{ publication.pubmed_id }}</a></p>
                     {% endif %}
 
-                <a href="{{ url_for('remove_publication', id=metabolite_table.id, pub_id=publication.id) }}">
+                <a href="{{ url_for('tables.remove_publication', id=metabolite_table.id, pub_id=publication.id) }}">
                 <div class="btn btn-danger pull-right">
                     Remove Publication
                 </div>
@@ -78,7 +78,7 @@
         </ul>
 
         <div class="form-group row">
-            <a href="{{ url_for('add_publication', id=metabolite_table.id) }}">
+            <a href="{{ url_for('tables.add_publication', id=metabolite_table.id) }}">
                 <div class="btn btn-success pull-right">Add Publication</div>
             </a>
         </div>
@@ -105,7 +105,7 @@
                 </div>
                 <p>Deletions <b>CANNOT</b> be undone. This will <b>PERMANTLEY REMOVE</b> the table.</p>
 
-                <a href="{{ url_for('delete_table', id=metabolite_table.id) }}">
+                <a href="{{ url_for('tables.delete_table', id=metabolite_table.id) }}">
                     <div class="btn btn-danger full-width">
                         I know what I am doing, remove this table
                     </div>

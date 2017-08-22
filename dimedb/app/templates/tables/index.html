@@ -26,7 +26,7 @@
         <tbody>
         {% for t in public_tables %}
             <tr>
-                <td><a href="{{ url_for('view_table', id=t.id) }}">{{ t.title }}</a></td>
+                <td><a href="{{ url_for('tables.view_table', id=t.id) }}">{{ t.title }}</a></td>
                 <td>{{ t.species }}</td>
                 <td>{{ t.first_name }} {{ t.last_name }}</td>
                 <td>{{ t.creation_date.strftime('%d-%m-%Y')}}</td>
