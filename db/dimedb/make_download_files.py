@@ -97,8 +97,15 @@ def generate_sources(dimedb):
             writer.writerow(line)
         zip_file.writestr("dimedb_sources.tsv", string_buffer.getvalue())
 
+def combine_dimedb(fp):
+    dimedb = []
+    for fn in os.listdir(fp):
+        if fn.endswith(".json"):
+            dimedb.extend(load_file(fp+fn))
+    return dimedb
+
 if __name__ == "__main__":
-    dimedb = load_file(directory+"dimedb.json")
+    dimedb = combine_dimedb(directory+"jsons/")
     generate_id_tsv(dimedb)
     generate_physiochemical_properties(dimedb)
     generate_structures()

@@ -96,7 +96,7 @@ def resend_confirmation():
         user = User.query.filter_by(email_address = form.email_address.data, confirmed=False).first()
         if user != None:
             token = generate_confirmation_token(user.email_address)
-            confirm_url = url_for("confirm_email", token=token, _external=True)
+            confirm_url = url_for("auth.confirm_email", token=token, _external=True)
             html = render_template("auth/emails/account_confirmation.html", confirm_url=confirm_url)
             subject = "DIMEdb: Account Confirmation Required"
             send_email(user.email_address, subject, html)
@@ -113,7 +113,7 @@ def reset_password_email():
         user = User.query.filter_by(email_address = form.email_address.data).first()
         if user != None:
             token = generate_confirmation_token(user.email_address)
-            reset_url = url_for("reset_password", token=token, _external=True)
+            reset_url = url_for("auth.reset_password", token=token, _external=True)
             html = render_template("auth/emails/password_reset.html", reset_url=reset_url)
             subject = "DIMEdb: AccountPassword Reset"
             send_email(user.email_address, subject, html)
@@ -126,17 +126,17 @@ def reset_password_email():
 def reset_password(token):
     form = ResetPasswordForm(request.form)
     email = confirm_token(token)
+    if email != None:
+        if form.validate_on_submit():
+            user = User.query.filter_by(email_address = email).first_or_404()
 
-    if form.validate_on_submit():
-        user = User.query.filter_by(email_address = email).first_or_404()
+            user.password = form.password.data
 
-        user.password = form.password.data
+            db.session.add(user)
+            db.session.commit()
 
-        db.session.add(user)
-        db.session.commit()
-
-        flash("Password successfully changed, please sign in.")
-        return redirect(url_for("auth.login"))
+            flash("Password successfully changed, please sign in.")
+            return redirect(url_for("auth.login"))
     return render_template("auth/management/reset_password.html", form=form)
 
 @login_manager.user_loader

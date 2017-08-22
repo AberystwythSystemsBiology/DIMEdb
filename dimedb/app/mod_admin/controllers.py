@@ -6,11 +6,11 @@ from app.mod_auth.models import User
 
 from decorators import check_admin
 
-admin = Blueprint("admin", __name__)
+admin = Blueprint("admin", __name__, url_prefix="/admin")
 
-@app.route("/admin")
+@admin.route("/")
 @login_required
 @check_admin
-def admin_home():
+def home():
     users = User.query.filter().all()
     return render_template("admin/index.html", users=users)

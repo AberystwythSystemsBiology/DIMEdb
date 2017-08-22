@@ -6,7 +6,7 @@ function clear_results() {
 function generate_table(mass, ionisation, api_url, tolerance) {
 
     function insert_table(mass) {
-        var mass_table = "<table id='results_" + mass.replace(".", "_") + "' class='table table-striped table-responsive display' width='100%'><thead>" +
+        var mass_table = "<table id='results_" + mass.replace(".", "_") + "' class='table table-striped full-width'><thead>" +
             "<tr></tr></thead></table>";
         return mass_table
     }
@@ -132,9 +132,6 @@ $("#search_button").click(function () {
 
 $(document).ready(function () {
 
-    $('#search_results').on('click', "#add_to_clipboard", function () {
-        clipboard_hook($(this).attr("name"));
-    });
 
     function fill_adducts_list(ionisation) {
         var adducts_dict = {
@@ -198,6 +195,10 @@ $(document).ready(function () {
 
 
     }
+
+    $("#clear_masses").click(function () {
+        $("#masses").tagsinput("removeAll");
+    });
 
     $("input[type=radio][name=ionisation]").change(function () {
         fill_adducts_list(this.value)

@@ -221,7 +221,7 @@ class Metabolite(object):
         adducts = []
         def calculate(type, polarity, mol, rule_dict=None, electrons=0, charge=0):
             try:
-                with timeout(20):
+                with timeout(4):
                     iso_dist = mol.isotopic_distribution(rule_dict=rule_dict, electrons=electrons, charge=charge)
 
                     adducts.append({
@@ -331,21 +331,13 @@ def handler(inchikey):
 
 
 if __name__ == "__main__":
-    limiter = 500
+    limiter = 100
     inchikeys = combined.keys()
     slice = range(0, len(inchikeys), limiter)
 
-    for inchikey_index in tqdm(slice[19:]):
+    for inchikey_index in tqdm(slice):
         processed_data = Parallel(n_jobs=16)(delayed(handler)(id) for id in inchikeys[inchikey_index:inchikey_index + limiter])
         processed_data = [x for x in processed_data if x != None]
-        pickle.dump(processed_data, open(directory + "pickles/" + str(inchikey_index) + ".pkl", "wb"))
-
-    db = []
-
-    for file in os.listdir(directory+"pickles/"):
-        processed_data = pickle.load(open(directory+"pickles/"+file, "rb"))
-        db.extend([metabolite for metabolite in processed_data])
-
-    mongodb_file = json.loads(bson_dumps(db), object_pairs_hook=collections.OrderedDict)
-    with open(directory+"dimedb.json", "wb") as outfile:
-        json.dump(mongodb_file, outfile, indent=4)
+        mongodb_file = json.loads(bson_dumps(processed_data), object_pairs_hook=collections.OrderedDict)
+        with open(directory + "/jsons/dimedb_s"+str(inchikey_index)+".json", "wb") as outfile:
+            json.dump(mongodb_file, outfile, indent=4)

@@ -12,8 +12,59 @@
 
 {% block body %}
 
-    {% for u in users %}
-        {{ u.id }}
-    {% endfor %}
+    <h2>Users ({{ users|length }})</h2>
+
+    <table class="table table-striped" id="users_table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email Address</th>
+            <th>Confirmed</th>
+            <th>Banned</th>
+            <th>Admin</th>
+            <th>Actions</th>
+        </tr>
+
+        </thead>
+
+        <tbody>
+            {% for u in users %}
+                <tr>
+                    <td>{{ u.first_name }} {{ u.last_name }}</td>
+                    <td>{{ u.email_address }}</td>
+                    <td>
+                        {% if u.confirmed %}
+                            <i class="glyphicon glyphicon-check"></i>
+                        {% else %}
+                            <i class="glyphicon glyphicon-unchecked"></i>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if u.banned %}
+                            <i class="glyphicon glyphicon-check"></i>
+                        {% else %}
+                            <i class="glyphicon glyphicon-unchecked"></i>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if u.admin %}
+                            <i class="glyphicon glyphicon-check"></i>
+                        {% else %}
+                            <i class="glyphicon glyphicon-unchecked"></i>
+                        {% endif %}
+                    </td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
+
 
 {% endblock %}
+
+    {% block javascript %}
+
+    {% endblock %}

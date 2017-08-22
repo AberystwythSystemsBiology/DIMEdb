@@ -111,6 +111,8 @@ function generate_api_url(values) {
 
     api_url += "]}";
 
+    console.log(api_url);
+
     return api_url;
 
 }
