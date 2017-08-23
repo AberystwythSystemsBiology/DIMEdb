@@ -343,12 +343,12 @@ def handler(inchikey):
 
 
 if __name__ == "__main__":
-    limiter = 200
+    limiter = 1000
     inchikeys = combined.keys()
     slice = range(0, len(inchikeys), limiter)
 
-    for inchikey_index in tqdm(slice[59:]):
-        processed_data = Parallel(n_jobs=8)(delayed(handler)(id) for id in inchikeys[inchikey_index:inchikey_index + limiter])
+    for inchikey_index in tqdm(slice):
+        processed_data = Parallel(n_jobs=16)(delayed(handler)(id) for id in inchikeys[inchikey_index:inchikey_index + limiter])
         processed_data = [x for x in processed_data if x != None]
         mongodb_file = json.loads(bson_dumps(processed_data), object_pairs_hook=collections.OrderedDict)
         with open(directory + "/jsons/dimedb_s"+str(inchikey_index)+".json", "wb") as outfile:
