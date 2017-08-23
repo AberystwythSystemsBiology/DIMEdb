@@ -15,6 +15,7 @@ class MetaboliteTable(Base):
     public = db.Column(db.Boolean, default=False, nullable=False)
     removed = db.Column(db.Boolean, default=False, nullable=False)
     species = db.Column(db.String, nullable=True)
+    locked = db.Column(db.Boolean, nullable=False, default=False)
 
 class MetaboliteTablePublication(Base):
     __tablename__ = "metabolite_table_publication"
@@ -29,4 +30,4 @@ class Metabolite(Base):
     __tablename__ = "metabolite"
     table_id = db.Column(db.Integer, db.ForeignKey("metabolite_table.id"), nullable=False)
     inchikey = db.Column(db.String, nullable=False)
-    comments = db.Column(db.String(128))
+    comments = db.Column(db.String(2048))

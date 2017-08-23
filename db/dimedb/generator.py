@@ -1,4 +1,6 @@
-import json, requests, pybel, re, signal, pyidick, collections, pickle, os, warnings
+import json, requests, re, signal, pyidick, collections, pickle, os, warnings
+from subprocess import check_output
+
 # Do I look like I give a fuck?
 warnings.filterwarnings("ignore")
 
@@ -57,10 +59,10 @@ class Metabolite(object):
         except KeyError:
             raise SMILESerror()
         self.inchi = self.combined_info["InChI"]
-        try:
-            self.smiles = pybel.readstring("inchi", str(self.inchi)).write("smi").rstrip()
-        except IOError:
-            raise SMILESerror()
+
+        self.smiles = self.get_smiles()
+
+
         self.rdkit_mol = MolFromSmiles(self.smiles)
 
         self.identification_information = self.get_identification_information()
@@ -69,6 +71,16 @@ class Metabolite(object):
         self.pathways = self.get_pathways()
         self.taxonomic_properties = self.get_taxonomic_properties()
         self.adduct_information = self.get_adduct_information()
+
+
+    def get_smiles(self):
+        with open(os.devnull, 'w') as fp:
+            val = check_output('openbabel.obabel -iinchi -:"%s" -osmi' % self.inchi, shell=True, stderr=open(os.devnull, 'w')).decode().strip()
+        if val != "":
+            return str(val)
+        else:
+            raise SMILESerror()
+
 
     def get_identification_information(self):
         id_info = {
@@ -331,12 +343,12 @@ def handler(inchikey):
 
 
 if __name__ == "__main__":
-    limiter = 100
+    limiter = 200
     inchikeys = combined.keys()
     slice = range(0, len(inchikeys), limiter)
 
-    for inchikey_index in tqdm(slice):
-        processed_data = Parallel(n_jobs=16)(delayed(handler)(id) for id in inchikeys[inchikey_index:inchikey_index + limiter])
+    for inchikey_index in tqdm(slice[59:]):
+        processed_data = Parallel(n_jobs=8)(delayed(handler)(id) for id in inchikeys[inchikey_index:inchikey_index + limiter])
         processed_data = [x for x in processed_data if x != None]
         mongodb_file = json.loads(bson_dumps(processed_data), object_pairs_hook=collections.OrderedDict)
         with open(directory + "/jsons/dimedb_s"+str(inchikey_index)+".json", "wb") as outfile:

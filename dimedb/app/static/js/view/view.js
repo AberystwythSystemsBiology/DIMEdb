@@ -321,6 +321,11 @@ function skeletons(inchikey) {
 
 function render_metabolite_view(metabolite_id) {
     var metabolite = get_metabolite(metabolite_id);
+
+    $('head').append('<meta http-equiv="X-UA-Compatible" content="IE=Edge" />'+
+    '<meta name="description" content="DIMEdb entry for ' + metabolite["Identification Information"]["Name"] +'">'+
+    '<meta name="title" content="' + metabolite["Identification Information"]["Name"]  + ' : DIMEdb - Direct Infusion METabolite database">');
+
     fill_identification_infomation(metabolite["Identification Information"], metabolite_id);
     fill_physicochemical_properties(metabolite["Physicochemical Properties"]);
     fill_external_sources(metabolite["External Sources"]);
