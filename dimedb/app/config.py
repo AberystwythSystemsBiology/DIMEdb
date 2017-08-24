@@ -5,6 +5,8 @@ class BaseConfig(object):
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
     SECRET_KEY = "secret"
 
+    MAINTENANCE = False
+
     SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://keo7:password@localhost/dimedb"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LDAP_LOGIN_VIEW = 'auth.login'

@@ -1,4 +1,4 @@
-import json, requests, re, signal, pyidick, collections, pickle, os, warnings
+import json, requests, re, signal, pyidick, collections, urllib, os, warnings, pubchempy
 from subprocess import check_output
 
 # Do I look like I give a fuck?
@@ -64,7 +64,6 @@ class Metabolite(object):
 
 
         self.rdkit_mol = MolFromSmiles(self.smiles)
-
         self.identification_information = self.get_identification_information()
         self.external_sources = self.get_external_sources()
         self.physicochemical_properties = self.get_physicochemical_properties()
@@ -100,27 +99,62 @@ class Metabolite(object):
 
         if self.combined_info["HMDB Accession"] != None:
             if combined[self.inchikey]["HMDB Accession"] != None:
-                id_info["Name"] = hmdb[self.inchikey]["Name"]
+                if id_info["Name"] == None:
+                    id_info["Name"] = hmdb[self.inchikey]["Name"]
+                else:
+                    id_info["Synonyms"].append(hmdb[self.inchikey]["Name"])
                 id_info["Synonyms"].extend(hmdb[self.inchikey]["Synonyms"])
 
-            if combined[self.inchikey]["PubChem ID"] != None:
+        if self.combined_info["PubChem ID"] != None:
+            try:
                 if type(pubchem[self.inchikey]["Name"]) != list:
-                    id_info["Name"] = pubchem[self.inchikey]["Name"]
+                    if id_info["Name"] == None:
+                        id_info["Name"] = pubchem[self.inchikey]["Name"]
+                    else:
+                        id_info["Synonyms"].append(pubchem[self.inchikey]["Name"])
                 else:
-                    id_info["Name"] = pubchem[self.inchikey]["Name"][0]
+                    if id_info["Name"] == None:
+                        id_info["Name"] = pubchem[self.inchikey]["Name"][0]
+                    else:
+                        id_info["Synonyms"].append(pubchem[self.inchikey]["Name"][0])
+                    id_info["Synonyms"].extend(pubchem[self.inchikey]["Synonyms"])
+            except KeyError:
+                synonyms = pubchempy.Compound.from_cid(self.combined_info["PubChem ID"]).synonyms
+                if len(synonyms) == 0:
+                    pass
+                else:
+                    if len(synonyms) == 1:
+                        if id_info["Name"] == None:
+                            id_info["Name"] = synonyms[0]
+                        else:
+                            id_info["Synonyms"].append(synonyms[0])
+                    else:
+                        if id_info["Name"] == None:
+                            id_info["Name"] = synonyms[0]
+                            id_info["Synonyms"].extend(synonyms[1:])
+                        else:
+                            id_info["Synonyms"].extend(synonyms)
 
-                id_info["Synonyms"].extend(pubchem[self.inchikey]["Synonyms"])
 
-            if combined[self.inchikey]["ChEBI ID"] != None:
-                if chebi[self.inchikey]["Name"] != None:
-                    if type(chebi[self.inchikey]["Name"]) != list:
+        if self.combined_info["ChEBI ID"] != None:
+            if chebi[self.inchikey]["Name"] != None:
+                if type(chebi[self.inchikey]["Name"]) != list:
+                    if id_info["Name"] == None:
                         id_info["Name"] = chebi[self.inchikey]["Name"]
-                id_info["Synonyms"].extend(chebi[self.inchikey]["Synonyms"])
+                    else:
+                        id_info["Synonyms"].append(chebi[self.inchikey]["Name"])
+            id_info["Synonyms"].extend(chebi[self.inchikey]["Synonyms"])
+
+
+        id_info["Synonyms"] = list(set(id_info["Synonyms"]))
+
+        if id_info["Name"] == None:
+            raise SMILESerror()
 
         return id_info
 
     def _get_iupac_name(self):
-        response = requests.get("http://cactus.nci.nih.gov/chemical/structure/%s/iupac_name" % self.smiles)
+        response = requests.get("http://cactus.nci.nih.gov/chemical/structure/%s/iupac_name" % urllib.quote_plus(self.smiles))
         if response.status_code == 200:
             return response.text
         else:
@@ -233,7 +267,7 @@ class Metabolite(object):
         adducts = []
         def calculate(type, polarity, mol, rule_dict=None, electrons=0, charge=0):
             try:
-                with timeout(4):
+                with timeout(30):
                     iso_dist = mol.isotopic_distribution(rule_dict=rule_dict, electrons=electrons, charge=charge)
 
                     adducts.append({
@@ -347,7 +381,7 @@ if __name__ == "__main__":
     inchikeys = combined.keys()
     slice = range(0, len(inchikeys), limiter)
 
-    for inchikey_index in tqdm(slice):
+    for inchikey_index in tqdm(slice[55:]):
         processed_data = Parallel(n_jobs=16)(delayed(handler)(id) for id in inchikeys[inchikey_index:inchikey_index + limiter])
         processed_data = [x for x in processed_data if x != None]
         mongodb_file = json.loads(bson_dumps(processed_data), object_pairs_hook=collections.OrderedDict)

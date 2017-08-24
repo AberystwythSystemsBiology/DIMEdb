@@ -1,5 +1,6 @@
 from eve import Eve
-from flask import render_template, request, send_from_directory, g
+
+from flask import render_template, request, send_from_directory, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
@@ -18,10 +19,15 @@ bcrypt = Bcrypt(app)
 
 mail = Mail(app)
 
-
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "auth.login"
+
+
+@app.before_request
+def check_for_maintenance():
+    if app.config["MAINTENANCE"]:
+        return abort(503)
 
 @app.route("/")
 def homepage():
@@ -34,10 +40,6 @@ def mass_search():
 @app.route("/search/text")
 def text_search():
     return render_template("search/text.html")
-
-@app.route("/test")
-def test_page():
-    return render_template("misc/test.html")
 
 @app.route("/help/")
 def help():
@@ -74,6 +76,17 @@ def page_not_found(e):
 @app.errorhandler(403)
 def forbidden(e):
     return render_template("./misc/403.html"), 403
+
+@app.errorhandler(503)
+def maintenance(e):
+    return render_template("./misc/503.html"), 503
+
+
+@app.route("/test")
+def test():
+    abort(403)
+
+
 
 # Blueprints
 
