@@ -53,7 +53,7 @@ def generate_physiochemical_properties(dimedb):
         zip_file.writestr("dimedb_pc_info.tsv", string_buffer.getvalue())
 
 def generate_structures():
-    zipf = zipfile.ZipFile(directory+"downloads/structures.zip", "w", zipfile.ZIP_DEFLATED)
+    zipf = zipfile.ZipFile(directory+"downloads/structures.zip", "w", zipfile.ZIP_DEFLATED, allowZip64=True)
     for root, dirs, files in os.walk(directory+"structures/"):
         for file in files:
             zipf.write(os.path.join(root, file), arcname=file)

@@ -46,70 +46,98 @@ function check_if_comma(s) {
 }
 
 function generate_api_url(values) {
-    var api_url = getBaseURL()+'api/metabolites/?where={ "$and" : [';
-    /*
+    var api_url = getBaseURL() + 'api/metabolites?where={"$and" : [';
+
     if (values["Name"] != null) {
-        console.log(values["Name"]);
-        api_url += '"$or" : [';
-        api_url += '{"Identification Information.Name" :';
-        api_url += generate_regex(values["Name"]) + "},";
-        api_url += '{"Identification Information.IUPAC Name" :';
-        api_url += generate_regex(values["Name"]) + "},";
-        api_url += '{"Identification Information.Systematic Name" :';
-        api_url += generate_regex(values["Name"]) + "},";
-        api_url += '{"Identification Information.Synonyms" : {"$in" : [';
-        api_url += generate_regex(values["Name"]) + "]}}";
-        api_url += "]"
+        var name_string = '{"$or" : [{"Identification Information.Name" : {"$regex" : ".*%s.*"}},' +
+            '{"Identification Information.Synonyms" : {"$regex" : ".*%s.*"}},' +
+            '{"Identification Information.IUPAC Name" : {"$regex" : ".*%s.*"}}]}';
+        name_string = name_string.replace(/%s/g, values["Name"]);
+        if (api_url.slice(-1) == "}") {
+            api_url += ", "
+        }
+
+        api_url += name_string
     }
-    */
+
 
     if (values["Molecular Formula"] != null) {
-        api_url = check_if_comma(api_url);
-        api_url += '{"Identification Information.Molecular Formula" : ';
-        api_url += is_equals_to(values["Molecular Formula"]);
-        api_url += '}';
+        var mol_form = '{"Identification Information.Molecular Formula" : {"$regex" : ".*%s.*"}}';
+        mol_form = mol_form.replace(/%s/g, values["Molecular Formula"]);
+
+        if (api_url.slice(-1) == "}") {
+            api_url += ", "
+        }
+
+        api_url += mol_form
+
+    }
+
+    if (values["SMILES"] != null) {
+        var smiles = '{"Identification Information.SMILES" : {"$regex" : ".*%s.*"}}';
+        smiles = smiles.replace(/%s/g, values["SMILES"])
+
+        if (api_url.slice(-1) == "}") {
+            api_url += ", "
+        }
+
+        api_url += smiles
+    }
+
+    if (values["InChI"] != null) {
+        var inchi = '{"Identification Information.InChI" : {"$regex" : ".*%s.*"}}';
+        inchi = inchi.replace(/%s/g, values["InChI"])
+
+        if (api_url.slice(-1) == "}") {
+            api_url += ", "
+        }
+
+        api_url += inchi
+    }
+
+    if (values["InChI Key"] != null) {
+        var inchikey = '{"_id" : {"$regex" : ".*%s.*"}}';
+        inchikey = inchikey.replace(/%s/g, values["InChI Key"])
+
+        if (api_url.slice(-1) == "}") {
+            api_url += ", "
+        }
+
+        api_url += inchikey
+    }
+
+    if (values["External Source"] != null) {
+        var source = '{"External Sources.%source" : "%s"}}';
+        source = source.replace(/%source/g, $("#source_name").val());
+        source = source.replace(/%s/g, values["External Source"]);
+
+        if (api_url.slice(-1) == "}") {
+            api_url += ", "
+        }
+
+        api_url += source
     }
 
     if (values["Molecular Weight"] != null) {
         var tolerance = parseFloat($("#search_tolerance").val());
-        var lte = parseFloat(values["Molecular Weight"]) + tolerance;
-        var gte = parseFloat(values["Molecular Weight"]) - tolerance;
-        api_url = check_if_comma(api_url);
-        api_url += '{"Physiochemical Properties.Molecular Weight" : ';
-        api_url += '{"$lte" : ' + lte + ', "$gte" : ' + gte + '}';
-        api_url += '}';
+        var w = parseFloat(values["Molecular Weight"]);
+        console.log(tolerance);
+
+        var weight = '{"Physicochemical Properties.Molecular Weight" : {' +
+            '"$gte" : %gtev, "$lte" : %ltev}}';
+
+        weight = weight.replace(/%gtev/g, String(w - tolerance));
+        weight = weight.replace(/%ltev/g, String(w + tolerance));
+
+        if (api_url.slice(-1) == "}") {
+            api_url += ", "
+        }
+
+        api_url += weight
     }
 
-    if (values["External Source"] != null) {
-        var source_name = $("#source_name").val();
-        api_url = check_if_comma(api_url);
-        api_url += '{"External Sources.'+source_name+'" : "';
-        api_url += values["External Source"] + '"}';
 
-    }
-
-    if (values["InChI"] != null) {
-        api_url = check_if_comma(api_url)
-        api_url += '{"Identification Information.InChI" : ';
-        api_url += is_equals_to(values["InChI"]);
-        api_url += '}';
-    }
-
-    if (values["InChI Key"] != null) {
-        api_url = check_if_comma(api_url)
-        api_url += '{"_id" : ';
-        api_url += is_equals_to(values["InChI Key"]);
-        api_url += '}';
-    }
-
-    if (values["SMILES"] != null) {
-        api_url = check_if_comma(api_url)
-        api_url += '{"Identification Information.SMILES" : ';
-        api_url += is_equals_to(values["SMILES"]);
-        api_url += '}';
-    }
-
-    api_url += "]}";
+    api_url += ']}';
 
     console.log(api_url);
 

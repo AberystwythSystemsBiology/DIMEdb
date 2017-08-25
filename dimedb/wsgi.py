@@ -20,7 +20,7 @@ from logging.handlers import RotatingFileHandler
 
 if __name__ == "__main__":
     print __doc__
-    handler = RotatingFileHandler('dimedb_log.log', backupCount=1)
+    handler = RotatingFileHandler('dimedb.log', backupCount=1)
     handler.setLevel(logging.INFO)
     log = logging.getLogger('werkzeug')
     log.setLevel(logging.DEBUG)
