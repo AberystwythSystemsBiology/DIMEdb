@@ -58,12 +58,11 @@ def register():
             db.session.commit()
 
             token = generate_confirmation_token(user.email_address)
-            confirm_url = url_for("confirm_email", token=token, _external=True)
-            html = render_template("auth/emails/confirmation_email.html", confirm_url=confirm_url)
+            confirm_url = url_for("auth.confirm_email", token=token, _external=True)
+            html = render_template("auth/emails/account_confirmation.html", confirm_url=confirm_url)
             subject = "Please Confirm your email"
-
             send_email(user.email_address, subject, html)
-            flash("Thank you for registering!")
+            flash("Please check your email address for account confirmation")
             return redirect(url_for("auth.login"))
     return render_template("auth/register.html", form=form)
 
@@ -77,7 +76,7 @@ def confirm_email(token):
     email = confirm_token(token)
     if email == False:
         flash("The confirmation link is invalid or has expired.")
-        return redirect(url_for("login"))
+        return redirect(url_for("auth.login"))
     else:
         user = User.query.filter_by(email_address = email).first_or_404()
         if user.is_confirmed() == True:
@@ -115,7 +114,7 @@ def reset_password_email():
             token = generate_confirmation_token(user.email_address)
             reset_url = url_for("auth.reset_password", token=token, _external=True)
             html = render_template("auth/emails/password_reset.html", reset_url=reset_url)
-            subject = "DIMEdb: AccountPassword Reset"
+            subject = "DIMEdb: Account Password Reset"
             send_email(user.email_address, subject, html)
         flash("Password reset email sent, please check your email address")
         return redirect(url_for("auth.login"))
