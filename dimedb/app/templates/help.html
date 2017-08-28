@@ -112,13 +112,13 @@
 
     <p>To return filtered metabolites, you can use both native MongoDB queries, and standard Python conditional
         expressions.
-        For example, here we are requesting for all metabolites whose molecular formula is C12H22O11:</p>
+        For example, here we are requesting for all metabolites whose molecular formula is C6H8O6:</p>
 
-    <pre class="language-bash"><code class="language-bash">{{ url }}api/metabolites?where={"Identification Information.Molecular Formula" : “C12H22O11”}</code></pre>
+    <pre class="language-bash"><code class="language-bash">{{ url }}api/metabolites?where={"Identification Information.Molecular Formula" : "C6H8O6"}</code></pre>
 
     <p>Additionally, both query methods allow for logical and/or operators:</p>
 
-    <pre class="language-bash"><code class="language-bash">{{ url }}api/metabolites?where={“$or” : [{“Identification Information.Molecular Formula : “C12H22O11”}, {“Physicochemical Properties.Hydrogen Bond Acceptors” : 2}]}</code></pre>
+    <pre class="language-bash"><code class="language-bash">{{ url }}api/metabolites?where={“$or” : [{“Identification Information.Molecular Formula : “C6H8O6”}, {“Physicochemical Properties.Hydrogen Bond Acceptors” : 2}]}</code></pre>
 
     <h3>Conditional Operators</h3>
 

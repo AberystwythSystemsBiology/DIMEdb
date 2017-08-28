@@ -56,14 +56,6 @@ def get_file(fn):
     d = os.path.expanduser("~/.data/dimedb/downloads/")
     return send_from_directory(d, fn)
 
-@app.route("/view/<string:_id>/")
-def view(_id):
-        return render_template("view/view.html" , id=_id)
-
-@app.route("/view/structure/<string:id>")
-def get_structures_image(id):
-    d = os.path.expanduser("~/.data/dimedb/structures/")
-    return send_from_directory(d, id+".svg")
 
 @app.route("/tools/isotopic_distribution/")
 def isotopic_distribution_calculator():
@@ -86,17 +78,17 @@ def maintenance(e):
 def test():
     abort(403)
 
-
-
 # Blueprints
 
 from app.mod_auth.controllers import authentication
 from app.mod_tables.controllers import tables
 from app.mod_admin.controllers import admin
+from app.mod_view.controllers import view
 
 
 app.register_blueprint(authentication)
 app.register_blueprint(tables)
 app.register_blueprint(admin)
+app.register_blueprint(view)
 
 db.create_all()
