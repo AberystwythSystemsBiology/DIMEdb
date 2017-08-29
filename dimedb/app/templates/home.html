@@ -4,10 +4,11 @@
 
 {% block head %}
     <meta name="description" content="DIMEdb database of metabolites for Direct Infusion/Injection Metabolomics." />
+    <link href="{{ url_for('static', filename='css/home.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block abovebody %}
-    <div id="homepage_jumbotron" class="jumbotron">
+    <div class="jumbotron">
         <div class="container">
             <div class="row">
                 <div class="col-sm-7">
@@ -77,7 +78,6 @@
             <p>All of our software and data is free to use, download, modify and redistribute in its entirety.</p>
         </div>
     </div>
-
 
 
 {% endblock %}

@@ -3,6 +3,8 @@
 {% block title %}Help{% endblock %}
 
 {% block head %}
+    <link href="{{ url_for('static', filename='css/help.css') }}" rel="stylesheet">
+
     <link href="{{ url_for('static', filename='bower_components/prismjs/themes/prism.css') }}" rel="stylesheet">
     <meta name="description" content="This page contains information about how to interact with DIMEdb’s web application and web service." />
 {% endblock %}
@@ -30,12 +32,39 @@
 
     <h2>Who works on DIMEdb?</h2>
 
-    <ul>
-        <li>Keiron O'Shea (Aberystwyth University)</li>
-        <li>Nigel NW Hardy (Aberystwyth University)</li>
-        <li>Chuan Lu (Aberystwyth University)</li>
-        <li>Luis AJ Mur (Aberystwyth University)</li>
-    </ul>
+    <div id="members" class="row">
+        <div class="col-sm-3">
+            <img class="img-circle img-responsive" src="{{ url_for('static', filename='imgs/members/keo7.jpg') }}">
+            <p>Mr. Keiron O'Shea</p>
+            <p>Developer</p>
+            <p>Aberystwyth University</p>
+
+        </div>
+        <div class="col-sm-3">
+            <img class="img-circle img-responsive" src="{{ url_for('static', filename='imgs/members/nwh.jpg') }}">
+            <p>Dr. Nigel NW Hardy</p>
+            <p>Metabolomics Expert</p>
+                        <p>Aberystwyth University</p>
+
+        </div>
+
+        <div class="col-sm-3">
+            <img class="img-circle img-responsive" src="{{ url_for('static', filename='imgs/members/cul.jpg') }}">
+            <p>Dr. Chuan Lu</p>
+            <p>Supervisor</p>
+                        <p>Aberystwyth University</p>
+
+        </div>
+
+        <div class="col-sm-3">
+            <img class="img-circle img-responsive" src="{{ url_for('static', filename='imgs/members/lum.jpg') }}">
+            <p>Prof. Luis AJ Mur</p>
+            <p>Supervisor</p>
+                        <p>Aberystwyth University</p>
+
+
+        </div>
+    </div>
 
     <h2>How can I cite DIMEdb?</h2>
 

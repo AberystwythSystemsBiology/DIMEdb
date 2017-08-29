@@ -1,0 +1,10 @@
+#members {
+    max-width: 900px;
+    margin:0 auto 0;
+    display: block;
+    text-align: center;
+}
+
+#members img {
+    padding-bottom: 10px;
+}

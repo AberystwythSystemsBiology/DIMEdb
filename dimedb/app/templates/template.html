@@ -1,9 +1,6 @@
 {% macro render_form_field(field, label=None, required=False, type="string", placeholder="", value=None) %}
     {% set css_class='form-control ' + kwargs.pop('class', '') %}
 
-
-
-
     <div class="form-group row">
         <label for="example-text-input" class="col-sm-3 col-form-label">{{ label }}{% if required != False %}*{% endif %}:</label>
         <div class="col-sm-9">
@@ -36,7 +33,6 @@
 {% endmacro %}
 
 
-
 {% macro display_warnings() %}
  {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -61,7 +57,7 @@
           rel="stylesheet">
     {% block head %}
     {% endblock %}
-    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/global.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css') }}" rel="stylesheet">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='imgs/favicon.png') }}"/>
 
