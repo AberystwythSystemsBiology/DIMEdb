@@ -2,15 +2,10 @@
 
 {% block title %}DdbT{{ table_info.id }}: {{ table_info.title }}{% endblock %}
 
-{% block abovebody %}
-    <div class="jumbotron">
-        <div class="container">
-            <h2>
-                DdbT{{ table_info.id }}: {{ table_info.title }}
-            </h2>
-        </div>
-    </div>
+{% block page_title %}
+    <h2>DdbT{{ table_info.id }}: {{ table_info.title }}</h2>
 {% endblock %}
+
 
 {% block body %}
 

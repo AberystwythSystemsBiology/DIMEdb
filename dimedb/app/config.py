@@ -2,18 +2,17 @@ import os
 
 class BaseConfig(object):
 
-    config_dict = {
-        "psql_un" : os.environ["DIMEDB_PSQL_USERNAME"],
-        "psql_p" : os.environ["DIMEDB_PSQL_PASSWORD"]
-    }
-
     DEBUG = True
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
     SECRET_KEY = os.environ["SECRET_KEY"]
 
     MAINTENANCE = False
 
-    SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://%(psql_un)s:%(psql_p)s@localhost/dimedb" % config_dict
+    SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://%(username)s:%(password)s@localhost/dimedb" % {
+        "username" : os.environ["DIMEDB_PSQL_USERNAME"],
+        "password" : os.environ["DIMEDB_PSQL_PASSWORD"]
+    }
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LDAP_LOGIN_VIEW = 'auth.login'
 

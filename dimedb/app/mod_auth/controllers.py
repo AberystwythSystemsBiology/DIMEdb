@@ -128,12 +128,9 @@ def reset_password(token):
     if email != None:
         if form.validate_on_submit():
             user = User.query.filter_by(email_address = email).first_or_404()
-
             user.password = form.password.data
-
             db.session.add(user)
             db.session.commit()
-
             flash("Password successfully changed, please sign in.")
             return redirect(url_for("auth.login"))
     return render_template("auth/management/reset_password.html", form=form)

@@ -4,17 +4,13 @@
 {% block title %}Register{% endblock %}
 
 
-{% block abovebody %}
-    <div class="jumbotron">
-        <div class="container">
-            <h1>Register</h1>
-        </div>
-    </div>
-{% endblock %}
-
 {% block head %}
     <link href="{{ url_for('static', filename='bower_components/country-select-js/build/css/countrySelect.min.css') }}"
           rel="stylesheet">
+{% endblock %}
+
+{% block page_title %}
+    <h1>Registration Page</h1>
 {% endblock %}
 
 {% block body %}
@@ -22,8 +18,8 @@
     {{ display_warnings() }}
 
     <div class="row">
-        <div class="col-sm-3"></div>
-        <div class="col-sm-6">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
                     {% for message in messages %}
@@ -37,11 +33,10 @@
 
                 <h3>Personal Information</h3>
 
-                {{ render_form_field(form.first_name, label='First Name') }}
+                {{ render_form_field(form.first_name, label='First Name', required=True) }}
                 {{ render_form_field(form.mid_initials, label='Middle Initials') }}
-
-                {{ render_form_field(form.last_name, label='Last Name') }}
-                {{ render_form_field(form.email_address, label='Email Address') }}
+                {{ render_form_field(form.last_name, label='Last Name', required=True) }}
+                {{ render_form_field(form.email_address, label='Email Address', required=True) }}
 
                 {{ render_form_field(form.affiliation, label='Affiliation') }}
                 {{ render_form_field(form.address, label='Address') }}
@@ -52,9 +47,9 @@
 
                 <h3>Account Information</h3>
 
-                {{ render_form_field(form.user_name, label='Username') }}
-                {{ render_form_field(form.password, label='Password', type="password") }}
-                {{ render_form_field(form.password_confirm, label='Re-enter password', type="password") }}
+                {{ render_form_field(form.user_name, label='Username', required=True) }}
+                {{ render_form_field(form.password, label='Password', type="password", required=True) }}
+                {{ render_form_field(form.password_confirm, label='Re-enter password', type="password", required=True) }}
 
 
 
@@ -64,6 +59,8 @@
                 </div>
             </form>
         </div>
+            <div class="col-sm-1"></div>
+
     </div>
 
 {% endblock %}

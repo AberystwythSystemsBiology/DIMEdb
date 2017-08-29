@@ -1,31 +1,41 @@
-{% macro render_form_field(field, label=None, type="string") %}
+{% macro render_form_field(field, label=None, required=False, type="string") %}
     {% set css_class='form-control ' + kwargs.pop('class', '') %}
-    <div class="form-group row">
 
-    {% for error in field.errors %}
-        <div class="alert alert-danger">
-            <i class="glyphicon glyphicon-alert"></i> <b>Error:</b> {{ error }}
-        </div>
-    {% endfor %}
-
-    {% if type == "string" %}
-        <input type="string" class="form-control" name="{{ field.name }}" placeholder="{{ label }}">
-    {% elif type == "password" %}
-        {{ field(class=css_class, placeholder=label, **kwargs) }}
-    {% elif type =="checkbox" %}
-       <p>{{ field }} {{ label }}</p>
-    {% elif type == "text" %}
-        <textarea class="form-control" name="{{ field.name }}" placeholder="{{ label }}"></textarea>
-
-    {% elif type == "country" %}
-        <input type="text" id="country_selector" name="{{ field.name }}" data-countrycodeinput="1" readonly="readonly"
-               placeholder="Selected country code will appear here" class="form-control"/>
-    {% elif type == "radio" %}
-        <p><b>{{ label }}:</b></p>
-        {% for s in field %}
-            <label class="radio-inline">{{ s }}{{ s.label }}</label>
-        {% endfor %}
+    {% if required == False %}
+        {% set placeholder = "" %}
+    {% else %}
+        {% set placeholder = "(Required)" %}
     {% endif %}
+
+
+    <div class="form-group row">
+        <label for="example-text-input" class="col-sm-2 col-form-label">{{ label }}:</label>
+        <div class="col-sm-10">
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <i class="glyphicon glyphicon-alert"></i> <b>Error:</b> {{ error }}
+                </div>
+            {% endfor %}
+
+            {% if type == "string" %}
+                <input type="string" class="form-control" name="{{ field.name }}" placeholder="{{ placeholder }}">
+            {% elif type == "password" %}
+                {{ field(class=css_class, placeholder=placeholder, **kwargs) }}
+            {% elif type =="checkbox" %}
+               <p>{{ field }} {{ label }}</p>
+            {% elif type == "text" %}
+                <textarea class="form-control" name="{{ field.name }}" placeholder="{{ placeholder }}"></textarea>
+
+            {% elif type == "country" %}
+                <input type="text" id="country_selector" name="{{ field.name }}" data-countrycodeinput="1" readonly="readonly"
+                       placeholder="Selected country code will appear here" class="form-control"/>
+            {% elif type == "radio" %}
+                <p><b>{{ label }}:</b></p>
+                {% for s in field %}
+                    <label class="radio-inline">{{ s }}{{ s.label }}</label>
+                {% endfor %}
+            {% endif %}
+        </div>
     </div>
 {% endmacro %}
 
@@ -157,9 +167,17 @@
     </div>
 </nav>
 
-{% block abovebody %}
 
+{% block abovebody %}
+    <div class="jumbotron">
+        <div class="container">
+            {% block page_title %}
+            {% endblock %}
+        </div>
+    </div>
 {% endblock %}
+
+
 
 <div class="container">
 {% block body %}
