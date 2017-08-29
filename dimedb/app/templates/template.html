@@ -1,16 +1,12 @@
-{% macro render_form_field(field, label=None, required=False, type="string") %}
+{% macro render_form_field(field, label=None, required=False, type="string", placeholder="", value=None) %}
     {% set css_class='form-control ' + kwargs.pop('class', '') %}
 
-    {% if required == False %}
-        {% set placeholder = "" %}
-    {% else %}
-        {% set placeholder = "(Required)" %}
-    {% endif %}
+
 
 
     <div class="form-group row">
-        <label for="example-text-input" class="col-sm-2 col-form-label">{{ label }}:</label>
-        <div class="col-sm-10">
+        <label for="example-text-input" class="col-sm-3 col-form-label">{{ label }}{% if required != False %}*{% endif %}:</label>
+        <div class="col-sm-9">
             {% for error in field.errors %}
                 <div class="alert alert-danger">
                     <i class="glyphicon glyphicon-alert"></i> <b>Error:</b> {{ error }}
@@ -18,7 +14,7 @@
             {% endfor %}
 
             {% if type == "string" %}
-                <input type="string" class="form-control" name="{{ field.name }}" placeholder="{{ placeholder }}">
+                <input type="string" class="form-control" name="{{ field.name }}" placeholder="{{ placeholder }}" {% if value != None %}value="{{ value }}" {% endif %}>
             {% elif type == "password" %}
                 {{ field(class=css_class, placeholder=placeholder, **kwargs) }}
             {% elif type =="checkbox" %}

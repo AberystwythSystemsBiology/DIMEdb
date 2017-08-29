@@ -2,6 +2,11 @@
 
 {% block title %}Account Management{% endblock %}
 
+{% block head %}
+    <link href="{{ url_for('static', filename='bower_components/country-select-js/build/css/countrySelect.min.css') }}"
+          rel="stylesheet">
+{% endblock %}
+
 
 {% block page_title %}
     <h1>Account Management</h1>
@@ -10,58 +15,45 @@
 {% block body %}
     <div class="row">
         <div class="col-sm-8">
-
-            <h2>Personal Information</h2>
-
-            <div class="form-group row">
-                <label class="col-sm-3">First Name:</label>
-                <div class="col-sm-9">{{ g.user.first_name }}</div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-3">Middle Initials:</label>
-                <div class="col-sm-9">{{ g.user.mid_initials}}</div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-3">Last Name:</label>
-                <div class="col-sm-9">{{ g.user.last_name}}</div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-3">Country:</label>
-                <div class="col-sm-9">{{ g.user.country}}</div>
-            </div>
+            {{ display_warnings() }}
 
 
-            <div class="form-group row">
-                <label class="col-sm-3">Affiliation:</label>
-                <div class="col-sm-9">{{ g.user.affiliation}}</div>
-            </div>
+            <form method="post" action="{{ url_for('auth.management') }}" accept-charset="UTF-8" role="form">
+                {{ form.csrf_token }}
 
-            <div class="form-group row">
-                <label class="col-sm-3">Address:</label>
-                <div class="col-sm-9">{{ g.user.address}}</div>
-            </div>
+                <h3>Personal Information</h3>
 
-            <h2>Contact Information</h2>
+                {{ render_form_field(form.first_name, label='First Name', required=True, value=g.user.first_name) }}
+                {{ render_form_field(form.mid_initials, label='Middle Initials', value=g.user.mid_initials) }}
+                {{ render_form_field(form.last_name, label='Last Name', required=True, value=g.user.last_name) }}
 
-            <div class="form-group row">
-                <label class="col-sm-3">Email Address:</label>
-                <div class="col-sm-9">{{ g.user.email_address}}</div>
-            </div>
+                <h2>Contact Information</h2>
 
-             <div class="form-group row">
-                <label class="col-sm-3">Phone:</label>
-                <div class="col-sm-9">{{ g.user.phone}}</div>
-            </div>
+                {{ render_form_field(form.affiliation, label='Affiliation', value=g.user.affiliation) }}
+                {{ render_form_field(form.address, label='Address', value=g.user.address) }}
 
-            <h2>Account Information</h2>
+                {{ render_form_field(form.phone, label='Phone Number', value=g.user.phone) }}
+
+                {{ render_form_field(form.country, type="country", label='Country', value=g.user.country) }}
+
+                <h2>Account Information</h2>
 
             <div class="form-group row">
                 <label class="col-sm-3">Account Created:</label>
                 <div class="col-sm-9">{{ g.user.creation_date.strftime('%d-%m-%Y')}}</div>
             </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-3">Email Address:</label>
+                        <div class="col-sm-9">{{ g.user.email_address}}</div>
+                </div>
+
+                <div class="form-group row">
+                    <button id="register-button" class="btn btn-success full-width" type="submit">
+                        Update Account Information
+                    </button>
+                </div>
+            </form>
 
         </div>
         <div class="col-sm-4">
@@ -71,11 +63,27 @@
                 </div>
                 <div class="panel-body">
                     <img src="{{ g.user.avatar(300) }}", class="img-responsive img-circle">
-                    <p class="text-center">Provided by <a href="http://en.gravatar.com/" target="_blank">Gravatar</a></p>
+                    <p class="text-center">DIMEdb avatars are provided by <a href="http://en.gravatar.com/" target="_blank">Gravatar</a></p>
                 </div>
             </div>
+
+            <a href="{{ url_for('auth.reset_password_email') }}">
+                <div class="btn btn-warning full-width">
+                    Change Password
+                </div>
+            </a>
 
         </div>
     </div>
 
+{% endblock %}
+
+
+{% block javascript %}
+    <script src="{{ url_for('static', filename='bower_components/country-select-js/build/js/countrySelect.min.js') }}"></script>
+    <script>
+        $("#country_selector").countrySelect({
+            defaultCountry : "gb"
+        })
+    </script>
 {% endblock %}

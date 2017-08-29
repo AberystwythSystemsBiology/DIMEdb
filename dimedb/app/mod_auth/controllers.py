@@ -4,7 +4,7 @@ from app import app, db, bcrypt, login_manager
 from flask_login import login_user, logout_user, current_user, login_required
 
 from app.mod_auth.models import User
-from app.mod_auth.forms import LoginForm, RegistrationForm, ResendConfirmationForm, ResetPasswordForm
+from app.mod_auth.forms import LoginForm, RegistrationForm, ResendConfirmationForm, ResetPasswordForm, EditAccountForm
 
 from token import generate_confirmation_token, confirm_token
 from email import send_email
@@ -29,9 +29,21 @@ def login():
     return render_template("auth/login.html", form=form)
 
 @login_required
-@authentication.route("/account_management")
+@authentication.route("/account_management", methods=["GET", "POST"])
 def management():
-    return render_template("auth/management/management.html")
+    form = EditAccountForm(request.form)
+    if form.validate_on_submit():
+        user = User.query.filter_by(email_address = g.user.email_address).first_or_404()
+        user.first_name = form.first_name.data
+        user.mid_initials = form.mid_initials.data
+        user.last_name = form.last_name.data
+        user.phone = form.phone.data
+        user.affiliation = form.affiliation.data
+        user.address = form.address.data
+        user.country = form.country.data
+        db.session.commit()
+        flash("Account details have been successfuly changed!")
+    return render_template("auth/management/management.html", form=form)
 
 @authentication.route("/register", methods=["GET", "POST"])
 def register():

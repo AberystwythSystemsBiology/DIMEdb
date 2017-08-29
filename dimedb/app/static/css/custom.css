@@ -364,3 +364,8 @@ footer p {
 .full-width {
     width: 100%;
 }
+
+video {
+    width: 100%    !important;
+    height: auto   !important;
+}
