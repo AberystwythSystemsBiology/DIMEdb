@@ -181,10 +181,30 @@
 </div>
 
 
-<footer>
+<footer class="navbar navbar-static-bottom" role="navigation">
     <div class="container">
-        <p>DIMEdb is developed by researchers from <a href="http://www.aber.ac.uk">Aberystwyth
-            University</a>.</p>
+        <div class="row">
+            <div class="col-sm-4">
+                <img src="{{ url_for('static', filename='imgs/aber.svg') }}">
+                <p>DIMEdb was developed by researchers from <a href="http://www.aber.ac.uk" target="_blank">Aberystwyth University</a></p>
+
+                <p>DIMEdb is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a></p>
+            </div>
+            <div class="col-sm-3">
+
+            </div>
+            <div class="col-sm-5">
+                <ul class="list-unstyled">
+					<li><a href="{{ url_for('homepage') }}">Home</a></li>
+					<li><a href="{{ url_for('text_search') }}">Search</a></li>
+					<li><a href="{{ url_for('tables.public_tables') }}">Tables</a></li>
+					<li><a href="{{ url_for('help') }}">Help</a></li>
+					<li><a href="mailto:keo7@aber.ac.uk">Contact Us</a></li>
+					<li><a href="https://www.github.com/KeironO/DIMEdb" target="_blank">GitHub</a></li>
+				</ul>
+            </div>
+        </div>
+
     </div>
 </footer>
 
@@ -198,6 +218,9 @@
 <script src="{{ url_for('static', filename='js/global.js') }}"></script>
 
 {% block javascript %}
+    <script>
+
+
 {% endblock %}
 
 </html>
