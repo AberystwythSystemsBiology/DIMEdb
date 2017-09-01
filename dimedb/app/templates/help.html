@@ -6,7 +6,8 @@
     <link href="{{ url_for('static', filename='css/help.css') }}" rel="stylesheet">
 
     <link href="{{ url_for('static', filename='bower_components/prismjs/themes/prism.css') }}" rel="stylesheet">
-    <meta name="description" content="This page contains information about how to interact with DIMEdb’s web application and web service." />
+    <meta name="description"
+          content="This page contains information about how to interact with DIMEdb’s web application and web service."/>
 {% endblock %}
 
 {% block page_title %}
@@ -44,7 +45,7 @@
             <img class="img-circle img-responsive" src="{{ url_for('static', filename='imgs/members/nwh.jpg') }}">
             <p>Dr. Nigel NW Hardy</p>
             <p>Metabolomics Expert</p>
-                        <p>Aberystwyth University</p>
+            <p>Aberystwyth University</p>
 
         </div>
 
@@ -52,7 +53,7 @@
             <img class="img-circle img-responsive" src="{{ url_for('static', filename='imgs/members/cul.jpg') }}">
             <p>Dr. Chuan Lu</p>
             <p>Supervisor</p>
-                        <p>Aberystwyth University</p>
+            <p>Aberystwyth University</p>
 
         </div>
 
@@ -60,7 +61,7 @@
             <img class="img-circle img-responsive" src="{{ url_for('static', filename='imgs/members/lum.jpg') }}">
             <p>Prof. Luis AJ Mur</p>
             <p>Supervisor</p>
-                        <p>Aberystwyth University</p>
+            <p>Aberystwyth University</p>
 
 
         </div>
@@ -72,12 +73,14 @@
 
     <h2>How are isotopic distributions calcuated?</h2>
 
-    <p>Distributions are calculated using the open-source pyIDICk python package, <a href="{{ url_for('downloads_centre') }}">available here</a>.</p>
+    <p>Distributions are calculated using the open-source pyIDICk python package, <a
+            href="{{ url_for('downloads_centre') }}">available here</a>.</p>
 
     <h2>Can I use the web service for my own tools?</h2>
 
-    <p>Absolutely! Feel free to take a look at our example Python package <a href="{{ url_for('downloads_centre') }}">dimedbpy</a> for a
-    working example of how best to use the web service.</p>
+    <p>Absolutely! Feel free to take a look at our example Python package <a href="{{ url_for('downloads_centre') }}">dimedbpy</a>
+        for a
+        working example of how best to use the web service.</p>
 
     <a id="api"><h1 class="page-header">DIMEdb Web Service/API</h1></a>
 
@@ -232,31 +235,39 @@
         </tr>
         <tr>
             <td>clogP</td>
-            <td>The logarithm of a compound's partition coefficient between n-octanol and water log (coctanol/cwater)</td>
+            <td>The logarithm of a compound's partition coefficient between n-octanol and water log (coctanol/cwater)
+            </td>
             <td>Float</td>
             <td>Generated from SMILES</td>
         </tr>
         <tr>
             <td>Polar Surface Area</td>
-            <td>The polar surface area (PSA) of a molecule is defined as the surface sum over all polar atoms, primarily oxygen and nitrogen, also including their attached hydrogens.</td>
+            <td>The polar surface area (PSA) of a molecule is defined as the surface sum over all polar atoms, primarily
+                oxygen and nitrogen, also including their attached hydrogens.
+            </td>
             <td>Float</td>
             <td>Generated from SMILES</td>
         </tr>
         <tr>
             <td>Secondary Amines</td>
-            <td>A secondary (2º) amine is an amine that has the following general structural formula. R1, R2 = alkyl and/or aryl.</td>
+            <td>A secondary (2º) amine is an amine that has the following general structural formula. R1, R2 = alkyl
+                and/or aryl.
+            </td>
             <td>Integer</td>
             <td>Generated from SMILES</td>
         </tr>
         <tr>
             <td>Ether Oxygens</td>
-            <td>Ethers are a class of organic compounds that contain an ether group—an oxygen atom connected to two alkyl or aryl groups.</td>
+            <td>Ethers are a class of organic compounds that contain an ether group—an oxygen atom connected to two
+                alkyl or aryl groups.
+            </td>
             <td>Integer</td>
             <td>Generated from SMILES</td>
         </tr>
         <tr>
             <td>Hydroxy Groups</td>
-            <td>A hydroxy or hydroxyl group is the entity with the formula OH. It contains oxygen bonded to hydrogen.</td>
+            <td>A hydroxy or hydroxyl group is the entity with the formula OH. It contains oxygen bonded to hydrogen.
+            </td>
             <td>Integer</td>
             <td>Generated from SMILES</td>
         </tr>
@@ -268,31 +279,42 @@
         </tr>
         <tr>
             <td>Rings</td>
-            <td>A cyclic compound (ring compound) is a term for a compound in the field of chemistry in which one or more series of atoms in the compound is connected to form a ring.</td>
+            <td>A cyclic compound (ring compound) is a term for a compound in the field of chemistry in which one or
+                more series of atoms in the compound is connected to form a ring.
+            </td>
             <td>Integer</td>
             <td>Generated from SMILES</td>
         </tr>
         <tr>
             <td>Hydrogen Bond Acceptors</td>
-            <td>The hydrogen acceptor is the neighboring electronegative ion or molecule, and must posses a lone electron pair in order to form a hydrogen bond.</td>
+            <td>The hydrogen acceptor is the neighboring electronegative ion or molecule, and must posses a lone
+                electron pair in order to form a hydrogen bond.
+            </td>
             <td>Integer</td>
             <td>Generated from SMILES</td>
         </tr>
         <tr>
             <td>Hydrogen Bond Donors</td>
-            <td>The donor in a hydrogen bond is the atom to which the hydrogen atom participating in the hydrogen bond is covalently bonded, and is usually a strongly electronegative atom such as N,O, or F.</td>
+            <td>The donor in a hydrogen bond is the atom to which the hydrogen atom participating in the hydrogen bond
+                is covalently bonded, and is usually a strongly electronegative atom such as N,O, or F.
+            </td>
             <td>Integer</td>
             <td>Generated from SMILES</td>
         </tr>
         <tr>
             <td>Aromatic Rings</td>
-            <td>Simple aromatic rings, also known as simple arenes or simple aromatics, are aromatic organic compounds that consist only of a conjugated planar ring system</td>
+            <td>Simple aromatic rings, also known as simple arenes or simple aromatics, are aromatic organic compounds
+                that consist only of a conjugated planar ring system
+            </td>
             <td>Integer</td>
             <td>Generated from SMILES</td>
         </tr>
         <tr>
             <td>Formal Charge</td>
-            <td>In chemistry, a formal charge (FC) is the charge assigned to an atom in a molecule, assuming that electrons in all chemical bonds are shared equally between atoms, regardless of relative electronegativity.</td>
+            <td>In chemistry, a formal charge (FC) is the charge assigned to an atom in a molecule, assuming that
+                electrons in all chemical bonds are shared equally between atoms, regardless of relative
+                electronegativity.
+            </td>
             <td>Integer</td>
             <td>Generated from SMILES</td>
         </tr>
@@ -316,13 +338,18 @@
         </tr>
         <tr>
             <td>Molecular Weight</td>
-            <td>Molecular mass or molecular weight is the mass of a molecule. It is calculated as the sum of the atomic weights of each constituent element multiplied by the number of atoms of that element in the molecular formula.</td>
+            <td>Molecular mass or molecular weight is the mass of a molecule. It is calculated as the sum of the atomic
+                weights of each constituent element multiplied by the number of atoms of that element in the molecular
+                formula.
+            </td>
             <td>Float</td>
             <td>Generated from SMILES</td>
         </tr>
         <tr>
             <td>Rotatable Bonds</td>
-            <td>The number of rotatable bonds (RBN) is the number of bonds which allow free rotation around themselves.</td>
+            <td>The number of rotatable bonds (RBN) is the number of bonds which allow free rotation around
+                themselves.
+            </td>
             <td>Integer</td>
             <td>Generated from SMILES</td>
         </tr>
@@ -436,7 +463,8 @@
 
     <a name="#contact"><h1>Contact Us</h1></a>
 
-    <p>To report issues with the website, database, or to request assistance - please send an email to keo7@aber.ac.uk.</p>
+    <p>To report issues with the website, database, or to request assistance - please send an email to
+        keo7@aber.ac.uk.</p>
 
 
 {% endblock %}

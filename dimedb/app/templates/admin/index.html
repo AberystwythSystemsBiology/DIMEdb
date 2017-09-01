@@ -4,56 +4,26 @@
 
 {% block page_title %}
     <h1>Administrator Panel</h1>
+
+    <p>Don't do anything stupid.</p>
 {% endblock %}
 
 {% block body %}
-
-    <h2>Users ({{ users|length }})</h2>
-
-    <table class="table table-striped" id="users_table">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Email Address</th>
-            <th>Confirmed</th>
-            <th>Banned</th>
-            <th>Admin</th>
-            <th>Actions</th>
-        </tr>
-
-        </thead>
-
-        <tbody>
-            {% for u in users %}
-                <tr>
-                    <td>{{ u.first_name }} {{ u.last_name }}</td>
-                    <td>{{ u.email_address }}</td>
-                    <td>
-                        {% if u.confirmed %}
-                            <i class="glyphicon glyphicon-check"></i>
-                        {% else %}
-                            <i class="glyphicon glyphicon-unchecked"></i>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if u.banned %}
-                            <i class="glyphicon glyphicon-check"></i>
-                        {% else %}
-                            <i class="glyphicon glyphicon-unchecked"></i>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if u.admin %}
-                            <i class="glyphicon glyphicon-check"></i>
-                        {% else %}
-                            <i class="glyphicon glyphicon-unchecked"></i>
-                        {% endif %}
-                    </td>
-                    <td></td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="col-sm-4">
+            <a href="{{ url_for('admin.users') }}">
+                <h1>Users ({{ user_count }})</h1>
+            </a>
+        </div>
+        <div class="col-sm-4">
+            <a href="{{ url_for('admin.tables') }}">
+                <h1>Tables ({{ table_count }})</h1>
+            </a>
+        </div>
+        <div class="col-sm-4">
+            <h1>Metabolites ({{ metabolite_count }})</h1>
+        </div>
+    </div>
 {% endblock %}
 
 {% block javascript %}

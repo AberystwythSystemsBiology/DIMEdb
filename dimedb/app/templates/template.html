@@ -99,7 +99,7 @@
                         <li><a href="{{ url_for('tables.public_tables') }}">Public Tables</a></li>
                         <li class="divider"></li>
                         <li><a href="{{ url_for('tables.mytables') }}">My Tables</a></li>
-                        <li><a href="{{ url_for('tables.new_table') }}">Create Table</a></li>
+                        <li><a href="{{ url_for('tables.create_table') }}">Create Table</a></li>
 
                     </ul>
                     </li>
@@ -126,11 +126,13 @@
                                         <p class="text-left"><strong>{{ g.user.first_name }} {{ g.user.last_name }}</strong></p>
                                         <p class="text-left small">{{ g.user.email_address }}</p>
                                         <p class="text-left">
-                                            <a href="{{ url_for('auth.management') }}" class="btn btn-primary btn-block btn-sm">Account Management</a>
+                                            <a href="{{ url_for('auth.management') }}" class="btn btn-primary btn-block btn-sm"><i class="glyphicon glyphicon-cog"></i> Account Management</a>
                                         </p>
                                         {% if g.user.is_admin() == True %}
                                             <p class="text-left">
-                                                <a href="{{ url_for('admin.home') }}" class="btn btn-primary btn-block btn-sm">Admin Panel</a>
+                                                <a href="{{ url_for('admin.home') }}" class="btn btn-warning btn-block btn-sm">
+                                                    <i class="glyphicon glyphicon-adjust"></i> Administrator Panel
+                                                </a>
                                             </p>
                                         {% endif %}
                                     </div>
@@ -143,7 +145,7 @@
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <p>
-                                            <a href="{{ url_for('auth.logout') }}" class="btn btn-danger btn-block">Log Out</a>
+                                            <a href="{{ url_for('auth.logout') }}" class="btn btn-danger btn-block"><i class="glyphicon glyphicon-log-out"></i> Log Out</a>
                                         </p>
                                     </div>
                                 </div>
@@ -176,12 +178,18 @@
 {% endblock %}
 </div>
 
+<div class="container-fluid">
+    {% block fluidbody %}
 
-<footer class="navbar navbar-static-bottom" role="navigation">
+    {% endblock %}
+</div>
+
+
+<div class="footer">
     <div class="container">
         <div class="row">
             <div class="col-sm-4">
-                <img src="{{ url_for('static', filename='imgs/aber.svg') }}">
+                <img src="{{ url_for('static', filename='imgs/aber.svg') }}" width="100%">
                 <p>DIMEdb was developed by researchers from <a href="http://www.aber.ac.uk" target="_blank">Aberystwyth University</a></p>
 
                 <p>DIMEdb is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a></p>
@@ -202,7 +210,7 @@
         </div>
 
     </div>
-</footer>
+</div>
 
 </body>
 
@@ -211,10 +219,12 @@
 <script src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 <script src="{{ url_for('static', filename='bower_components/datatables/media/js/jquery.dataTables.js') }}"></script>
 <script src="{{ url_for('static', filename='bower_components/datatables/media/js/dataTables.bootstrap.js') }}"></script>
+
+<script src="{{ url_for('static', filename='bower_components/datatables.net-buttons/js/dataTables.buttons.js') }}"></script>
+
 <script src="{{ url_for('static', filename='js/global.js') }}"></script>
 
 {% block javascript %}
-    <script>
 
 
 {% endblock %}

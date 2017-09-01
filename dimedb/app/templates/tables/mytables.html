@@ -15,7 +15,7 @@
         <tr>
             <th width="50%">Title</th>
             <th>Species</th>
-            <th>Public?</th>
+            <th>Published</th>
             <th width="15%">Creation Date</th>
             <th>Actions</th>
         </tr>
@@ -26,7 +26,7 @@
                 <td><a href="{{ url_for('tables.view_table', id=t.id) }}">{{ t.title }}</a></td>
                 <td>{{ t.species }}</td>
                 <td>
-                    {% if t.public == True %}
+                    {% if t.published == True %}
                         <i class="glyphicon glyphicon-check"></i>
                     {% else %}
                         <i class="glyphicon glyphicon-unchecked"></i>
@@ -34,11 +34,13 @@
                 </td>
                 <td>{{ t.creation_date.strftime('%d-%m-%Y')}}</td>
                 <td>
-                    <a href="{{ url_for('tables.edit_table', id=t.id) }}">
-                        <div class="btn btn-warning btn-sm">
-                            <i class="glyphicon glyphicon-edit"></i>
-                        </div>
-                    </a>
+                    {% if t.published != True %}
+                        <a href="{{ url_for('tables.edit_table', id=t.id) }}">
+                            <div class="btn btn-warning btn-sm">
+                                <i class="glyphicon glyphicon-edit"></i>
+                            </div>
+                        </a>
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}

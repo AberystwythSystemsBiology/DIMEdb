@@ -1,41 +1,29 @@
 {% extends "template.html" %}
 
-{% block title %}DdbT{{ table_info.id }}: {{ table_info.title }}{% endblock %}
+{% block title %}{{ table_info.title }}{% endblock %}
 
 {% block page_title %}
-    <h2>DdbT{{ table_info.id }}: {{ table_info.title }}</h2>
+    <h1>{{ table_info.title }}</h1>
 {% endblock %}
 
 
 {% block body %}
 
-    <div class="row">
-        <div class="col-sm-7">
-            <p><i class="glyphicon glyphicon-user"></i> <b>Submitted
-                by:</b> {{ table_info.first_name }} {{ table_info.last_name }}</p>
 
-            {% if table_info.owner_id == g.user.id %}
-                <a href="{{ url_for('tables.edit_table', id=table_info.id) }}">
-                    <div class="btn btn-warning">Edit Table</div>
-                </a>
-            {% endif %}
+    <div class="row">
+        <div class="col-sm-6">
+            <p><i class="glyphicon glyphicon-user"></i> <b>Author:</b> {{ table_info.first_name }} {{ table_info.last_name }}</p>
+            <p><i class="glyphicon glyphicon-paperclip"></i> <b>Status:</b>
+            {% if table_info.published == True %}Published{% else %}Private{% endif %}</p>
         </div>
-        <div class="col-sm-1">
-        </div>
-        <div class="col-sm-4">
-            <p><i class="glyphicon glyphicon-calendar"></i> <b>Submitted
-                on:</b> {{ table_info.creation_date.strftime('%d-%m-%Y') }}</p>
-            <p><i class="glyphicon glyphicon-book"></i> <b>Status:</b>
-                {% if table_info.public == True %}
-                    Public
-                {% else %}
-                    Private
-                {% endif %}
-            </p>
+        <div class="col-sm-6" style="text-align: right;">
+            <p><i class="glyphicon glyphicon-calendar"></i> <b>Creation Date:</b> {{ table_info.creation_date.strftime('%d-%m-%Y') }}</p>
+            <p><i class="glyphicon glyphicon-leaf"></i> <b>Species:</b> {% if table_info.species != "" %}{{ table_info.species }}{% else %}None{% endif %}</p>
+
         </div>
     </div>
 
-    <h2>Description</h2>
+    <h2 class="page-header">Description</h2>
     {% if table_info.description != None %}
         <p>{{ table_info.description }}</p>
     {% else %}
@@ -43,7 +31,7 @@
     {% endif %}
 
     {% if publications|length > 0 %}
-        <h2>Publications ({{publications|length}})</h2>
+        <h2 class="page-header">Publications</h2>
         <ol>
             {% for p in publications %}
                 <li>
@@ -60,7 +48,7 @@
         </ol>
     {% endif %}
 
-    <h2>Metabolite Table</h2>
+    <h2 class="page-header">Metabolite Table</h2>
     <table id="metabolite_table" class="table table-striped">
 
     </table>

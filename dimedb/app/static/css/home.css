@@ -1,10 +1,44 @@
-.jumbotron img {
-    width:100%;
+.jumbotron-billboard .img {
+    margin-bottom: 0px;
+    opacity: 0.1;
+    color: #fff;
+    background: #000 url("http://i.imgur.com/KgTsUyb.jpg") center center;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    overflow: hidden;
+    position:absolute;
+    top:0;left:0;
+    z-index:1;
+}
+
+.jumbotron {
+    height:50vh;
+    position:relative;
+    padding:50px;
+    text-align: center;
+}
+
+.jumbotron img{
+    width: 80%;
+    padding-bottom:1.5em;
     max-width: 600px;
 }
 
 .jumbotron .btn {
-    width:100%;
-    padding-top:10px;
-    margin-top:10px;
+    margin-top:1em;
+    margin-left:1em;
+    background-color: transparent;
+    border:#fff 1px solid;
+}
+
+.jumbotron .btn:hover {
+    background-color: #FFF;
+    color: #000;
+}
+
+.jumbotron .container {
+    z-index:2;
+    position:relative;
+    z-index:2;
 }

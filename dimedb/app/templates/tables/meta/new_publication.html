@@ -1,0 +1,65 @@
+{% extends "template.html" %}
+
+{% block title %}New Publication: DIMEdb Tables{% endblock %}
+
+
+{% block head %}
+    <link href="{{ url_for('static', filename='css/tables/tables.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-8">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="container">
+                    <img src="{{ url_for('static', filename='imgs/dimedb.svg') }}">
+
+                    <h2>New Publication</h2>
+
+                    <hr>
+
+                    <form method="post" action="{{ url_for('tables.add_publication', id=id) }}" accept-charset="UTF-8"
+                          role="form">
+                        {{ form.csrf_token }}
+
+                        {{ render_form_field(form.publication_title, label='Publication Title') }}
+                        {{ render_form_field(form.author_list, label='Author List') }}
+                        {{ render_form_field(form.pubmed_id, label='Pubmed ID') }}
+                        {{ render_form_field(form.doi, label='DOI') }}
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div id="autofill_pubmed" class="btn btn-default full-width">
+                                    <i class="glyphicon glyphicon-search"></i> Autofill from Pubmed
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="btn btn-default full-width" disabled="true">
+                                    <i class="glyphicon glyphicon-search"></i> Autofill from DOI
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <button class="btn btn-success full-width" type="submit">
+                                Submit Publication
+                            </button>
+                        </div>
+
+                        <br>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2"></div>
+
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{{ url_for('static', filename='js/tables/meta/new_publications.js') }}"></script>
+{% endblock %}

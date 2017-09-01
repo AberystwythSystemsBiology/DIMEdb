@@ -6,14 +6,19 @@
     <h1>Mass Search</h1>
 {% endblock %}
 
+
+{% block head %}
+    <meta name="description" content="DIMEdb Mass Search." />
+    <link href="{{ url_for('static', filename='css/search/mass.css') }}" rel="stylesheet">
+{% endblock %}
+
 {% block body %}
 
     <div class="row">
-
         <div class="col-sm-4">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    Mass Search Filters <i class="glyphicon glyphicon-search pull-right"></i>
+                    <h4>Mass Search Filters <i class="glyphicon glyphicon-search pull-right"></i></h4>
                 </div>
                 <div class="panel-body">
                     <div class="form-group">

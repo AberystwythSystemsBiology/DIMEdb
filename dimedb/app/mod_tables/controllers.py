@@ -16,15 +16,15 @@ tables = Blueprint("tables", __name__, url_prefix="/tables")
 
 @tables.route("/")
 def public_tables():
-    public_tables = User.query.join(MetaboliteTable, User.id == MetaboliteTable.owner_id).add_columns(
+    tables = User.query.join(MetaboliteTable, User.id == MetaboliteTable.owner_id).add_columns(
         MetaboliteTable.id,
         MetaboliteTable.title,
         MetaboliteTable.creation_date,
         MetaboliteTable.species,
         User.first_name,
         User.last_name
-    ).filter(MetaboliteTable.public == True, MetaboliteTable.removed == False).all()
-    return render_template("tables/index.html", public_tables=public_tables)
+    ).filter(MetaboliteTable.published == True, MetaboliteTable.removed == False).all()
+    return render_template("tables/index.html", tables=tables)
 
 @tables.route("/mytables")
 @login_required
@@ -36,7 +36,6 @@ def mytables():
 @login_required
 def add_metabolite():
     payload = request.form
-    print payload
     table = MetaboliteTable.query.filter(MetaboliteTable.owner_id == g.user.id).first()
     if table != None:
         metabolite = Metabolite(
@@ -55,40 +54,39 @@ def add_metabolite():
 @tables.route("/mytables/api/get_mytables")
 @login_required
 def get_mytables():
-    mytables = MetaboliteTable.query.filter(MetaboliteTable.owner_id== g.user.id, MetaboliteTable.removed == False).all()
+    mytables = MetaboliteTable.query.filter(MetaboliteTable.owner_id== g.user.id, MetaboliteTable.removed == False, MetaboliteTable.published == False).all()
     json_dict = {"data": []}
 
     for table in mytables:
         table_dict = {"Title" : table.title, "id" : table.id, "Creation Date" : table.creation_date,
-                      "Public" : table.public}
+                      "Published" : table.published}
         json_dict["data"].append(table_dict)
     return jsonify(json_dict)
 
 
 @tables.route("/new", methods=["GET", "POST"])
 @login_required
-def new_table():
+def create_table():
     form = CreateTableForm()
     if form.validate_on_submit():
         metabolite_table = MetaboliteTable(
             title=form.title.data,
             description=form.description.data,
             species=form.species.data,
-            owner_id=g.user.id,
-            public = form.public.data,
+            owner_id=g.user.id
         )
         db.session.add(metabolite_table)
         db.session.commit()
         flash("New table created")
         return redirect(url_for("tables.mytables"))
 
-    return render_template("tables/new.html", form=form)
+    return render_template("tables/meta/create.html", form=form)
 
-@tables.route("/edit/DdbT<id>", methods=["GET", "POST"])
+@tables.route("/edit/DDBT<id>", methods=["GET", "POST"])
 @login_required
 def edit_table(id):
     metabolite_table = MetaboliteTable.query.get_or_404(id)
-    if metabolite_table.owner_id == g.user.id and metabolite_table.removed != True:
+    if metabolite_table.published == False and metabolite_table.owner_id == g.user.id and metabolite_table.removed == False:
         publications = MetaboliteTablePublication.query.filter(MetaboliteTablePublication.table_id == id).all()
         form = EditTableForm()
         if form.validate_on_submit():
@@ -97,15 +95,14 @@ def edit_table(id):
             metabolite_table.species = form.species.data,
             db.session.commit()
             flash("Table edited!")
-        return render_template("tables/edit.html", metabolite_table=metabolite_table , form=form, publications=publications)
-    else:
-        abort(500)
+        return render_template("tables/meta/edit.html", metabolite_table=metabolite_table , form=form, publications=publications)
+    return abort(403)
 
-@tables.route("/edit/DdbT<id>/add_publication", methods=["GET", "POST"])
+@tables.route("/edit/DDBT<id>/add_publication", methods=["GET", "POST"])
 @login_required
 def add_publication(id):
     metabolite_table = MetaboliteTable.query.get_or_404(id)
-    if metabolite_table.owner_id == g.user.id and metabolite_table.removed != True:
+    if metabolite_table.owner_id == g.user.id and metabolite_table.removed != True and metabolite_table.published != True:
         form = NewPublicationForm(request.form)
         if form.validate_on_submit():
             publication = MetaboliteTablePublication(
@@ -119,37 +116,37 @@ def add_publication(id):
             db.session.commit()
             flash("Publication Added")
             return redirect(url_for("tables.edit_table", id=id))
-        return render_template("tables/new_publication.html", id=id, form=form)
+        return render_template("tables/meta/new_publication.html", id=id, form=form)
     else:
-        abort(500)
+        abort(403)
 
-@tables.route("/edit/DdbT<id>/remove_publication/<pub_id>")
+@tables.route("/edit/DDBT<id>/remove_publication/<pub_id>")
 @login_required
 def remove_publication(id, pub_id):
     metabolite_table = MetaboliteTable.query.get_or_404(id)
-    if metabolite_table.owner_id == g.user.id and metabolite_table.removed != True:
+    if metabolite_table.owner_id == g.user.id and metabolite_table.removed != True and metabolite_table.published != True:
         publication = MetaboliteTablePublication.query.get_or_404(pub_id)
         db.session.delete(publication)
         db.session.commit()
         flash("Publication Successfully Removed")
         return redirect(url_for("tables.edit_table", id=id))
     else:
-        abort(500)
+        abort(403)
 
-@tables.route("/edit/DdbT<id>/remove_metabolite/<m_id>")
+@tables.route("/edit/DDBT<id>/remove_metabolite/<m_id>")
 @login_required
 def remove_metabolite(id, m_id):
     metabolite_table = MetaboliteTable.query.get_or_404(id)
-    if metabolite_table.owner_id == g.user.id and metabolite_table.removed != True:
+    if metabolite_table.owner_id == g.user.id and metabolite_table.removed != True and metabolite_table.published != True:
         metabolite = Metabolite.query.get_or_404(m_id)
         db.session.delete(metabolite)
         db.session.commit()
         flash("Metabolite Successfully Removed")
         return redirect(url_for("tables.edit_table", id=id))
     else:
-        abort(500)
+        abort(403)
 
-@tables.route("/view/DdbT<id>")
+@tables.route("/view/DDBT<id>")
 def view_table(id):
     table_info = User.query.join(MetaboliteTable, User.id == MetaboliteTable.owner_id).add_columns(
         MetaboliteTable.id,
@@ -158,7 +155,7 @@ def view_table(id):
         MetaboliteTable.creation_date,
         MetaboliteTable.owner_id,
         MetaboliteTable.species,
-        MetaboliteTable.public,
+        MetaboliteTable.published,
         MetaboliteTable.removed,
         User.first_name,
         User.last_name
@@ -169,22 +166,32 @@ def view_table(id):
     return render_template("tables/view.html", table_info = table_info, publications=publications)
 
 
-@tables.route("/DdbT<id>/edit/remove")
+@tables.route("/DDBT<id>/edit/publish")
+def publish_table(id):
+    metabolite_table = MetaboliteTable.query.get_or_404(id)
+    if metabolite_table.owner_id == g.user.id and metabolite_table.published == False:
+        metabolite_table.published = True
+        db.session.commit()
+        flash("The table has been successfully published")
+        return redirect(url_for("tables.mytables"))
+    else:
+        abort(403)
+
+@tables.route("/DDBT<id>/edit/remove")
 def delete_table(id):
     metabolite_table = MetaboliteTable.query.get_or_404(id)
-
-    if metabolite_table.owner_id == g.user.id:
+    if metabolite_table.owner_id == g.user.id and metabolite_table.published == False:
         metabolite_table.removed = True
         db.session.commit()
         flash("You have succesfully removed the metabolite table")
         return redirect(url_for("tables.mytables"))
     else:
-        abort(500)
+        abort(403)
 
-@tables.route("/api/DdbT<id>/get_metabolites")
+@tables.route("/api/DDBT<id>/get_metabolites")
 def get_metabolites(id):
     table = MetaboliteTable.query.filter(id == id).first()
-    if table.public == True or table.owner_id == g.user.id and table.removed != True:
+    if table.published == True or table.owner_id == g.user.id and table.removed != True:
         metabolites = Metabolite.query.filter(Metabolite.table_id == id).all()
         json_dict = {"data" : []}
         for tm in metabolites:

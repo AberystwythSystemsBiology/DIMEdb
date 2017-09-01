@@ -9,7 +9,7 @@ function generate_table(id) {
             "sort" : false,
             "pageLength": 10,
             "ajax": {
-                "url": encodeURI(getBaseURL()+"tables/api/DdbT"+id+"/get_metabolites"),
+                "url": encodeURI(getBaseURL()+"tables/api/DDBT"+id+"/get_metabolites"),
                 "dataSrc": "data"
             },
             "columns": [

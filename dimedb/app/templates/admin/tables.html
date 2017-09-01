@@ -1,0 +1,36 @@
+{% extends "template.html" %}
+
+{% block title %}Tables - Administration Panel{% endblock %}
+
+{% block page_title %}
+    <h1>Tables</h1>
+
+    <p>Don't do anything stupid.</p>
+{% endblock %}
+
+{% block body %}
+    <table id="tables_table" class="table table-responsive table-striped">
+        <thead>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Author</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+            {% for table in tables %}
+                <tr>
+                    <td>{{ table.title}}</td>
+                    <td>{{ table.description}}</td>
+                    <td>{{ table.id}}</td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        $("#tables_table").DataTable({});
+    </script>
+{% endblock %}

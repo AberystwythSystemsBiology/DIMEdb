@@ -1,0 +1,13 @@
+.modal-dialog .container {
+    padding-top:10px;
+}
+
+.modal-dialog img {
+    display: block;
+    width:60%;
+    margin:0 auto 0;
+}
+
+.modal-dialog h2 {
+    text-align: center;
+}

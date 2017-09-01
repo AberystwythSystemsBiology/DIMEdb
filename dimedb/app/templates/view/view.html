@@ -2,6 +2,10 @@
 
 {% block title %}Loading{% endblock %}
 
+{% block head %}
+    <link href="{{ url_for('static', filename='css/view/metabolite.css') }}" rel="stylesheet">
+{% endblock %}
+
 {% block page_title %}
     <h1 id="name"></h1>
 {% endblock %}
@@ -14,7 +18,7 @@
     <div id="metabolite_view" style="display:none;">
         <div class="row">
             <div class="col-sm-8">
-                <h4>Identification Information</h4>
+                <h2 class="page-header">Identification Information</h2>
                 <table class="table table-striped">
                     <tbody>
                     <tr>
@@ -79,9 +83,7 @@
                     </tbody>
                 </table>
 
-                <hr>
-
-                <h4>Adduct Information</h4>
+                <h2 class="page-header">Adduct Information</h2>
 
                 <table class="table table-striped">
                     <tr>
@@ -118,7 +120,7 @@
 
                 <div class="panel panel-default">
                     <div class="panel-heading" data-toggle="collapse" href="#dist_table">
-                        Isotopic Distribution Table
+                        <h4>Isotopic Distribution Table</h4>
                     </div>
                     <div id="dist_table" class="panel-collapse collapse">
                         <div class="panel-body">
@@ -136,9 +138,7 @@
                     </div>
                 </div>
 
-                <hr>
-
-                <h4>Pathways</h4>
+                <h2 class="page-header">Pathways</h2>
 
                 <div id="no_pathways">
                     <p>No pathway information available.</p>
@@ -171,46 +171,37 @@
                     </ul>
                 </div>
 
-                <hr>
+                <h2 class="page-header">Taxonomic Properties</h2>
 
-                <h4>Taxonomic Properties</h4>
+                <h3>HMDB Properties</h3>
 
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        HMDB Properties
-                    </div>
-                    <div class="panel-body">
-                        <table class="table table-striped">
-                            <tr>
-                                <th width="30%">Origins:</th>
-                                <td>
-                                    <span id="hmdb_origins"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Biofluid Locations:</th>
-                                <td>
-                                    <span id="hmdb_bioloc"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Tissue Locations:</th>
-                                <td>
-                                    <span id="hmdb_tisloc"></span>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
+                <table class="table table-striped">
+                    <tr>
+                        <th width="30%">Origins:</th>
+                        <td>
+                            <span id="hmdb_origins"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Biofluid Locations:</th>
+                        <td>
+                            <span id="hmdb_bioloc"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Tissue Locations:</th>
+                        <td>
+                            <span id="hmdb_tisloc"></span>
+                        </td>
+                    </tr>
+                </table>
 
             </div>
             <div class="col-sm-4">
                 {% if g.user.is_authenticated %}
-
-                     <div id="no_table_warning" class="alert alert-warning">
-                         <i class="glyphicon glyphicon-exclamation-sign"></i> <b>Warning:</b> No tables found
-                     </div>
-
+                    <div id="no_table_warning" class="alert alert-warning">
+                        <i class="glyphicon glyphicon-exclamation-sign"></i> <b>Warning:</b> No tables found
+                    </div>
                     <div id="add_to_table_container" class="panel panel-primary">
                         <div class="panel-heading text-center" data-toggle="collapse" href="#add_to_table">
                             Add to Table
@@ -232,24 +223,21 @@
                                 </div>
 
                             </div>
-                            </div>
-
                         </div>
 
+                    </div>
+
                     <div id="success" class="container">
-                    <div class="alert alert-success">
-                        <i class="glyphicon glyphicon-check"></i> Successfully Added
+                        <div class="alert alert-success">
+                            <i class="glyphicon glyphicon-check"></i> Successfully Added
+                        </div>
                     </div>
-                    </div>
-
-
-
 
                 {% endif %}
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        2D Molecular Structure <i class="glyphicon glyphicon-eye-open pull-right"></i>
+                        <h4>2D Molecular Structure <i class="glyphicon glyphicon-eye-open pull-right"></i></h4>
                     </div>
                     <div class="panel-body">
                         <img id="structure" src="" style="display:block; margin:0 auto 0; width:100%;">
@@ -258,7 +246,7 @@
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        External Sources <i class="glyphicon glyphicon-link pull-right"></i>
+                        <h4>External Sources <i class="glyphicon glyphicon-link pull-right"></i></h4>
                     </div>
                     <ul class="list-group" id="external_sources_list">
                     </ul>
@@ -266,7 +254,7 @@
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        Physiochemical Information
+                        <h4>Physiochemical Information</h4>
                     </div>
                     <ul class="list-group">
                         <li class="list-group-item">Molecular Weight: <span id="main_molecular_weight"></span> g/mol
@@ -286,14 +274,14 @@
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <span id="spooky">Skeleton</span> Matches
+                        <h4><span id="spooky">Skeleton</span> Matches</h4>
                     </div>
                     <ul id="skeleton_list" class="list-group">
 
                     </ul>
                 </div>
 
-                </div>
+            </div>
         </div>
     </div>
 
@@ -307,7 +295,6 @@
 
 {% include "view/modals/physiochemical_modal.html" %}
 {% include "view/modals/formula_search_modal.html" %}
-{% include "view/modals/pathway_view.html" %}
 {% include "view/modals/image.html" %}
 
 {% block javascript %}
@@ -317,7 +304,7 @@
     <script src="{{ url_for('static', filename='js/comment.js') }}"></script>
 
     {% if g.user.is_authenticated %}
-        <script src="{{ url_for('static', filename='js/tables/add.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/tables/meta/add.js') }}"></script>
     {% endif %}
 
     <script>

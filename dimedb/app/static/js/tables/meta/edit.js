@@ -2,6 +2,10 @@ $(document).ready(function() {
     $("#delete_table_button").click(function () {
         $("#delete_modal").modal().show();
     });
+
+    $("#publish_table_button").click(function () {
+       $("#publish_modal").modal().show();
+    });
 });
 
 
@@ -11,7 +15,7 @@ function generate_table(id) {
         "sort": false,
         "pageLength": 10,
         "ajax": {
-            "url": encodeURI(getBaseURL() + "tables/api/DdbT" + id + "/get_metabolites"),
+            "url": encodeURI(getBaseURL() + "tables/api/DDBT" + id + "/get_metabolites"),
             "dataSrc": "data"
         },
         "columns": [

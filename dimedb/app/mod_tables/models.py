@@ -10,9 +10,9 @@ class Base(db.Model):
 class MetaboliteTable(Base):
     __tablename__ = "metabolite_table"
     owner_id = db.Column(db.Integer, db.ForeignKey("auth_user.id"), nullable=False)
-    title = db.Column(db.String, nullable=False)
-    description = db.Column(db.String, nullable=True)
-    public = db.Column(db.Boolean, default=False, nullable=False)
+    title = db.Column(db.String(2048), nullable=False)
+    description = db.Column(db.String(2048), nullable=True)
+    published = db.Column(db.Boolean, default=False, nullable=False)
     removed = db.Column(db.Boolean, default=False, nullable=False)
     species = db.Column(db.String, nullable=True)
     locked = db.Column(db.Boolean, nullable=False, default=False)
@@ -23,7 +23,7 @@ class MetaboliteTablePublication(Base):
     pubmed_id = db.Column(db.String(30))
     doi = db.Column(db.String(100))
     author_list = db.Column(db.String(100))
-    publication_title = db.Column(db.String(160))
+    publication_title = db.Column(db.String(2048))
     publication_status = db.Column(db.String())
 
 class Metabolite(Base):

@@ -1,0 +1,51 @@
+{% extends "template.html" %}
+
+{% block title %}Users - Administration Panel{% endblock %}
+
+{% block page_title %}
+    <h1>Users</h1>
+
+    <p>Don't do anything stupid.</p>
+{% endblock %}
+
+{% block body %}
+    <table id="users_table" class="table table-responsive table-striped">
+        <thead>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Confirmed</th>
+            <th>Banned</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.first_name }} {{ user.last_name }}</td>
+                    <td>{{ user.email_address }}</td>
+                    <td>
+                        {% if user.confirmed == True %}
+                            CON
+                        {% else %}
+                            UNK
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if user.banned == True %}
+                            CON
+                        {% else %}
+                            UNK
+                        {% endif %}
+                    </td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        $("#users_table").DataTable({});
+    </script>
+{% endblock %}

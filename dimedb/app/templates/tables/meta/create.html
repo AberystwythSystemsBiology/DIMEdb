@@ -1,0 +1,52 @@
+{% extends "template.html" %}
+
+{% block title %}Create Table : DIMEdb Tables{% endblock %}
+
+{% block head %}
+    <link href="{{ url_for('static', filename='css/tables/tables.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="container">
+                        <img src="{{ url_for('static', filename='imgs/dimedb.svg') }}">
+
+                        <h2>New DIMEdb Table</h2>
+
+                        <hr>
+                        {{ display_warnings() }}
+
+                        <form method="post" action="{{ url_for('tables.create_table') }}" accept-charset="UTF-8"
+                              role="form">
+
+                            {{ form.csrf_token }}
+
+                            {{ render_form_field(form.title, label="Title", required=True) }}
+                            {{ render_form_field(form.description, label="Description", type="text", required=True) }}
+
+                            {{ render_form_field(form.species, label="Species") }}
+
+                            <div class="form-group row">
+                                <button id="create-button" class="btn btn-success full-width" type="submit">
+                                    Create Table
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2"></div>
+    </div>
+
+
+{% endblock %}
+
+{% block javascript %}
+    <script src="{{ url_for('static', filename='js/tables/meta/create.js') }}"></script>
+{% endblock %}

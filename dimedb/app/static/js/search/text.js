@@ -198,15 +198,14 @@ function results_table(api_url) {
 $("#submit_search").click(function () {
     var values = get_values();
     if (checkProperties(values) == false) {
+        $("#advanced_search_results").fadeOut(200);
         var api_url = generate_api_url(values);
         results_table(api_url);
-        $("#search_filters").fadeOut(200);
+
         $("#advanced_search_results").fadeIn(200);
     }
 
 });
 
 $("#show_filter").click(function () {
-    $("#search_filters").fadeIn(200);
-    $("#advanced_search_results").fadeOut(200);
 });

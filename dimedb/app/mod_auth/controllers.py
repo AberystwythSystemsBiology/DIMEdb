@@ -11,6 +11,10 @@ from email import send_email
 
 authentication = Blueprint("auth", __name__, url_prefix="/auth")
 
+@authentication.before_request
+def temporary_disabled():
+    return abort(503)
+
 @authentication.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()

@@ -14,13 +14,14 @@ function generate_table(mass, ionisation, api_url, tolerance) {
     function generate_datatable(mass, ionisation, api_url) {
         $('#results_' + mass.replace(".", "_") + '').DataTable({
             "destroy": true,
-            "searching": false,
-            "lengthChange": false,
+            "searching": true,
+            "lengthChange": true,
             "pageLength": 5,
             "ajax": {
                 "url": encodeURI(api_url),
                 "dataSrc": "_items"
             },
+
             "columns": [
                 {
                     "title" : "Molecular Structure",

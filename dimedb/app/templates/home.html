@@ -8,48 +8,34 @@
 {% endblock %}
 
 {% block abovebody %}
-    <div class="jumbotron">
+
+    <div class="jumbotron jumbotron-billboard">
+    <div class="img"></div>
+    <div class="container">
         <div class="container">
-            <div class="row">
-                <div class="col-sm-7">
-                    <img src="{{ url_for('static', filename='imgs/dimedb-light.svg') }}">
-                    <h3>A database of biologically relevant metabolite structures and annotations</h3>
-                    <h5><i class="glyphicon glyphicon-stats"></i> {{ count }} Freely Accessible Metabolites</h5>
-                </div>
-                <div class="col-sm-5">
-                    <a href="{{ url_for('mass_search') }}">
-                        <div class="btn btn-primary btn-lg">
-                            <i class="glyphicon glyphicon-search"></i> Mass Search
-                        </div>
-                    </a>
-                    <div class="clearfix"></div>
-                    <a href="{{ url_for('text_search') }}">
-                        <div class="btn btn-primary btn-lg">
-                            <i class="glyphicon glyphicon-search"></i> Text Search
-                        </div>
-                    </a>
-                    <div class="clearfix"></div>
-                    <a href="{{ url_for('tables.public_tables') }}">
-                        <div class="btn btn-primary btn-lg">
-                            <i class="glyphicon glyphicon-list"></i> DIMEdb Tables
-                        </div>
-                    </a>
-                    <div class="clearfix"></div>
-                    <a href="{{ url_for('help') }}#api">
-                        <div class="btn btn-primary btn-lg">
-                            <i class="glyphicon glyphicon-wrench"></i> DIMEdb Web Service
-                        </div>
-                    </a>
-                    <div class="clearfix"></div>
-                    <a href="{{ url_for('help') }}">
-                        <div class="btn btn-primary btn-lg">
-                            <i class="glyphicon glyphicon-question-sign"></i> Help Centre
-                        </div>
-                    </a>
-                </div>
+            <img src="{{ url_for('static', filename='imgs/dimedb-light.svg') }}">
+            <h3>A database of biologically relevant metabolite structures and annotations</h3>
+            <h4><i class="glyphicon glyphicon-stats"></i> {{ count }} Freely Accessible Metabolites</h4>
+            <div class="btn-row">
+                <a href="{{ url_for('mass_search') }}">
+                    <div class="btn btn-primary btn-lg">
+                        <i class="glyphicon glyphicon-search"></i> Mass Search
+                    </div>
+                </a>
+                <a href="{{ url_for('text_search') }}">
+                    <div class="btn btn-primary btn-lg">
+                        <i class="glyphicon glyphicon-search"></i> Text Search
+                    </div>
+                </a>
+                <a href="{{ url_for('help') }}">
+                    <div class="btn btn-primary btn-lg">
+                        <i class="glyphicon glyphicon-question-sign"></i> Documentation
+                    </div>
+                </a>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
 
 {% block body %}
@@ -59,26 +45,8 @@
         <a href="mailto:keo7@aber.ac.uk">keo7@aber.ac.uk</a>.
     </div>
 
-    <div id="frontpagemedia" class="row">
-        <div class="col-sm-4">
-            <img class="img-responsive" src="{{ url_for('static', filename='imgs/webapp.png') }}">
-            <h2>Web Application</h2>
-            <p>DIMEdb provides a simple to use web application that facilitates end users to interrogate the DIMEdb web
-            service using a graphical user interface.</p>
-        </div>
-        <div class="col-sm-4">
-            <img class="img-responsive" src="{{ url_for('static', filename='imgs/webservice.png') }}">
-            <h2>Web Service</h2>
-            <p>Using this service, we are able to facilitate allow users to create web service clients that can make use of
-            the integrated metabolomic database for their own applications.</p>
-        </div>
-        <div class="col-sm-4">
-            <img class="img-responsive" src="{{ url_for('static', filename='imgs/opensource.png') }}">
-            <h1>Open Source</h1>
-            <p>All of our software and data is free to use, download, modify and redistribute in its entirety.</p>
-        </div>
-    </div>
 
+    <p></p>
 
 {% endblock %}
 
