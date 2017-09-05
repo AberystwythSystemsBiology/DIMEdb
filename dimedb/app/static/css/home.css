@@ -13,7 +13,7 @@
 }
 
 .jumbotron {
-    height:50vh;
+    min-height:60vh;
     position:relative;
     padding:50px;
     text-align: center;
