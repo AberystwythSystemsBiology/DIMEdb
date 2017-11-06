@@ -6,7 +6,6 @@
 
  Welcome to DIMEdb.
 
- Startup command: gunicorn --bind 0.0.0.0:80 wsgi:app
 
  Homepage URL: http://dimedb.ibers.aber.ac.uk
  Documentation URL: http://www.github.com/KeironO/DIMEdb
