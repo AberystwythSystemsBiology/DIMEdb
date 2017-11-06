@@ -1,0 +1,13 @@
+[Unit]
+Description=uWSGI instance to serve dimedb
+After=network.target
+
+[Service]
+User=keo7
+Group=www-data
+WorkingDirectory=/home/keo7/dimedb
+Environment="PATH=/home/keo7/dimedb-env/bin"
+ExecStart=/home/keo7/dimedb-env/bin/uwsgi --ini dimedb.ini
+
+[Install]
+WantedBy=multi-user.target
