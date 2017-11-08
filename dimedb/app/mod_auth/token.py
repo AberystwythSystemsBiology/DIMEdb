@@ -1,6 +1,6 @@
 from itsdangerous import URLSafeSerializer
 
-from app import app
+from dimedb import app
 
 def generate_confirmation_token(email):
     serialiser = URLSafeSerializer(app.config["SECRET_KEY"])

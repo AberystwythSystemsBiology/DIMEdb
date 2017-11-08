@@ -80,10 +80,10 @@ def test():
 
 # Blueprints
 
-from app.mod_auth.controllers import authentication
-from app.mod_tables.controllers import tables
-from app.mod_admin.controllers import admin
-from app.mod_view.controllers import view
+from mod_auth.controllers import authentication
+from mod_tables.controllers import tables
+from mod_admin.controllers import admin
+from mod_view.controllers import view
 
 
 app.register_blueprint(authentication)

@@ -1,9 +1,9 @@
 from flask import Blueprint, abort, render_template, flash, g, session, redirect, url_for
-from app import app, db, bcrypt, login_manager
+from dimedb import app, db, bcrypt, login_manager
 from flask_login import login_required
 
-from app.mod_auth.models import User
-from app.mod_tables.models import MetaboliteTable
+from mod_auth.models import User
+from mod_tables.models import MetaboliteTable
 
 from decorators import check_admin
 

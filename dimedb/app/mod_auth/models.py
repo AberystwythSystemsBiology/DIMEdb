@@ -1,4 +1,4 @@
-from app import db, bcrypt
+from dimedb import db, bcrypt
 from sqlalchemy.ext.hybrid import hybrid_property
 from hashlib import md5
 

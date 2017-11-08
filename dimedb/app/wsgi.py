@@ -13,16 +13,10 @@
 '''
 
 
-from app import app
+from dimedb import app
 import logging
 from logging.handlers import RotatingFileHandler
 
 if __name__ == "__main__":
     print __doc__
-    handler = RotatingFileHandler('dimedb.log', backupCount=1)
-    handler.setLevel(logging.INFO)
-    log = logging.getLogger('werkzeug')
-    log.setLevel(logging.DEBUG)
-    log.addHandler(handler)
-    app.logger.addHandler(handler)
     app.run()

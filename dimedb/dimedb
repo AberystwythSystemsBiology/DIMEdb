@@ -1,0 +1,20 @@
+server {
+    listen 80;
+    listen [::]:80;
+    server_name dimedb.ibers.aber.ac.uk; 
+    return 301 https://dimedb.ibers.aber.ac.uk$request_uri;
+}
+
+server {
+	server_name dimedb.ibers.aber.ac.uk;
+        listen 443;
+        ssl on;
+        ssl_certificate /home/keo7/dimedb_ibers_aber_ac_uk.crt;
+        ssl_certificate_key /home/keo7/253247.key;
+
+	location / {
+		include uwsgi_params;
+		uwsgi_pass unix:///home/keo7/DIMEdb/dimedb/app/dimedb.sock;
+	}
+
+}

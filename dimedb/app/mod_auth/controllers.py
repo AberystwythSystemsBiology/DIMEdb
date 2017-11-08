@@ -1,19 +1,16 @@
 from flask import Blueprint, request, render_template, flash, g, abort, redirect, url_for
 
-from app import app, db, bcrypt, login_manager
+from dimedb import app, db, bcrypt, login_manager
 from flask_login import login_user, logout_user, current_user, login_required
 
-from app.mod_auth.models import User
-from app.mod_auth.forms import LoginForm, RegistrationForm, ResendConfirmationForm, ResetPasswordForm, EditAccountForm
+from mod_auth.models import User
+from mod_auth.forms import LoginForm, RegistrationForm, ResendConfirmationForm, ResetPasswordForm, EditAccountForm
 
 from token import generate_confirmation_token, confirm_token
 from email import send_email
 
 authentication = Blueprint("auth", __name__, url_prefix="/auth")
 
-@authentication.before_request
-def temporary_disabled():
-    return abort(503)
 
 @authentication.route("/login", methods=["GET", "POST"])
 def login():

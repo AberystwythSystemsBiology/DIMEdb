@@ -1,4 +1,4 @@
-from app import db
+from dimedb import db
 
 class Base(db.Model):
     __abstract__ = True

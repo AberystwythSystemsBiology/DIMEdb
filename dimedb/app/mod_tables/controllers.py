@@ -1,15 +1,15 @@
 import json
 
 from flask import Blueprint, flash, render_template, g, abort, redirect, url_for, jsonify, request
-from app import app, db
+from dimedb import app, db
 
 from flask_login import login_required
 
-from app.mod_tables.models import MetaboliteTable, Metabolite, MetaboliteTablePublication
+from mod_tables.models import MetaboliteTable, Metabolite, MetaboliteTablePublication
 
-from app.mod_auth.models import User
+from mod_auth.models import User
 
-from app.mod_tables.forms import CreateTableForm, EditTableForm, NewPublicationForm
+from mod_tables.forms import CreateTableForm, EditTableForm, NewPublicationForm
 
 
 tables = Blueprint("tables", __name__, url_prefix="/tables")
