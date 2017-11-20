@@ -1,6 +1,16 @@
 import json, csv, zipfile, os
 from cStringIO import StringIO
-directory = "/home/keo7/.data/dimedb/"
+
+output_dir = os.path.join(os.path.expanduser("~"), "Data/dimedb/output/")
+flatfile_dir = os.path.join(output_dir, "download/flatfiles/")
+structures_dir = os.path.join(output_dir, "structures/")
+final_dir = os.path.join(output_dir, "dimedb_jsons/")
+
+VERSION = ["DIMEDB VERSION: 1.0NOV2017"]
+
+
+if os.path.isdir(flatfile_dir) != True:
+    os.makedirs(flatfile_dir)
 
 
 def load_file(fp):
@@ -8,7 +18,8 @@ def load_file(fp):
         return json.load(dimedb_file)
 
 def generate_id_tsv(dimedb):
-    names = []
+    names = [VERSION]
+    names.append("")
     names.append(["InChIKey", "Property", "Entry"])
     for metabolite in dimedb:
         id = metabolite["_id"]
@@ -28,7 +39,7 @@ def generate_id_tsv(dimedb):
         names.append([id, "Molecular Formula", id_info["Molecular Formula"]])
         names.append([id, "InChI", id_info["InChI"]])
 
-    with zipfile.ZipFile(directory+"downloads/dimedb_id_info.zip", "w", zipfile.ZIP_DEFLATED) as zip_file:
+    with zipfile.ZipFile(flatfile_dir+"dimedb_id_info.zip", "w", zipfile.ZIP_DEFLATED) as zip_file:
         string_buffer = StringIO()
         writer = csv.writer(string_buffer, delimiter="\t")
         for line in names:
@@ -37,6 +48,7 @@ def generate_id_tsv(dimedb):
 
 def generate_physiochemical_properties(dimedb):
     pc_p_l = []
+    pc_p_l.append(VERSION)
     pc_p_l.append(["InChIKey", "Property", "Entry"])
     for metabolite in dimedb:
         id = metabolite["_id"]
@@ -45,7 +57,7 @@ def generate_physiochemical_properties(dimedb):
             pc_p_l.append([id, key, pc_p[key]])
 
 
-    with zipfile.ZipFile(directory+"downloads/dimedb_pc_info.zip", "w", zipfile.ZIP_DEFLATED) as zip_file:
+    with zipfile.ZipFile(flatfile_dir+"dimedb_pc_info.zip", "w", zipfile.ZIP_DEFLATED) as zip_file:
         string_buffer = StringIO()
         writer = csv.writer(string_buffer, delimiter="\t")
         for line in pc_p_l:
@@ -53,14 +65,15 @@ def generate_physiochemical_properties(dimedb):
         zip_file.writestr("dimedb_pc_info.tsv", string_buffer.getvalue())
 
 def generate_structures():
-    zipf = zipfile.ZipFile(directory+"downloads/structures.zip", "w", zipfile.ZIP_DEFLATED, allowZip64=True)
-    for root, dirs, files in os.walk(directory+"structures/"):
+    zipf = zipfile.ZipFile(flatfile_dir+"structures.zip", "w", zipfile.ZIP_DEFLATED, allowZip64=True)
+    for root, dirs, files in os.walk(structures_dir):
         for file in files:
             zipf.write(os.path.join(root, file), arcname=file)
     zipf.close()
 
 def generate_pathways(dimedb):
     pw_l = []
+    pw_l.append([VERSION])
     pw_l.append(["InChIKey", "Pathway", "ID"])
     for metabolite in dimedb:
         id = metabolite["_id"]
@@ -74,7 +87,7 @@ def generate_pathways(dimedb):
 
 
 
-    with zipfile.ZipFile(directory+"downloads/dimedb_pathways.zip", "w", zipfile.ZIP_DEFLATED) as zip_file:
+    with zipfile.ZipFile(flatfile_dir+"dimedb_pathways.zip", "w", zipfile.ZIP_DEFLATED) as zip_file:
         string_buffer = StringIO()
         writer = csv.writer(string_buffer, delimiter="\t")
         for line in pw_l:
@@ -83,6 +96,7 @@ def generate_pathways(dimedb):
 
 def generate_sources(dimedb):
     sources_l = []
+    sources_l.append(VERSION)
     sources_l.append(["InChIKey", "Source", "ID"])
     for metabolite in dimedb:
         id = metabolite["_id"]
@@ -90,7 +104,7 @@ def generate_sources(dimedb):
             if sid != None:
                 sources_l.append([id, source, sid])
 
-    with zipfile.ZipFile(directory+"downloads/dimedb_sources.zip", "w", zipfile.ZIP_DEFLATED) as zip_file:
+    with zipfile.ZipFile(flatfile_dir+"dimedb_sources.zip", "w", zipfile.ZIP_DEFLATED) as zip_file:
         string_buffer = StringIO()
         writer = csv.writer(string_buffer, delimiter="\t")
         for line in sources_l:
@@ -105,7 +119,8 @@ def combine_dimedb(fp):
     return dimedb
 
 if __name__ == "__main__":
-    dimedb = combine_dimedb(directory+"jsons/")
+
+    dimedb = combine_dimedb(final_dir)
     generate_id_tsv(dimedb)
     generate_physiochemical_properties(dimedb)
     generate_structures()

@@ -1,31 +1,27 @@
 import json, requests, re, signal, pyidick, collections, urllib, os, warnings, pubchempy
 from subprocess import check_output
-
-# Do I look like I give a fuck?
 warnings.filterwarnings("ignore")
 
 from bson.json_util import dumps as bson_dumps
 from tqdm import tqdm
 from joblib import Parallel, delayed
-
-
 from bioservices import KEGG, KEGGParser
 from biocyc import biocyc
 from rdkit.Chem import rdMolDescriptors, MolFromSmiles, MolSurf, Fragments, rdmolops, Draw
 
+VERSION = "1.0NOV2017"
 
+output_dir = os.path.join(os.path.expanduser("~"), "Data/dimedb/output/")
 
-def load_json(fp):
-    with open(fp, "r") as hmdb_file:
-        return json.load(hmdb_file)
+final_dir = os.path.join(output_dir, "dimedb_jsons/")
 
+structures_dir = os.path.join(output_dir, "structures/")
 
-directory = "/home/keo7/.data/dimedb/"
+if os.path.isdir(structures_dir) != True:
+    os.makedirs(structures_dir)
 
-combined = load_json(directory + "combined_data.json")
-chebi = load_json(directory + "stripped_chebi.json")
-hmdb = load_json(directory + "stripped_hmdb.json")
-pubchem = load_json(directory + "stripped_pubchem.json")
+if os.path.isdir(final_dir) != True:
+    os.makedirs(final_dir)
 
 class SMILESerror(Exception):
     def __init__(self):
@@ -52,16 +48,15 @@ class timeout:
         signal.alarm(0)
 
 class Metabolite(object):
-    def __init__(self, inchikey):
+    def __init__(self, inchikey, data):
         self.inchikey = inchikey
         try:
-            self.combined_info = combined[str(inchikey)]
+            self.combined_info = data
         except KeyError:
             raise SMILESerror()
+
         self.inchi = self.combined_info["InChI"]
-
         self.smiles = self.get_smiles()
-
 
         self.rdkit_mol = MolFromSmiles(self.smiles)
         self.identification_information = self.get_identification_information()
@@ -74,7 +69,7 @@ class Metabolite(object):
 
     def get_smiles(self):
         with open(os.devnull, 'w') as fp:
-            val = check_output('openbabel.obabel -iinchi -:"%s" -osmi' % self.inchi, shell=True, stderr=open(os.devnull, 'w')).decode().strip()
+            val = check_output('obabel -iinchi -:"%s" -osmi' % self.inchi, shell=True, stderr=open(os.devnull, 'w')).decode().strip()
         if val != "":
             return str(val)
         else:
@@ -97,56 +92,10 @@ class Metabolite(object):
         except Exception:
             raise MolecularFormulaError()
 
-        if self.combined_info["HMDB Accession"] != None:
-            if combined[self.inchikey]["HMDB Accession"] != None:
-                if id_info["Name"] == None:
-                    id_info["Name"] = hmdb[self.inchikey]["Name"]
-                else:
-                    id_info["Synonyms"].append(hmdb[self.inchikey]["Name"])
-                id_info["Synonyms"].extend(hmdb[self.inchikey]["Synonyms"])
-
-        if self.combined_info["PubChem ID"] != None:
-            try:
-                if type(pubchem[self.inchikey]["Name"]) != list:
-                    if id_info["Name"] == None:
-                        id_info["Name"] = pubchem[self.inchikey]["Name"]
-                    else:
-                        id_info["Synonyms"].append(pubchem[self.inchikey]["Name"])
-                else:
-                    if id_info["Name"] == None:
-                        id_info["Name"] = pubchem[self.inchikey]["Name"][0]
-                    else:
-                        id_info["Synonyms"].append(pubchem[self.inchikey]["Name"][0])
-                    id_info["Synonyms"].extend(pubchem[self.inchikey]["Synonyms"])
-            except KeyError:
-                synonyms = pubchempy.Compound.from_cid(self.combined_info["PubChem ID"]).synonyms
-                if len(synonyms) == 0:
-                    pass
-                else:
-                    if len(synonyms) == 1:
-                        if id_info["Name"] == None:
-                            id_info["Name"] = synonyms[0]
-                        else:
-                            id_info["Synonyms"].append(synonyms[0])
-                    else:
-                        if id_info["Name"] == None:
-                            id_info["Name"] = synonyms[0]
-                            id_info["Synonyms"].extend(synonyms[1:])
-                        else:
-                            id_info["Synonyms"].extend(synonyms)
 
 
-        if self.combined_info["ChEBI ID"] != None:
-            if chebi[self.inchikey]["Name"] != None:
-                if type(chebi[self.inchikey]["Name"]) != list:
-                    if id_info["Name"] == None:
-                        id_info["Name"] = chebi[self.inchikey]["Name"]
-                    else:
-                        id_info["Synonyms"].append(chebi[self.inchikey]["Name"])
-            id_info["Synonyms"].extend(chebi[self.inchikey]["Synonyms"])
-
-
-        id_info["Synonyms"] = list(set(id_info["Synonyms"]))
+        id_info["Name"] = self.combined_info["Name"]
+        id_info["Synonyms"] = self.combined_info["Synonyms"]
 
         if id_info["Name"] == None:
             raise SMILESerror()
@@ -165,6 +114,7 @@ class Metabolite(object):
             "Wikidata": None,
             "CAS": None,
             "KEGG Compound": None,
+            "KEGG Drug" : None,
             "Chemspider": None,
             "BioCyc": None,
             "ChEBI" : None,
@@ -187,9 +137,12 @@ class Metabolite(object):
                     sources["BioCyc"] = biocyc_info[2].replace("\n", "")
 
         sources.update({
-            "ChEBI": combined[self.inchikey]["ChEBI ID"],
-            "PubChem": combined[self.inchikey]["PubChem ID"],
-            "HMDB Accession": combined[self.inchikey]["HMDB Accession"]
+            "Spektraris": self.combined_info["Source Information"]["Spektraris ID"],
+            "NMR Shift DB": self.combined_info["Source Information"]["NMR ShiftDB ID"],
+            "MassBank" : self.combined_info["Source Information"]["MassBank ID"],
+            "Respect" : self.combined_info["Source Information"]["Respect ID"],
+            "GOLM" : self.combined_info["Source Information"]["GOLM ID"],
+            "HMDB Accession": self.combined_info["Source Information"]["HMDB ID"]
         })
 
         return sources
@@ -224,7 +177,7 @@ class Metabolite(object):
         }
 
         if self.external_sources["HMDB Accession"] != None:
-            pathways["SMPDB"] = hmdb[self.inchikey]["SMPDB Pathways"]
+            pathways["SMPDB"] = self.combined_info["HMDB Information"]["SMPDB Pathways"]
 
         if self.external_sources["BioCyc"] != None:
             biocyc_object = biocyc.get(str(self.external_sources["BioCyc"]))
@@ -257,8 +210,8 @@ class Metabolite(object):
                 "Tissue Locations": []
             }
         }
-        if self.combined_info["HMDB Accession"] != None:
-            properties["HMDB"] = hmdb[self.inchikey]["Sources"]
+        if self.external_sources["HMDB Accession"] != None:
+            properties["HMDB"] = self.combined_info["HMDB Information"]["Sources"]
 
         return properties
 
@@ -347,13 +300,15 @@ class Metabolite(object):
         return adducts
 
 
-    def generate_image(self, fp, s=[250, 250]):
+    def generate_image(self, inchikey, s=[250, 250]):
+        fp = os.path.join(structures_dir, inchikey+".svg")
         Draw.MolToFile(self.rdkit_mol, fileName=fp, imageType="svg", size=s)
 
 
     def to_dict(self):
         compound = [
             ["_id", self.inchikey],
+            ["Version", VERSION],
             ["Identification Information", self.identification_information],
             ["Physicochemical Properties", self.physicochemical_properties],
             ["Taxonomic Properties", self.taxonomic_properties],
@@ -365,10 +320,10 @@ class Metabolite(object):
         return collections.OrderedDict(compound)
 
 
-def handler(inchikey):
+def handler(inchikey, data):
     try:
-        metabolite = Metabolite(inchikey)
-        metabolite.generate_image(directory + "structures/" + metabolite.inchikey + ".svg")
+        metabolite = Metabolite(inchikey, data)
+        metabolite.generate_image(inchikey)
         metabolite_dict = metabolite.to_dict()
     except (SMILESerror, MolecularFormulaError) as e:
         metabolite_dict = None
@@ -378,12 +333,18 @@ def handler(inchikey):
 
 if __name__ == "__main__":
     limiter = 1000
+
+    combined_fp = os.path.join(output_dir, "stripped_sources_final.json")
+
+    with open(combined_fp, "r") as hmdb_file:
+        combined = json.load(hmdb_file)
+
     inchikeys = combined.keys()
     slice = range(0, len(inchikeys), limiter)
 
-    for inchikey_index in tqdm(slice[55:]):
-        processed_data = Parallel(n_jobs=16)(delayed(handler)(id) for id in inchikeys[inchikey_index:inchikey_index + limiter])
+    for inchikey_index in tqdm(slice):
+        processed_data = Parallel(n_jobs=4)(delayed(handler)(id, combined[id]) for id in inchikeys[inchikey_index:inchikey_index + limiter])
         processed_data = [x for x in processed_data if x != None]
         mongodb_file = json.loads(bson_dumps(processed_data), object_pairs_hook=collections.OrderedDict)
-        with open(directory + "/jsons/dimedb_s"+str(inchikey_index)+".json", "wb") as outfile:
+        with open(os.path.join(final_dir, "dimedb_s"+str(inchikey_index)+".json"), "wb") as outfile:
             json.dump(mongodb_file, outfile, indent=4)

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-FD=~/.data/dimedb/jsons/*
+FD=~/Data/dimedb/output/dimedb_jsons/*
 
 for f in $FD
 do

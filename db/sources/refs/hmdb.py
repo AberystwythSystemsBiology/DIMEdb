@@ -1,10 +1,12 @@
-import xmltodict, json
+import xmltodict
+import json
+import os
+import urllib2
+import zipfile
 
 def get_data(compound):
     cpd = xmltodict.parse(compound)["metabolite"]
-
     name = cpd["name"]
-
     try:
         synonyms = cpd["synonyms"]["synonym"]
     except TypeError:
@@ -69,17 +71,12 @@ def get_data(compound):
     }
 
 
-if __name__ == "__main__":
-    directory = "/home/keo7/.data/dimedb/"
-    hmdb_xml = open(directory+"hmdb/hmdb_metabolites.xml", "r")
-
+def extract_from_xml(hmdb_fp, output_fp):
     metabolite_text = ""
-
     stripped_metabolites = {}
-
     keep_going = False
 
-    for line in hmdb_xml:
+    for line in open(hmdb_fp, "r"):
         if line.strip() == "<metabolite>":
             keep_going = True
         if keep_going == True:
@@ -90,7 +87,21 @@ if __name__ == "__main__":
             stripped_metabolites[inchi] = data
             metabolite_text = ""
 
-    with open(directory+"/stripped_hmdb.json", "wb") as out_file:
-        json.dump(stripped_metabolites, out_file, indent=4)
+    with open(output_fp, "wb") as outfile:
+        json.dump(stripped_metabolites, outfile, indent=4)
 
+def download(data_directory, hmdb_fp, override=False):
+    hmdb_url = "http://www.hmdb.ca/system/downloads/current/hmdb_metabolites.zip"
 
+    if os.path.isdir(data_directory) != True:
+        os.makedirs(data_directory)
+
+    if override != True or os.path.isfile(hmdb_fp) != True:
+        hmdb = urllib2.urlopen(hmdb_url)
+        with open(hmdb_fp, "wb") as output:
+            output.write(hmdb.read())
+
+def unzip(data_directory, hmdb_fp):
+    zf = zipfile.ZipFile(hmdb_fp)
+    zf.extractall(data_directory)
+    zf.close()
