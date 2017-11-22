@@ -1,78 +1,59 @@
 #spooky_skeleton {
-    display:none;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    z-index: 100;
-    height: 400px;
-    margin-top: -200px;
-    width: 60%;
-    margin-left: -300px;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 100;
+  height: 400px;
+  margin-top: -200px;
+  width: 60%;
+  margin-left: -300px;
 }
 
 #spooky_skeleton img {
-    width:400px;
+  width: 400px;
 }
 
 #spooky_skeleton h1 {
-    font-family: "Comic Sans MS", cursive, sans-serif;
+  font-family: "Comic Sans MS", cursive, sans-serif;
 }
 
 h5 {
-    text-align: center;
+  text-align: center;
 }
 
 #biocyc_pathways {
-    display:none;
+  display: none;
 }
 
 #smpdb_pathways {
-    display: none;
+  display: none;
 }
 
 #kegg_pathways {
-    display:none;
+  display: none;
 }
 
 .img-responsive {
-    width:100%;
+  width: 100%;
 }
 
 #isotopic_distribution_chart {
-    display:inline-block;
-    height: 100px;
+  display: inline-block;
+  height: 100px;
 }
 
 .isotopic_distribution_chart {
-    position:relative;
-    height:300px;
-    margin-bottom: 1em;
+  position: relative;
+  height: 300px;
+  margin-bottom: 1em;
 }
 
-
-#loading_divider {
-    position: absolute;
-    margin: auto;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    height: 100px;
-}
-
-.glyphicon-refresh-animate {
-    -animation: spin .7s infinite linear;
-    -webkit-animation: spin2 .7s infinite linear;
-}
-
-@-webkit-keyframes spin2 {
-    from { -webkit-transform: rotate(0deg);}
-    to { -webkit-transform: rotate(360deg);}
-}
-
-@keyframes spin {
-    from { transform: scale(1) rotate(0deg);}
-    to { transform: scale(1) rotate(360deg);}
+.loading {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: url('http://i.stack.imgur.com/FhHRx.gif') 50% 50% no-repeat;
 }

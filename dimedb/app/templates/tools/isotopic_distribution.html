@@ -1,5 +1,11 @@
-{% extends "template.html" %}
+<html ng-app="myApp">
 
-{% block page_title %}
-    <h1>Isotopic Distribution Calculator</h1>
-{% endblock %}
+<div ng-controller="MetaboliteViewer">
+  <h1>{% raw %}{{ metaboliteName }}{% endraw %}</h1>
+
+</div>
+
+</html>
+
+<script src="{{ url_for('static', filename='bower_components/angular/angular.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/tester.js') }}"></script>

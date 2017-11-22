@@ -19,4 +19,4 @@ from logging.handlers import RotatingFileHandler
 
 if __name__ == "__main__":
     print __doc__
-    app.run()
+    app.run(debug=True)

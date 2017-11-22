@@ -22,7 +22,8 @@
     "bootstrap-tagsinput": "^0.8.0",
     "chartjs": "^2.6.0",
     "prismjs": "^1.6.0",
-    "datatables.net-buttons" : "^1.4.1"
+    "datatables.net-buttons" : "^1.4.1",
+    "angular" : "1.6.6"
   },
-  "directory": ".app//static/bower_components"
+  "directory": ".app/static/bower_components"
 }

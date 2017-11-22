@@ -1,294 +1,239 @@
+{% macro list2text(list) %}
+    {% if list|length > 0 %}
+      <span class="comment more">
+      {% for item in list %}
+        {{ item }};
+      {% endfor %}
+      </span>
+    {% else %}
+      <i>Not available.</i>
+    {% endif %}
+{% endmacro %}
+
+{% macro textcheck(text) %}
+  {% if text != None %}
+    {% if text|length > 30 %}
+      <span class="comment more">{{ text }}</span>
+    {% else %}
+      {{ text }}
+    {% endif %}
+  {% else %}
+    <i>Not available.</i>
+  {% endif %}
+{% endmacro %}
+
+{% macro populate_pathways(pathway_list, heading) %}
+  {% if pathway_list|length > 0 %}
+    <div class="panel panel-default">
+      <div class="panel-heading">{{ heading }}</div>
+      <ul class="list-group">
+      {% for pathway in pathway_list %}
+          <li class="list-group-item">{{ pathway }}</li>
+      {% endfor %}
+      </ul>
+      </div>
+  {% endif %}
+{% endmacro %}
+
+{% macro populate_sources() %}
+  {% for i in ext_sour %}
+    {% if ext_sour[i] != None %}
+      <li class="list-group-item">
+        {{ i }}:
+        {% if source_dict[i] != none %}
+          <a href="{{ source_dict[i]|replace("value", ext_sour[i])}}" target="_blank">
+            {{ ext_sour[i] }}
+          </a>
+        {% else %}
+          {{ ext_sour[i]}}
+        {% endif %}
+      </li>
+    {% endif %}
+  {% endfor %}
+{% endmacro %}
+
+{% macro sources(source, value) %}
+  {{ value }}
+{% endmacro %}
+
+
 {% extends "template.html" %}
 
-{% block title %}Loading{% endblock %}
+{% block title %}
+  {{id_info["Name"]}}
+{% endblock %}
 
 {% block head %}
-    <link href="{{ url_for('static', filename='css/view/metabolite.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/view/metabolite.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block page_title %}
-    <h1 id="name"></h1>
+  <h1>{{ id_info["Name"] }}</h1>
+  {% if g.user.is_authenticated %}
+  <div class="btn btn-success pull-right">
+    <i class="glyphicon glyphicon-plus"></i> Add to Table
+  </div>
+  {% endif %}
 {% endblock %}
 
 {% block body %}
+<div ng-controller="MetaboliteView">
 
-    <div id="loading_divider">
-        <h1><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading Metabolite...</h1>
-    </div>
-    <div id="metabolite_view" style="display:none;">
-        <div class="row">
-            <div class="col-sm-8">
-                <h2 class="page-header">Identification Information</h2>
-                <table class="table table-striped">
-                    <tbody>
-                    <tr>
-                        <th width="30%">
-                            Synonyms:
-                        </th>
-                        <td>
-                            <span id="synonyms" class="comment more"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            Systematic Name:
-                        </th>
-                        <td>
-                            <span id="systematic_name"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            IUPAC Name:
-                        </th>
-                        <td>
-                            <span id="iupac_name"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            InChI:
-                        </th>
-                        <td>
-                            <span id="inchi" class="comment more"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            InChI Key:
-                        </th>
-                        <td>
-                            <span id="inchi_key"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            SMILES:
-                        </th>
-                        <td>
-                            <span id="smiles" class="comment more"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            Molecular Formula:
-                        </th>
-                        <td>
-                            <span id="molecular_formula"></span>
-                            <span id="formula_search_button" class="btn btn-primary btn-sm pull-right">
-                                        <i class="glyphicon glyphicon-search"></i> Search
-                                    </span>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+  <div id="metaboliteDiv" class="row">
+    <div class="col-sm-8">
+      <h2 class="page-header">Identification Information</h2>
+      <table class="table table-striped">
+        <tbody>
+          <tr><th width="30%">Synonyms:</th>
+            <td>{{ list2text(id_info["Synonyms"]) }}</td></tr>
+          <tr><th>Systematic Name:</th>
+            <td>{{ textcheck(id_info["Systematic Name"]) }}</td>
+          </tr>
+          <tr><th>IUPAC Name:</th>
+            <td>{{ textcheck(id_info["IUPAC Name"])}}</td>
+          </tr>
+          <tr><th>InChI:</th>
+              <td>{{ textcheck(id_info["InChI"])}}</td>
+          </tr>
+          <tr><th>InChI Key:</th>
+            <td>{{ id }}</td>
+          </tr>
+          <tr><th>SMILES:</th>
+            <td>{{ textcheck(id_info["SMILES"])}}</td>
+          </tr>
+          <tr><th>Molecular Formula:</th>
+            <td><span id="molecularFormula">{{ id_info["Molecular Formula"]}}</div></span>
+              <span id="formulaSearchBtn" class="btn btn-primary btn-sm pull-right"><i class="glyphicon glyphicon-search"></i> Search
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-                <h2 class="page-header">Adduct Information</h2>
+      <h2 class="page-header">Adduct Information</h2>
 
-                <table class="table table-striped">
-                    <tr>
-                        <th width="30%">
-                            Ionisation:
-                        </th>
-                        <td>
-                            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Neutral"
-                                                                  checked> Neutral</label>
-                            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Positive">
-                                Positive</label>
-                            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Negative">
-                                Negative</label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            Adduct:
-                        </th>
-                        <td>
-                            <select id="adduct_selector"></select>
+      <table class="table table-striped">
+        <tr><th width="30%">Ionisation:</th>
+          <td>
+            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Neutral" checked> Neutral</label>
+            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Positive"> Positive</label>
+            <label class="checkbox-inline"><input type="radio" name="ionisation" value="Negative"> Negative</label>
+          </td>
+        </tr>
+        <tr>
+          <th>Adduct:</th>
+          <td><select id="adduct_selector"></select>
+              <span class="pull-right">
+                <input id="rel_i_limiter" type="checkbox" checked> Remove &le; 5% RI
+              </span>
+          </td>
+        </tr>
+      </table>
 
-                            <span class="pull-right">
-                                <input id="rel_i_limiter" type="checkbox" checked> Remove &le; 5% RI
-                            </span>
-                        </td>
+      <div class="isotopic_distribution_chart">
+        <canvas id="myChart"></canvas>
+      </div>
 
-                    </tr>
-                </table>
-
-                <div class="isotopic_distribution_chart">
-                    <canvas id="myChart"></canvas>
-                </div>
-
-                <div class="panel panel-default">
-                    <div class="panel-heading" data-toggle="collapse" href="#dist_table">
-                        <h4>Isotopic Distribution Table</h4>
-                    </div>
-                    <div id="dist_table" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            <table class="table table-striped" id="distribution_table" width="100%">
-                                <thead>
-                                <tr>
-                                    <th width="50%" class="text-center">Mass-to-ion(m/z)</th>
-                                    <th width="50%" class="text-center">Relative Intensity (%)</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <h2 class="page-header">Pathways</h2>
-
-                <div id="no_pathways">
-                    <p>No pathway information available.</p>
-                </div>
-
-                <div id="kegg_pathways" class="panel panel-default">
-                    <div class="panel-heading">
-                        KEGG Pathways (<span class="kegg_pcount"></span>)
-                    </div>
-                    <ul class="list-group" id="kegg_list_group">
-
-                    </ul>
-                </div>
-
-                <div id="smpdb_pathways" class="panel panel-default">
-                    <div class="panel-heading">
-                        SMPDB Pathways (<span class="smpdb_pcount"></span>)
-                    </div>
-                    <ul class="list-group" id="smpdb_list_group">
-
-                    </ul>
-                </div>
-
-                <div id="biocyc_pathways" class="panel panel-default">
-                    <div class="panel-heading">
-                        BioCyc Pathways (<span class="biocyc_pcount"></span>)
-                    </div>
-                    <ul class="list-group" id="biocyc_list_group">
-
-                    </ul>
-                </div>
-
-                <h2 class="page-header">Taxonomic Properties</h2>
-
-                <h3>HMDB Properties</h3>
-
-                <table class="table table-striped">
-                    <tr>
-                        <th width="30%">Origins:</th>
-                        <td>
-                            <span id="hmdb_origins"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Biofluid Locations:</th>
-                        <td>
-                            <span id="hmdb_bioloc"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Tissue Locations:</th>
-                        <td>
-                            <span id="hmdb_tisloc"></span>
-                        </td>
-                    </tr>
-                </table>
-
-            </div>
-            <div class="col-sm-4">
-                {% if g.user.is_authenticated %}
-                    <div id="no_table_warning" class="alert alert-warning">
-                        <i class="glyphicon glyphicon-exclamation-sign"></i> <b>Warning:</b> No tables found
-                    </div>
-                    <div id="add_to_table_container" class="panel panel-primary">
-                        <div class="panel-heading text-center" data-toggle="collapse" href="#add_to_table">
-                            Add to Table
-                        </div>
-                        <div id="add_to_table" class="panel-collapse collapse">
-                            <div class="panel-body container">
-                                <div class="form-group row">
-                                    <select id="table_selector" class="form-control">
-
-                                    </select>
-                                </div>
-
-                                <div class="form-group row">
-                                    <textarea class="form-control" id="comments" placeholder="Comments"></textarea>
-                                </div>
-
-                                <div class="form-group row">
-                                    <div id="add_submission" class="btn btn-success full-width">Submit</div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div id="success" class="container">
-                        <div class="alert alert-success">
-                            <i class="glyphicon glyphicon-check"></i> Successfully Added
-                        </div>
-                    </div>
-
-                {% endif %}
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4>2D Molecular Structure <i class="glyphicon glyphicon-eye-open pull-right"></i></h4>
-                    </div>
-                    <div class="panel-body">
-                        <img id="structure" src="" style="display:block; margin:0 auto 0; width:100%;">
-                    </div>
-                </div>
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4>External Sources <i class="glyphicon glyphicon-link pull-right"></i></h4>
-                    </div>
-                    <ul class="list-group" id="external_sources_list">
-                    </ul>
-                </div>
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4>Physiochemical Information</h4>
-                    </div>
-                    <ul class="list-group">
-                        <li class="list-group-item">Molecular Weight: <span id="main_molecular_weight"></span> g/mol
-                        </li>
-                        <li class="list-group-item">Hydrogen Bond Acceptors: <span id="main_hba"></span></li>
-                        <li class="list-group-item">Hydrogen Bond Donors: <span id="main_hbd"></span></li>
-                        <li class="list-group-item">Formal Charge: <span id="main_formal_charge"></span></li>
-                    </ul>
-                    <div class="panel-footer">
-                        <button class="btn btn-primary btn-sm pull-right" data-toggle="modal"
-                                data-target="#physiochemical_modal">
-                            View All Properties
-                        </button>
-                        <div class="clearfix"></div>
-                    </div>
-                </div>
-
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4><span id="spooky">Skeleton</span> Matches</h4>
-                    </div>
-                    <ul id="skeleton_list" class="list-group">
-
-                    </ul>
-                </div>
-
-            </div>
+      <div class="panel panel-default">
+        <div class="panel-heading" data-toggle="collapse" href="#dist_table">
+          <h4>
+            Isotopic Distribution Table
+            <i class="glyphicon glyphicon-signal pull-right"></i>
+          </h4>
         </div>
+        <div id="dist_table" class="panel-collapse collapse">
+          <div class="panel-body">
+            <table class="table table-striped" id="distribution_table" width="100%">
+              <thead>
+                <tr>
+                  <th width="50%" class="text-center">Mass-to-ion (m/z)</th>
+                  <th width="50%" class="text-center">Relative Intensity (%)</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="page-header">Pathway Information</h2>
+
+      {{ populate_pathways(pathways["KEGG"], "KEGG Pathways") }}
+      {{ populate_pathways(pathways["SMPDB"], "SMPDB Pathways") }}
+      {{ populate_pathways(pathways["BioCyc"], "BioCyc Pathways") }}
+
+      <h2 class="page-header">Taxonomic Properties</h2>
+
+      {% if ext_sour["HMDB Accession"] != None %}
+      {% endif %}
+
+      {% if ext_sour["HMDB Accession"] != None %}
+        <h3>HMDB Properties</h3>
+        <table class="table table-striped">
+          <tr><th width="30%">Origins:</th>
+            <td>{{ list2text(tax_prop["HMDB"]["Origins"]) }}</td>
+          </tr>
+          <tr><th>Biofluid Locations:</th>
+            <td>{{ list2text(tax_prop["HMDB"]["Biofluid Locations"]) }}</td>
+          </tr>
+          <tr>
+            <th>Tissue Locations:</th>
+            <td>{{ list2text(tax_prop["HMDB"]["Tissue Locations"]) }}</td>
+          </tr>
+        </table>
+      {% endif %}
     </div>
 
-    <div id="spooky_skeleton">
-        <img src="{{ url_for('static', filename='imgs/spookyskeleton.gif') }}">
-        <h1><span id="spooky_quote"></span></h1>
+    <div class="col-sm-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4>2D Molecular Structure <i class="glyphicon glyphicon-eye-open pull-right"></i></h4>
+        </div>
+        <div class="panel-body">
+          <img id="structure" src="{{ url_for('view.get_structure', inchikey=id)}}" style="display:block; margin:0 auto 0; width:100%;">
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4>External Sources <i class="glyphicon glyphicon-link pull-right"></i></h4>
+        </div>
+        <ul class="list-group" id="external_sources_list">
+            {{ populate_sources() }}
+        </ul>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4>Physicochemical Information</h4>
+        </div>
+        <ul class="list-group">
+          <li class="list-group-item">Molecular Weight: {{ '%0.4f' % phy_prop["Molecular Weight"]|float }} g/mol</li>
+          <li class="list-group-item">Hydrogen Bond Acceptors: {{ phy_prop["Hydrogen Bond Acceptors"] }}</li>
+          <li class="list-group-item">Hydrogen Bond Donors: {{ phy_prop["Hydrogen Bond Donors"] }}</li>
+          <li class="list-group-item">Formal Charge: {{ phy_prop["Formal Charge"] }}</li>
+        </ul>
+        <div class="panel-footer">
+          <button class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#physiochemical_modal">
+              View All Properties
+          </button>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading"><h4><span id="spooky">Skeleton</span> Matches</h4></div>
+        <ul id="skeleton_list" class="list-group">
+        </ul>
+      </div>
     </div>
+  </div>
+</div>
+
+<div id="spooky_skeleton" style="display:none;">
+  <img src="{{ url_for('static', filename='imgs/spookyskeleton.gif') }}">
+  <h1><span id="spooky_quote"></span></h1>
+</div>
 
 
 {% endblock %}
@@ -298,18 +243,13 @@
 {% include "view/modals/image.html" %}
 
 {% block javascript %}
-    <script src="{{ url_for('static', filename='bower_components/chartjs/dist/Chart.bundle.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/view/pathway_information.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/view/view.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/comment.js') }}"></script>
+<script src="{{ url_for('static', filename='bower_components/chartjs/dist/Chart.bundle.js') }}"></script>
+<script src="{{ url_for('static', filename='js/view/pathway_information.js') }}"></script>
+<script src="{{ url_for('static', filename='js/view/view.js') }}"></script>
+<script src="{{ url_for('static', filename='js/comment.js') }}"></script>
 
-    {% if g.user.is_authenticated %}
-        <script src="{{ url_for('static', filename='js/tables/meta/add.js') }}"></script>
-    {% endif %}
+{% if g.user.is_authenticated %}
+<script src="{{ url_for('static', filename='js/tables/meta/add.js') }}"></script>
+{% endif %}
 
-    <script>
-        render_metabolite_view("{{ id }}");
-        $("#loading_divider").fadeOut(10);
-        $("#metabolite_view").fadeIn(500);
-    </script>
 {% endblock %}

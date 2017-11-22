@@ -57,7 +57,7 @@ def get_file(fn):
     return send_from_directory(d, fn)
 
 
-@app.route("/tools/isotopic_distribution/")
+@app.route("/tools/h/")
 def isotopic_distribution_calculator():
     return render_template("tools/isotopic_distribution.html")
 
@@ -76,7 +76,7 @@ def maintenance(e):
 
 @app.route("/test")
 def test():
-    abort(403)
+    return render_template("./misc/test.hml")
 
 # Blueprints
 

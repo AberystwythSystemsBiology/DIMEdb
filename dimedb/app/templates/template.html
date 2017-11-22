@@ -1,6 +1,5 @@
 {% macro render_form_field(field, label=None, required=False, type="string", placeholder="", value=None) %}
     {% set css_class='form-control ' + kwargs.pop('class', '') %}
-
     <div class="form-group row">
         <label for="example-text-input" class="col-sm-3 col-form-label">{{ label }}{% if required != False %}*{% endif %}:</label>
         <div class="col-sm-9">
@@ -31,8 +30,6 @@
         </div>
     </div>
 {% endmacro %}
-
-
 {% macro display_warnings() %}
  {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -43,8 +40,7 @@
     {% endwith %}
 {% endmacro %}
 
-<!DOCTYPE html>
-<html lang="en">
+<html ng-app="DIMEdb" lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -64,7 +60,7 @@
 </head>
 <body>
 
-<nav class="navbar navbar-inverse navbar-fixed-top">
+<nav class="navbar navbar-inverse navbar-fixed-top" ng-controller="NavbarController">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
@@ -215,13 +211,12 @@
 </body>
 
 <!-- Javascript Imports -->
+<script src="{{ url_for('static', filename='bower_components/angular/angular.min.js') }}"></script>
 <script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.js') }}"></script>
 <script src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 <script src="{{ url_for('static', filename='bower_components/datatables/media/js/jquery.dataTables.js') }}"></script>
 <script src="{{ url_for('static', filename='bower_components/datatables/media/js/dataTables.bootstrap.js') }}"></script>
-
 <script src="{{ url_for('static', filename='bower_components/datatables.net-buttons/js/dataTables.buttons.js') }}"></script>
-
 <script src="{{ url_for('static', filename='js/global.js') }}"></script>
 
 {% block javascript %}
