@@ -1,5 +1,6 @@
 import os
 import json
+import dicttoxml
 from flask import Blueprint, send_from_directory, render_template
 from dimedb import app, abort
 
@@ -17,7 +18,7 @@ source_dict = {
     "PubChem": "https://pubchem.ncbi.nlm.nih.gov/compound/value",
     "Wikidata": "https://www.wikidata.org/wiki/value",
     "Respect": "http://spectra.psc.riken.jp/menta.cgi/respect/datail/datail?accession=value",
-    "Chemspider": "www.chemspider.com/Chemical-Structure.value.html",
+    "Chemspider": "http://www.chemspider.com/Chemical-Structure.value.html",
     "NMR Shift DB": None,
     "ChEBI": "http://www.ebi.ac.uk/chebi/searchId.do?chebiId=value"
 }
@@ -25,7 +26,9 @@ source_dict = {
 
 @view.route("/<inchikey>")
 def view_metabolite(inchikey):
-    mtbl = app.data.driver.db["metabolites"].find({"_id": inchikey}).limit(1)
+    mtbl_driver = app.data.driver.db["metabolites"]
+
+    mtbl = mtbl_driver.find({"_id": inchikey}).limit(1)
     if mtbl.count() != 1:
         abort(404)
     else:
@@ -45,7 +48,9 @@ def view_metabolite(inchikey):
 
 @view.route("/<inchikey>/jcamp")
 def to_jcamp(inchikey):
-    mtbl = app.data.driver.db["metabolites"].find({"_id": inchikey}).limit(1)
+    mtbl_driver = app.data.driver.db["metabolites"]
+
+    mtbl = mtbl_driver.find({"_id": inchikey}).limit(1)
     if mtbl.count() != 1:
         abort(404)
     else:
@@ -54,7 +59,9 @@ def to_jcamp(inchikey):
 
 @view.route("/<inchikey>/json")
 def to_json(inchikey):
-    mtbl = app.data.driver.db["metabolites"].find({"_id": inchikey}).limit(1)
+    mtbl_driver = app.data.driver.db["metabolites"]
+
+    mtbl = mtbl_driver.find({"_id": inchikey}).limit(1)
     if mtbl.count() != 1:
         response = app.response_class(
             status=404,
@@ -68,6 +75,23 @@ def to_json(inchikey):
         )
     return response
 
+@view.route("/<inchikey>/xml")
+def to_xml(inchikey):
+    mtbl_driver = app.data.driver.db["metabolites"]
+
+    mtbl = mtbl_driver.find({"_id": inchikey}).limit(1)
+    if mtbl.count() != 1:
+        response = app.response_class(
+            status=404,
+            mimetype="application/xml"
+        )
+    else:
+        response = app.response_class(
+            response=dicttoxml.dicttoxml(mtbl[0], custom_root="metabolite"),
+            status=200,
+            mimetype="application/xml"
+        )
+    return response
 
 @view.route("/<inchikey>/structure/")
 def get_structure(inchikey):

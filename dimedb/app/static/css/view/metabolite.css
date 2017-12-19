@@ -1,59 +1,23 @@
-#spooky_skeleton {
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  z-index: 100;
-  height: 400px;
-  margin-top: -200px;
-  width: 60%;
-  margin-left: -300px;
-}
-
-#spooky_skeleton img {
-  width: 400px;
-}
-
-#spooky_skeleton h1 {
-  font-family: "Comic Sans MS", cursive, sans-serif;
-}
-
-h5 {
-  text-align: center;
-}
-
-#biocyc_pathways {
-  display: none;
-}
-
-#smpdb_pathways {
-  display: none;
-}
-
-#kegg_pathways {
-  display: none;
-}
-
 .img-responsive {
   width: 100%;
 }
 
-#isotopic_distribution_chart {
-  display: inline-block;
-  height: 100px;
+#loadingPanel {
+  text-align: center;
 }
 
-.isotopic_distribution_chart {
-  position: relative;
-  height: 300px;
-  margin-bottom: 1em;
+.loader {
+  padding-top:2em;
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  margin: 0 auto 0;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
 }
 
-.loading {
-  position: fixed;
-  z-index: 1000;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background: url('http://i.stack.imgur.com/FhHRx.gif') 50% 50% no-repeat;
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }

@@ -81,8 +81,12 @@
 {% endblock %}
 
 {% block body %}
-
 <div ng-controller="MetaboliteView">
+  <div id="loadingPanel">
+    <h1>Loading</h1>
+    <div class="loader"></div>
+  </div>
+
   <div id="metaboliteDiv" class="row" style="display:None;">
     <div class="col-sm-8">
       <h2 class="page-header">Identification Information</h2>
@@ -101,7 +105,7 @@
           </tr>
           <tr><th>InChI Key:</th>
             <td>
-              {{ id }}
+              <span id="inchikey">{{ id }}</span>
               <a href="https://www.google.co.uk/search?&q={{id}}" target="_blank">
                 <span class="btn btn-default btn-sm pull-right"><i class="glyphicon glyphicon-search"></i> Google
               </a>
@@ -228,15 +232,18 @@
       <div class="panel panel-default">
         <div class="panel-heading"><h4>Export Metabolite</h4></div>
         <ul class="list-group">
+          <li class="list-group-item">JCAMP</li>
           <li class="list-group-item">
-            JCAMP
+            <a href="{{ url_for('view.to_xml', inchikey=id)}}">
+              XML
+            </a>
           </li>
-          <li class="list-group-item">
-            XML
-          </li>
-          <li class="list-group-item">
-            JSON
-          </li>
+
+            <li class="list-group-item">
+              <a href="{{ url_for('view.to_json', inchikey=id)}}">
+                JSON
+              </a>
+            </li>
         </ul>
       </div>
 

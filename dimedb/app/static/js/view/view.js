@@ -10,6 +10,36 @@ webApp.factory("getMetabolite", function($http) {
   return data
 });
 
+function getMolecularMatches(molecularFormula) {
+  var api_url = getBaseURL() + "api/metabolites/?where={";
+  api_url += '"Identification Information.Molecular Formula" : "';
+  api_url += molecularFormula + '"}';
+  api_url += '&projection={"Identification Information.Name" : 1}';
+
+  var metabolites = get_metabolites(api_url);
+
+  $("#molecularMatchTable > tbody").empty();
+
+  for(idx in metabolites) {
+    var metabolite = metabolites[idx];
+    var name = metabolite["Identification Information"]["Name"];
+    var inchikey = metabolite["_id"];
+
+    var structure_url = getBaseURL() + "view/" + inchikey;
+    var image_url = structure_url+"/structure";
+
+    $("#molecularMatchTable > tbody").append(
+      "<tr><td><img class='img-responsive img-circle'src='"+image_url+"'></td><td>"
+              +"<a href='"+structure_url+"' target='_blank'>"+name+"</a></td></tr>");
+  }
+
+  $('#molecularMatchTable').dataTable( {
+    "columnDefs": [
+      { "width": "10%", "targets": 0 }
+    ]
+  });
+}
+
 // Take in the adduct info and polarity, fill the selector with info.
 function generateAdductSelection(adduct_info, polarity) {
   $("#adduct_selector").empty();
@@ -48,8 +78,6 @@ function getMassesAndIntensities(adduct_info, polarity, adduct_val) {
     }
   return [masses, intensities]
 }
-
-
 
 function generateChartAndTable(masses, intensities, chartHeight, chartWidth) {
   // If this is true, limit values to > 5%.
@@ -153,6 +181,29 @@ function generateChart($scope, refresh_adduct=true) {
 }
 
 
+function getSkeletons(inchikey) {
+    var api_url = getBaseURL() + "api/metabolites/?where={";
+    api_url += '"_id" : { "$regex" : "^' + inchikey.split("-")[0] +'"}}';
+    api_url += '&projection={"Identification Information.Name" : 1}';
+
+    var metabolites = get_metabolites(api_url);
+
+    var any = false;
+
+    for (index in metabolites) {
+        var m = metabolites[index];
+        if (m["_id"] != inchikey) {
+           $("#skeleton_list").append("<a href='" + getBaseURL() +"view/" + m["_id"] + "' target='_blank'><li class='list-group-item'>"
+            +m["Identification Information"]["Name"] + "</li></a>");
+            any = true;
+        }
+    }
+
+    if (any == false) {
+        $("#skeleton_list").append("<li class='list-group-item'> None available </li>");
+    }
+}
+
 webApp.controller("MetaboliteView", function(getMetabolite, $scope) {
   // Generate inchikey from URL
   var inchikey = window.location.pathname.split("/")[2];
@@ -164,8 +215,13 @@ webApp.controller("MetaboliteView", function(getMetabolite, $scope) {
     var molecularFormula = $("#molecularFormula").html();
     $("#molecularFormula").html(molecularFormula.replace(/([0-9]+)/g, '<sub>$1</sub>'));
 
+    var inchikey = $("#inchikey").html();
+    getSkeletons(inchikey);
     // Generate chart for Neutral
     generateChart($scope);
+
+
+    $("#loadingPanel").fadeOut(100);
 
     $("#metaboliteDiv").fadeIn(500);
 
@@ -186,8 +242,9 @@ webApp.controller("MetaboliteView", function(getMetabolite, $scope) {
     });
 
     $("#formulaSearchBtn").click(function() {
+      getMolecularMatches(molecularFormula);
       $("#formula_search_modal").modal("toggle");
-    })
+    });
   });
 
 });

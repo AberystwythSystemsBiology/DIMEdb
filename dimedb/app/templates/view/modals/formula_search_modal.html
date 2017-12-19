@@ -5,27 +5,15 @@
                 <h4 class="modal-title">Molecular Formula Search</h4>
             </div>
             <div class="modal-body">
-                <table class="table table-striped"width="100%">
+                <table class="table table-striped" width="100%" id="molecularMatchTable">
                   <thead>
                     <tr>
-                      <th width="70%">Name</th>
-                      <th>Molecular Weight</th>
+                      <th>Molecular Structure</th>
+                      <th>Metabolite Name</th>
                     </tr>
                   </thead>
                   <tbody>
-                  {% for m in mol_match %}
-                    <tr>
-                      <td>
-                        <a href="{{ url_for('view.view_metabolite', inchikey=m['_id']) }}" target="_blank">
-                          {{ m["Identification Information"]["Name"]}}
-                        </a>
-                      </td>
-                      <td>
-                        {{ '%0.2f'| format(m["Physicochemical Properties"]["Molecular Weight"]|float) }} g/mol
-                      </td>
 
-                    </tr>
-                  {% endfor %}
                   </tbody>
                 </table>
             </div>
