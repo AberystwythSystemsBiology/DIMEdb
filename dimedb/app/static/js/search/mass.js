@@ -27,7 +27,7 @@ function generate_table(mass, ionisation, api_url, tolerance) {
                     "title" : "Molecular Structure",
                     "data" : "_id",
                     "render" : function(data,type,row) {
-                        return "<img src='" + getBaseURL() + "view/structure/" + row._id + "' class='img-responsive img-circle'>"
+                        return "<img src='" + getBaseURL() + "view/" + row._id + "/structure' class='img-responsive img-circle'>"
                     }
                 },
                 {
@@ -207,4 +207,3 @@ $(document).ready(function () {
 
 
 });
-

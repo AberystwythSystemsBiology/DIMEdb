@@ -32,6 +32,10 @@
       {% endfor %}
       </ul>
       </div>
+  {% else %}
+    <div class="alert alert-warning text-center">
+      <i class="glyphicon glyphicon-alert"></i> No {{heading}} found.
+    </div>
   {% endif %}
 {% endmacro %}
 
@@ -77,9 +81,9 @@
 {% endblock %}
 
 {% block body %}
-<div ng-controller="MetaboliteView">
 
-  <div id="metaboliteDiv" class="row">
+<div ng-controller="MetaboliteView">
+  <div id="metaboliteDiv" class="row" style="display:None;">
     <div class="col-sm-8">
       <h2 class="page-header">Identification Information</h2>
       <table class="table table-striped">
@@ -96,7 +100,12 @@
               <td>{{ textcheck(id_info["InChI"])}}</td>
           </tr>
           <tr><th>InChI Key:</th>
-            <td>{{ id }}</td>
+            <td>
+              {{ id }}
+              <a href="https://www.google.co.uk/search?&q={{id}}" target="_blank">
+                <span class="btn btn-default btn-sm pull-right"><i class="glyphicon glyphicon-search"></i> Google
+              </a>
+            </td>
           </tr>
           <tr><th>SMILES:</th>
             <td>{{ textcheck(id_info["SMILES"])}}</td>
@@ -129,24 +138,25 @@
         </tr>
       </table>
 
-      <div class="isotopic_distribution_chart">
-        <canvas id="myChart"></canvas>
+      <div class="isotopic_distribution_chart" style="height:475px;">
+        <div id="myChart">
+        </div>
       </div>
 
       <div class="panel panel-default">
-        <div class="panel-heading" data-toggle="collapse" href="#dist_table">
+        <div class="panel-heading" href="#dist_table">
           <h4>
             Isotopic Distribution Table
             <i class="glyphicon glyphicon-signal pull-right"></i>
           </h4>
         </div>
-        <div id="dist_table" class="panel-collapse collapse">
+        <div id="dist_table" class="panel">
           <div class="panel-body">
-            <table class="table table-striped" id="distribution_table" width="100%">
+            <table class="table table-striped text-center" id="distribution_table" width="100%">
               <thead>
                 <tr>
-                  <th width="50%" class="text-center">Mass-to-ion (m/z)</th>
-                  <th width="50%" class="text-center">Relative Intensity (%)</th>
+                  <th width="50%">Mass-to-ion (m/z)</th>
+                  <th width="50%">Relative Intensity (%)</th>
                 </tr>
               </thead>
               <tbody>
@@ -156,6 +166,8 @@
         </div>
       </div>
 
+
+
       <h2 class="page-header">Pathway Information</h2>
 
       {{ populate_pathways(pathways["KEGG"], "KEGG Pathways") }}
@@ -163,9 +175,6 @@
       {{ populate_pathways(pathways["BioCyc"], "BioCyc Pathways") }}
 
       <h2 class="page-header">Taxonomic Properties</h2>
-
-      {% if ext_sour["HMDB Accession"] != None %}
-      {% endif %}
 
       {% if ext_sour["HMDB Accession"] != None %}
         <h3>HMDB Properties</h3>
@@ -181,6 +190,10 @@
             <td>{{ list2text(tax_prop["HMDB"]["Tissue Locations"]) }}</td>
           </tr>
         </table>
+      {% else %}
+      <div class="alert alert-warning text-center">
+        <i class="glyphicon glyphicon-alert"></i> No taxonomic properties found.
+      </div>
       {% endif %}
     </div>
 
@@ -192,15 +205,6 @@
         <div class="panel-body">
           <img id="structure" src="{{ url_for('view.get_structure', inchikey=id)}}" style="display:block; margin:0 auto 0; width:100%;">
         </div>
-      </div>
-
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4>External Sources <i class="glyphicon glyphicon-link pull-right"></i></h4>
-        </div>
-        <ul class="list-group" id="external_sources_list">
-            {{ populate_sources() }}
-        </ul>
       </div>
 
       <div class="panel panel-default">
@@ -222,17 +226,36 @@
       </div>
 
       <div class="panel panel-default">
+        <div class="panel-heading"><h4>Export Metabolite</h4></div>
+        <ul class="list-group">
+          <li class="list-group-item">
+            JCAMP
+          </li>
+          <li class="list-group-item">
+            XML
+          </li>
+          <li class="list-group-item">
+            JSON
+          </li>
+        </ul>
+      </div>
+
+      <div class="panel panel-default">
         <div class="panel-heading"><h4><span id="spooky">Skeleton</span> Matches</h4></div>
         <ul id="skeleton_list" class="list-group">
         </ul>
       </div>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4>External Sources <i class="glyphicon glyphicon-link pull-right"></i></h4>
+        </div>
+        <ul class="list-group" id="external_sources_list">
+            {{ populate_sources() }}
+        </ul>
+      </div>
     </div>
   </div>
-</div>
-
-<div id="spooky_skeleton" style="display:none;">
-  <img src="{{ url_for('static', filename='imgs/spookyskeleton.gif') }}">
-  <h1><span id="spooky_quote"></span></h1>
 </div>
 
 
@@ -240,13 +263,11 @@
 
 {% include "view/modals/physiochemical_modal.html" %}
 {% include "view/modals/formula_search_modal.html" %}
-{% include "view/modals/image.html" %}
 
 {% block javascript %}
-<script src="{{ url_for('static', filename='bower_components/chartjs/dist/Chart.bundle.js') }}"></script>
-<script src="{{ url_for('static', filename='js/view/pathway_information.js') }}"></script>
-<script src="{{ url_for('static', filename='js/view/view.js') }}"></script>
+<script src="{{ url_for('static', filename='bower_components/plotly.js/dist/plotly.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/comment.js') }}"></script>
+<script src="{{ url_for('static', filename='js/view/view.js') }}"></script>
 
 {% if g.user.is_authenticated %}
 <script src="{{ url_for('static', filename='js/tables/meta/add.js') }}"></script>

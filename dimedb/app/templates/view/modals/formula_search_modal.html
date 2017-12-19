@@ -1,12 +1,32 @@
 <div class="modal fade" id="formula_search_modal" role="dialog">
-    <div class="modal-dialog model-sm">
+    <div class="modal-dialog model-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Molecular Formula Search</h4>
             </div>
             <div class="modal-body">
-                <table class="table table-striped" id="molecular_search_table" width="100%">
+                <table class="table table-striped"width="100%">
+                  <thead>
+                    <tr>
+                      <th width="70%">Name</th>
+                      <th>Molecular Weight</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for m in mol_match %}
+                    <tr>
+                      <td>
+                        <a href="{{ url_for('view.view_metabolite', inchikey=m['_id']) }}" target="_blank">
+                          {{ m["Identification Information"]["Name"]}}
+                        </a>
+                      </td>
+                      <td>
+                        {{ '%0.2f'| format(m["Physicochemical Properties"]["Molecular Weight"]|float) }} g/mol
+                      </td>
 
+                    </tr>
+                  {% endfor %}
+                  </tbody>
                 </table>
             </div>
         </div>

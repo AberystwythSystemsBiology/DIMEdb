@@ -1,4 +1,7 @@
 import os
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 from refs import *
 
@@ -31,7 +34,7 @@ if __name__ == "__main__":
         os.makedirs(golm_path)
         golm.download(golm_path)
     if os.path.isfile(os.path.join(data_directory, "golm.json")) != True:
-        golm.convert(golm_path, data_directory, "golm.json")
+        golm.convert(golm_path, "golm.json")
     # Respect
     if os.path.isdir(respect_path) != True:
         os.makedirs(respect_path)

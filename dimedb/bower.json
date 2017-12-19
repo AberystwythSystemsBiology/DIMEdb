@@ -2,9 +2,9 @@
   "name": "dimedb",
   "homepage": "https://github.com/KeironO/DIMEdb",
   "authors": [
-    "KeironO <keiron.oshea@gmail.com>"
+    "KeironO <keo7@aber.ac.uk>"
   ],
-  "description": "",
+  "description": "DIMEdb: Metabolite identification web service.",
   "main": "",
   "license": "MIT",
   "ignore": [
@@ -20,8 +20,7 @@
     "datatables": "^1.10",
     "bootstrap-toggle": "^2.2.2",
     "bootstrap-tagsinput": "^0.8.0",
-    "chartjs": "^2.6.0",
-    "prismjs": "^1.6.0",
+    "plotly.js": "^1.31.2",
     "datatables.net-buttons" : "^1.4.1",
     "angular" : "1.6.6"
   },

@@ -4,6 +4,8 @@ import pybel
 import json
 import pubchempy
 
+from utils import timeout
+
 
 def download(nmrshiftdb_fp, data_directory, override=False):
     nmrshiftdb_url = "https://sourceforge.net/p/nmrshiftdb2/code/HEAD/tree/trunk/snapshots/nmrshiftdb2.sd?format=raw"
@@ -41,9 +43,10 @@ def convert(fp, op):
                 inchikey, inchi = cdf(metabolite)
                 if name == "":
                     try:
-                        comps = pubchempy.get_compounds(inchikey, "inchikey")
-                        if len(comps) > 0:
-                            name = comps[0].iupac_name
+                        with timeout(3):
+                            comps = pubchempy.get_compounds(inchikey, "inchikey")
+                            if len(comps) > 0:
+                                name = comps[0].iupac_name
                     except Exception:
                         pass
                 if inchikey != None and name != "":

@@ -342,8 +342,8 @@ if __name__ == "__main__":
     inchikeys = combined.keys()
     slice = range(0, len(inchikeys), limiter)
 
-    for inchikey_index in tqdm(slice):
-        processed_data = Parallel(n_jobs=4)(delayed(handler)(id, combined[id]) for id in inchikeys[inchikey_index:inchikey_index + limiter])
+    for inchikey_index in tqdm(slice[74:]):
+        processed_data = Parallel(n_jobs=6)(delayed(handler)(id, combined[id]) for id in inchikeys[inchikey_index:inchikey_index + limiter])
         processed_data = [x for x in processed_data if x != None]
         mongodb_file = json.loads(bson_dumps(processed_data), object_pairs_hook=collections.OrderedDict)
         with open(os.path.join(final_dir, "dimedb_s"+str(inchikey_index)+".json"), "wb") as outfile:
