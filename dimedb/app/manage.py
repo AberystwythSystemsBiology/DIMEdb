@@ -1,8 +1,8 @@
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 
-from app import app, db
-from app.mod_auth.models import User
+from dimedb import app, db
+from mod_auth.models import User
 
 app.config_from_object(app.config)
 

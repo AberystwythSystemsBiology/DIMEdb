@@ -60,7 +60,7 @@ def convert(data):
 
             limiter = 0
             for index, mass in enumerate(X):
-                vals = {"mass" : round(mass, 2), "int" : round(Y[index], 2)}
+                vals = {"mass": round(mass, 2), "int": round(Y[index], 2)}
                 jcamp["PEAK TABLE"] += ("({mass},{int}) ".format(**vals))
                 if limiter == 3 and index != len(X) and len(X) != 3:
                     limiter = 0

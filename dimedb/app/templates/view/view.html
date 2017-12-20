@@ -232,7 +232,11 @@
       <div class="panel panel-default">
         <div class="panel-heading"><h4>Export Metabolite</h4></div>
         <ul class="list-group">
-          <li class="list-group-item">JCAMP</li>
+          <li class="list-group-item">
+            <a href="{{ url_for('view.to_jcamp', inchikey=id)}}">
+              JCAMP
+            </a>
+          </li>
           <li class="list-group-item">
             <a href="{{ url_for('view.to_xml', inchikey=id)}}">
               XML

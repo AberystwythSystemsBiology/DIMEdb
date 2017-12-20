@@ -204,6 +204,26 @@ function getSkeletons(inchikey) {
     }
 }
 
+function fillJCAMPTool($scope) {
+  var negative = [];
+  var positive = [];
+  var neutral = [];
+  for(idx in $scope.metabolite["Adducts"]) {
+    var adduct_info = $scope.metabolite["Adducts"][idx];
+    if(adduct_info["Polarity"] == "Negative") {
+      negative.push(adduct_info)
+    }
+    else if (adduct_info["Polarity"] == "Positive") {
+      positive.push(adduct_info);
+    }
+    else {
+      neutral.push(adduct_info);
+    }
+  }
+
+  console.log(negative, positive, neutral);
+}
+
 webApp.controller("MetaboliteView", function(getMetabolite, $scope) {
   // Generate inchikey from URL
   var inchikey = window.location.pathname.split("/")[2];
