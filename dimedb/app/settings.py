@@ -54,13 +54,20 @@ mtbl_adducts = {
 
 mtbl_extsources = {
     "schema": {
-        "ChEBI ID": "string",
-        "PubChem ID": "string",
+        "MassBank": "string",
+        "KEGG Drug": "string",
+        "BioCyc": "string",
+        "CAS": "string",
+        "GOLM": "string",
+        "Spektraris": "string",
+        "PubChem": "string",
+        "KEGG Compound": "string",
         "HMDB Accession": "string",
-        "CAS":  "string",
+        "Respect": "string",
         "Wikidata": "string",
         "Chemspider": "string",
-        "BioCyc": "string"
+        "NMR Shift DB": "string",
+        "ChEBI": "string"
     }
 }
 

@@ -1,5 +1,10 @@
+webApp = angular.module("DIMEdb", []);
+
+webApp.controller("NavbarController", ["$scope", function($scope) {}]);
+
+
 function clear_results() {
-    $("#search_results").fadeOut("slow");
+    $("#search_results").fadeOut(100);
     $("#search_results").empty();
 }
 
@@ -15,7 +20,7 @@ function generate_table(mass, ionisation, api_url, tolerance) {
         $('#results_' + mass.replace(".", "_") + '').DataTable({
             "destroy": true,
             "searching": true,
-            "lengthChange": true,
+            "lengthChange": false,
             "pageLength": 5,
             "ajax": {
                 "url": encodeURI(api_url),
@@ -78,8 +83,6 @@ function generate_table(mass, ionisation, api_url, tolerance) {
         });
     }
 
-
-
     $("#search_results").append("<h3> " + mass +" m/z</h3>");
     $("#search_results").append(insert_table(mass));
     generate_datatable(mass, ionisation, api_url);
@@ -126,8 +129,9 @@ $("#search_button").click(function () {
         var info = generate_api_url(mass, ionisation);
         generate_table(mass, ionisation, info[0], info[1]);
     });
+    $("#search_results").fadeIn(800);
 
-    $("#search_results").fadeIn("slow");
+
 });
 
 
@@ -152,7 +156,7 @@ $(document).ready(function () {
                 ["[M-2H]2-", 0],
                 ["[M-3H]3-", 0],
                 ["[2M+Na-2H]1-", 0],
-                ["[M1-.]1-", 0]
+                ["[M1-.]1-", 1]
             ],
             "Positive": [
                 ["[M+H]1+", 1],
@@ -193,8 +197,6 @@ $(document).ready(function () {
                 $("#ionisation_adducts").append($("<option></option>").text(adduct[0]).attr("value", adduct[0]));
             }
         });
-
-
     }
 
     $("#clear_masses").click(function () {

@@ -14,3 +14,6 @@ class timeout:
         signal.alarm(self.seconds)
     def __exit__(self, type, value, traceback):
         signal.alarm(0)
+
+def to_json(d, fp):
+    pass

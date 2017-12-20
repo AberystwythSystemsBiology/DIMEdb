@@ -30,4 +30,6 @@ class Metabolite(Base):
     __tablename__ = "metabolite"
     table_id = db.Column(db.Integer, db.ForeignKey("metabolite_table.id"), nullable=False)
     inchikey = db.Column(db.String, nullable=False)
+    polarity = db.Column(db.String, nullable=True)
+    adduct = db.Column(db.String, nullable=True)
     comments = db.Column(db.String(2048))

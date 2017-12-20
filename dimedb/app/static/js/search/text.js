@@ -1,3 +1,11 @@
+webApp = angular.module("DIMEdb", []);
+
+webApp.controller("NavbarController", ["$scope", function($scope) {}]);
+
+/*
+  If a textbox is empty, when you call val from it it returns "",
+  this function just returns a null value if it's empty.
+*/
 function text_to_null(text) {
     if (text == "") {
         return null
@@ -7,6 +15,9 @@ function text_to_null(text) {
     }
 }
 
+/*
+  Returns a object containing search (if they exist).
+*/
 function get_values() {
     return {
         "Name" : text_to_null($("#name").val()),
@@ -107,7 +118,7 @@ function generate_api_url(values) {
     }
 
     if (values["External Source"] != null) {
-        var source = '{"External Sources.%source" : "%s"}}';
+        var source = '{"External Sources.%source" : "%s"}';
         source = source.replace(/%source/g, $("#source_name").val());
         source = source.replace(/%s/g, values["External Source"]);
 
@@ -148,7 +159,6 @@ function generate_api_url(values) {
 function results_table(api_url) {
     $('#search_results_table').DataTable({
             "destroy": true,
-            "searching": false,
             "lengthChange": false,
             "pageLength": 10,
             "ajax": {
@@ -161,7 +171,7 @@ function results_table(api_url) {
                     "width": "10%",
                     "data" : "_id",
                     "render" : function(data,type,row) {
-                        return "<img src='" + getBaseURL() + "view/structure/" + row._id + "' class='img-responsive img-circle'>"
+                        return "<img src='" + getBaseURL() + "view/" + row._id + "/structure' class='img-responsive img-circle'>"
                     }
                 },
                 {
@@ -194,18 +204,29 @@ function results_table(api_url) {
         });
 }
 
+function make_search() {
+  var values = get_values();
+  if (checkProperties(values) == false) {
+      //$("#advanced_search_results").fadeOut(200);
+      var api_url = generate_api_url(values);
+      results_table(api_url);
+      $("#search_filters").fadeOut(200);
+      $("#advanced_search_results").fadeIn(600);
+  }
+}
+
 
 $("#submit_search").click(function () {
-    var values = get_values();
-    if (checkProperties(values) == false) {
-        $("#advanced_search_results").fadeOut(200);
-        var api_url = generate_api_url(values);
-        results_table(api_url);
-
-        $("#advanced_search_results").fadeIn(200);
-    }
-
+  make_search();
 });
 
-$("#show_filter").click(function () {
+$("#search_filters input").keypress(function(e) {
+  if (e.keyCode == 13) {
+    make_search();
+  }
+});
+
+$("#return").click(function() {
+  $("#advanced_search_results").fadeOut(600);
+  $("#search_filters").fadeIn(200);
 });

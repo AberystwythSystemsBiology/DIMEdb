@@ -13,7 +13,6 @@
 
 {% block body %}
 
-    <div id="search_filters">
         <div id="search_filters" class="panel panel-default">
             <div class="panel-heading">
                 <h4>Search Filters <i class="glyphicon glyphicon-search pull-right"></i></h4>
@@ -71,7 +70,7 @@
                             <option value="CAS">CAS</option>
                             <option value="Wikidata">Wikidata</option>
                             <option value="Chemspider">Chemspider</option>
-                            <option value="Chemspider">BioCyc</option>
+                            <option value="BioCyc">BioCyc</option>
                         </select>
                     </div>
                     <div class="col-sm-6">
@@ -106,12 +105,12 @@
                 </div>
             </div>
         </div>
-    </div>
-
 
 
     <div id="advanced_search_results">
-        <h2 class="page-header">Search Results</h2>
+        <h2 class="page-header">Search Results <label id="return" class="btn btn-primary pull-right">
+          <i class="glyphicon glyphicon-search"></i> Search Filters
+        </label></h2>
         <table id="search_results_table" class="table table-striped" width="100%">
         </table>
     </div>
