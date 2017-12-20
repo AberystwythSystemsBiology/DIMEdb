@@ -52,3 +52,8 @@ $(document).on('click', '.panel-heading span.clickable', function(e){
 	}
 });
 
+/*Menu-toggle*/
+  $(".menu-toggle").click(function(e) {
+      e.preventDefault();
+      $("#wrapper").toggleClass("active");
+  });

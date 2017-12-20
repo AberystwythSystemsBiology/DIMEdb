@@ -10,6 +10,8 @@ webApp.factory("getMetabolite", function($http) {
   return data
 });
 
+
+
 function getMolecularMatches(molecularFormula) {
   var api_url = getBaseURL() + "api/metabolites/?where={";
   api_url += '"Identification Information.Molecular Formula" : "';
@@ -204,24 +206,46 @@ function getSkeletons(inchikey) {
     }
 }
 
-function fillJCAMPTool($scope) {
-  var negative = [];
-  var positive = [];
-  var neutral = [];
-  for(idx in $scope.metabolite["Adducts"]) {
-    var adduct_info = $scope.metabolite["Adducts"][idx];
-    if(adduct_info["Polarity"] == "Negative") {
-      negative.push(adduct_info)
-    }
-    else if (adduct_info["Polarity"] == "Positive") {
-      positive.push(adduct_info);
-    }
-    else {
-      neutral.push(adduct_info);
-    }
+
+function pathwaysFiller($scope) {
+  var pathways = $scope.metabolite["Pathways"];
+
+  var pathway_data = []
+
+  var urls = {
+    "KEGG": "http://http://www.genome.jp/kegg-bin/show_pathway?%s",
+    "BioCyc": "https://biocyc.org/META/NEW-IMAGE?type=PATHWAY&object=%s",
+    "SMPDB" : "http://smpdb.ca/view/%s"
   }
 
-  console.log(negative, positive, neutral);
+  for (pathway_name in pathways) {
+    var pathway_info = pathways[pathway_name];
+    for (idx in pathway_info) {
+      var id = pathway_info[idx];
+      var api_url = getBaseURL() + "api/pathways/?where={";
+      api_url += '"_id" : "';
+      api_url += id + '"}';
+      var pathway = get_metabolites(api_url);
+      if (pathway.length > 0) {
+        var pathway = pathway[0]
+        final_data = [pathway["Name"], pathway_name, urls[pathway_name].replace("%s", id)];
+        pathway_data.push(final_data)
+      }
+    }
+  }
+  $("#pathway_table").DataTable({
+    data: pathway_data,
+    "destroy": true,
+    columns: [
+      {"title": "Name", "width": "90%"},
+      {"title": "Source", "width": "5%"},
+      {"title": "Actions", "width": "5%",
+      "render": function (data) {
+          return "<a href='"+data+"' target='_blank'><btn class='btn btn-default'>View</btn></a>";
+      }}
+    ]
+  });
+  console.log(pathway_data);
 }
 
 webApp.controller("MetaboliteView", function(getMetabolite, $scope) {
@@ -240,6 +264,7 @@ webApp.controller("MetaboliteView", function(getMetabolite, $scope) {
     // Generate chart for Neutral
     generateChart($scope);
 
+    pathwaysFiller($scope)
 
     $("#loadingPanel").fadeOut(100);
 
@@ -265,6 +290,7 @@ webApp.controller("MetaboliteView", function(getMetabolite, $scope) {
       getMolecularMatches(molecularFormula);
       $("#formula_search_modal").modal("toggle");
     });
+
   });
 
 });

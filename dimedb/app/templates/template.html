@@ -59,6 +59,7 @@
 
 </head>
 <body>
+<div id="wrapper">
 
 <nav class="navbar navbar-inverse navbar-fixed-top" ng-controller="NavbarController">
     <div class="container">
@@ -76,6 +77,9 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="{{ url_for('homepage')}}">
                     <i class="glyphicon glyphicon-home"></i> Home
+                </a></li>
+                <li class="menu-toggle"><a href="#">
+                    Toggle
                 </a></li>
                 <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -157,7 +161,19 @@
     </div>
 </nav>
 
+<!-- Sidebar -->
+    <div id="sidebar-wrapper">
+        <h4>Metabolite Clipboard</h4>
+        <ul class="list-group">
+          <li class="list-group-item">
+            Hello World
+          </li>
+        </ul>
+    </div>
 
+
+    <div id="page-content-wrapper">
+            <div class="page-content">
 {% block abovebody %}
     <div class="jumbotron">
         <div class="container">
@@ -180,6 +196,7 @@
     {% endblock %}
 </div>
 
+</div></div>
 
 <div class="footer">
     <div class="container">
@@ -206,6 +223,7 @@
         </div>
 
     </div>
+</div>
 </div>
 
 </body>

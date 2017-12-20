@@ -105,7 +105,15 @@ metabolites = {
 }
 
 pathways = {
-    "resource_methods": ["GET"]
+    "resource_methods": ["GET"],
+    "schema": {
+        "Name": {
+            "type": "string"
+        },
+        "Source": {
+            "type": "string"
+        }
+    }
 }
 
 DOMAIN = {

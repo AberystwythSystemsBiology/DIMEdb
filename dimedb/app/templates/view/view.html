@@ -22,23 +22,6 @@
   {% endif %}
 {% endmacro %}
 
-{% macro populate_pathways(pathway_list, heading) %}
-  {% if pathway_list|length > 0 %}
-    <div class="panel panel-default">
-      <div class="panel-heading">{{ heading }}</div>
-      <ul class="list-group">
-      {% for pathway in pathway_list %}
-          <li class="list-group-item">{{ pathway }}</li>
-      {% endfor %}
-      </ul>
-      </div>
-  {% else %}
-    <div class="alert alert-warning text-center">
-      <i class="glyphicon glyphicon-alert"></i> No {{heading}} found.
-    </div>
-  {% endif %}
-{% endmacro %}
-
 {% macro populate_sources() %}
   {% for i in ext_sour %}
     {% if ext_sour[i] != None %}
@@ -171,12 +154,14 @@
       </div>
 
 
+      <div id="pathways_div">
+        <h2 class="page-header">Pathway Information</h2>
 
-      <h2 class="page-header">Pathway Information</h2>
+        <table id="pathway_table" class="table table-striped" width="100%">
 
-      {{ populate_pathways(pathways["KEGG"], "KEGG Pathways") }}
-      {{ populate_pathways(pathways["SMPDB"], "SMPDB Pathways") }}
-      {{ populate_pathways(pathways["BioCyc"], "BioCyc Pathways") }}
+        </table>
+      </div>
+
 
       <h2 class="page-header">Taxonomic Properties</h2>
 
