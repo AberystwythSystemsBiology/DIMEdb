@@ -44,8 +44,12 @@ mtbl_phprop = {
 mtbl_adducts = {
     "type": "list",
     "schema": {
-        "Polarity": "string",
-        "Adduct": "string",
+        "Polarity": {
+            "type" : "string"
+        },
+        "Adduct":  {
+            "type" : "string"
+        },
         "Accurate Mass": "float",
         "Isotopic Distribution": "list"
     }

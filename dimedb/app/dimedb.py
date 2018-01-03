@@ -39,6 +39,11 @@ def check_for_maintenance():
 @app.route("/")
 def homepage():
     count = '{:,}'.format(app.data.driver.db['metabolites'].count())
+
+    metabolites = app.data.driver.db["metabolites"]
+
+    #print metabolites.find_one({"Adducts" : {"$elemMatch" : {"Polarity" : "Positive", "Adduct" : {"$in" : ["[M+H]1+","[M+K]1+","[M+Na]1+"]},"Accurate Mass" : {"$lte" : 362, "$gte" : 360}}}})
+
     return render_template("home.html", count=count)
 
 

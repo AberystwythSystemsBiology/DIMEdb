@@ -332,7 +332,7 @@ def handler(inchikey, data):
 
 
 if __name__ == "__main__":
-    limiter = 1000
+    limiter = 500
 
     combined_fp = os.path.join(output_dir, "stripped_sources_final.json")
 
@@ -342,9 +342,10 @@ if __name__ == "__main__":
     inchikeys = combined.keys()
     slice = range(0, len(inchikeys), limiter)
 
-    for inchikey_index in tqdm(slice[74:]):
+    for inchikey_index in tqdm(slice[0:]):
         processed_data = Parallel(n_jobs=6)(delayed(handler)(id, combined[id]) for id in inchikeys[inchikey_index:inchikey_index + limiter])
         processed_data = [x for x in processed_data if x != None]
         mongodb_file = json.loads(bson_dumps(processed_data), object_pairs_hook=collections.OrderedDict)
         with open(os.path.join(final_dir, "dimedb_s"+str(inchikey_index)+".json"), "wb") as outfile:
             json.dump(mongodb_file, outfile, indent=4)
+        break

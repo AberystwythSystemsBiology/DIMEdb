@@ -23,7 +23,7 @@ function generate_table(mass, ionisation, api_url, tolerance) {
             "lengthChange": false,
             "pageLength": 5,
             "ajax": {
-                "url": encodeURI(api_url),
+                "url": api_url,
                 "dataSrc": "_items"
             },
 
@@ -90,10 +90,22 @@ function generate_table(mass, ionisation, api_url, tolerance) {
 
 function generate_api_url(mass, ionisation) {
 
+  function escapeRegExp(string){
+    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function replaceAll(str, term, replacement) {
+  return str.replace(new RegExp(escapeRegExp(term), 'g'), replacement);
+
+}
+
+
+
     function generate_adducts() {
         var adducts = [];
         $('#ionisation_adducts').find(":selected").each(function () {
-            adducts.push($(this).val());
+            adducts.push(replaceAll($(this).val(), "+", "%2B"));
+
         });
         return JSON.stringify(adducts)
     }
@@ -113,9 +125,11 @@ function generate_api_url(mass, ionisation) {
     api_url += '"Accurate Mass" : {"$lte" : ' + lte + ', "$gte" : ' + gte + '}}}';
 
 
+
     api_url += '}&projection={"Identification Information.Name" : 1, "Identification Information.Molecular Formula" : 1, "Adducts.' + ionisation + '.$":1}&max_results=1000}';
 
-    console.log(api_url);
+    console.debug(api_url);
+
 
     return [api_url, tolerance];
 }

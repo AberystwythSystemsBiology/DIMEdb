@@ -137,14 +137,14 @@ video {
 }
 
 #wrapper {
-  padding-left: 250px;
   transition: all 1s ease 0s;
 }
 
 #sidebar-wrapper {
   margin-left: -250px;
   top: 51px;
-  left: 250px;
+  left: 0;
+
   width: 250px;
   background: #000;
   position: fixed;
@@ -159,7 +159,7 @@ video {
 }
 
 #wrapper.active #sidebar-wrapper {
-  left: 0;
+  left: 250px;
 }
 
 #page-content-wrapper {
@@ -193,7 +193,8 @@ video {
 @media (max-width:767px) {
 
   #wrapper {
-    padding-left: 0;
+    position: relative;
+    left: 250px;
   }
 
   #sidebar-wrapper {
