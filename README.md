@@ -1,4 +1,4 @@
-# DIMEdb: Direct Infusion Metabolite Database
+# DIMEdb: Direct Infusion Metabolite Database Web Service
 
 <a href="http://dimedb.ibers.aber.ac.uk"><img src="http://svgshare.com/i/2XL.svg" align="left" hspace="10" vspace="6"></a>
 
