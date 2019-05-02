@@ -56,11 +56,6 @@
 
 {% block page_title %}
   <h1>{{ id_info["Name"] }}</h1>
-  {% if g.user.is_authenticated %}
-  <div class="btn btn-success pull-right">
-    <i class="glyphicon glyphicon-plus"></i> Add to Table
-  </div>
-  {% endif %}
 {% endblock %}
 
 {% block body %}
@@ -264,9 +259,5 @@
 <script src="{{ url_for('static', filename='bower_components/plotly.js/dist/plotly.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/comment.js') }}"></script>
 <script src="{{ url_for('static', filename='js/view/view.js') }}"></script>
-
-{% if g.user.is_authenticated %}
-<script src="{{ url_for('static', filename='js/tables/meta/add.js') }}"></script>
-{% endif %}
 
 {% endblock %}

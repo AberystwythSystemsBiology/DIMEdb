@@ -90,53 +90,6 @@
                 <li><a href="{{ url_for('help')}}">
                     <i class="glyphicon glyphicon-question-sign"></i> Help
                 </a></li>
-                {% if g.user.is_authenticated %}
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
-                            <img src="{{ g.user.avatar(18) }}" class="profile-image img-circle"> {{ g.user.first_name }} <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li>
-                            <div class="navbar-login">
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <p class="text-center">
-                                            <img src="{{ g.user.avatar(256) }}" class="img-circle img-responsive">
-                                        </p>
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <p class="text-left"><strong>{{ g.user.first_name }} {{ g.user.last_name }}</strong></p>
-                                        <p class="text-left small">{{ g.user.email_address }}</p>
-                                        <p class="text-left">
-                                            <a href="{{ url_for('auth.management') }}" class="btn btn-primary btn-block btn-sm"><i class="glyphicon glyphicon-cog"></i> Account Management</a>
-                                        </p>
-                                        {% if g.user.is_admin() == True %}
-                                            <p class="text-left">
-                                                <a href="{{ url_for('admin.home') }}" class="btn btn-warning btn-block btn-sm">
-                                                    <i class="glyphicon glyphicon-adjust"></i> Administrator Panel
-                                                </a>
-                                            </p>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <div class="navbar-login navbar-login-session">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <p>
-                                            <a href="{{ url_for('auth.logout') }}" class="btn btn-danger btn-block"><i class="glyphicon glyphicon-log-out"></i> Log Out</a>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        </ul>
-                    </li>
-                {% else %}
-                    <li><a href="{{ url_for('auth.login') }}"><i class="glyphicon glyphicon-log-in"></i> Login</a></li>
-                {% endif %}
                 <li class="menu-toggle"><a href="#">
                     <i class="glyphicon glyphicon-list-alt"></i> MetaboClipboard
                 </a></li>
@@ -198,7 +151,6 @@
                 <ul class="list-unstyled">
 					<li><a href="{{ url_for('homepage') }}">Home</a></li>
 					<li><a href="{{ url_for('text_search') }}">Search</a></li>
-					<li><a href="{{ url_for('tables.public_tables') }}">Tables</a></li>
 					<li><a href="{{ url_for('help') }}">Help</a></li>
 					<li><a href="mailto:keo7@aber.ac.uk">Contact Us</a></li>
 					<li><a href="https://www.github.com/KeironO/DIMEdb" target="_blank">GitHub</a></li>
