@@ -4,9 +4,6 @@ from eve import Eve
 from eve_elastic import Elastic
 
 from flask import render_template, request, send_from_directory, abort
-from flask_sqlalchemy import SQLAlchemy
-from flask_bcrypt import Bcrypt
-from flask_login import LoginManager
 from hurry.filesize import size, si
 from flask_mail import Mail
 
@@ -16,18 +13,7 @@ from config import BaseConfig
 app = Eve(__name__)
 app.config.from_object(BaseConfig)
 
-db = SQLAlchemy(app)
-bcrypt = Bcrypt(app)
 
-mail = Mail(app)
-
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = "auth.login"
-
-from mod_auth.controllers import authentication
-from mod_tables.controllers import tables
-from mod_admin.controllers import admin
 from mod_view.controllers import view
 
 @app.before_request
@@ -106,9 +92,4 @@ def test():
     return render_template("./misc/test.hml")
 
 
-app.register_blueprint(authentication)
-app.register_blueprint(tables)
-app.register_blueprint(admin)
 app.register_blueprint(view)
-
-db.create_all()

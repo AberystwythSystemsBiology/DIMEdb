@@ -87,22 +87,6 @@
                   <li><a href="{{ url_for('mass_search')}}">Mass Search</a></li>
                 </ul>
                 </li>
-                {% if g.user.is_authenticated %}
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                            <i class="glyphicon glyphicon-list"></i> Tables <span class="caret"></span>
-                        </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="{{ url_for('tables.public_tables') }}">Public Tables</a></li>
-                        <li class="divider"></li>
-                        <li><a href="{{ url_for('tables.mytables') }}">My Tables</a></li>
-                        <li><a href="{{ url_for('tables.create_table') }}">Create Table</a></li>
-
-                    </ul>
-                    </li>
-                {% else %}
-                    <li><a href="{{ url_for('tables.public_tables') }}"><i class="glyphicon glyphicon-list"></i> Tables</a></li>
-                {% endif %}
                 <li><a href="{{ url_for('help')}}">
                     <i class="glyphicon glyphicon-question-sign"></i> Help
                 </a></li>

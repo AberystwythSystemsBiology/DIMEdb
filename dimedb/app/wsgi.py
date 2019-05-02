@@ -18,5 +18,5 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 if __name__ == "__main__":
-    print __doc__
-    app.run(debug=True, threaded=True)
+    print(__doc__)
+    app.run(debug=True, threaded=True, host="0.0.0.0")
